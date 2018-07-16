@@ -4,6 +4,7 @@ import { Route, Switch } from "react-router-dom"
 import { getLocale, IText } from "../locales/locales"
 import { IRest } from "../rest"
 import { WalletList } from "./walletList"
+import { WalletView } from "./walletView"
 
 interface IProps {
     rest: IRest
@@ -36,6 +37,7 @@ export class MobileApp extends React.Component<IProps, IState & IProps> {
         return (
             <Switch>
                 <Route exact path="/" component={() => <WalletList rest={this.state.rest} language={this.state.language}/>} />
+                <Route exact path="/wallet" component={() => <WalletView rest={this.state.rest} language={this.state.language} />} />
             </Switch>
         )
     }

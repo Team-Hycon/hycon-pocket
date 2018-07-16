@@ -2,7 +2,7 @@ import { notification } from "onsenui"
 import * as React from "react"
 import { Button, List, ListHeader, ListItem, Page, Toolbar } from "react-onsenui"
 import { RouteComponentProps } from "react-router"
-import { Route, Switch } from "react-router-dom"
+import { Link, Route, Switch } from "react-router-dom"
 import { getLocale, IText } from "../locales/locales"
 import { IHyconWallet, IRest } from "../rest"
 
@@ -44,12 +44,18 @@ export class WalletList extends React.Component<IProps, IState & IProps> {
             </Toolbar>
         )
     }
+
+    public handleClick() {
+
+    }
     public renderWallet(wallet: {name: string, address: string}) {
         return (
-            <ListItem>
-                wallet.name
-                wallet.address
-            </ListItem>
+            <Link to="/wallet">
+                <ListItem>
+                    <div>{wallet.name}</div>
+                    <div>{wallet.address}</div>
+                </ListItem>
+            </Link>
         )
     }
 
