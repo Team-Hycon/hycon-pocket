@@ -1,6 +1,6 @@
 import { notification } from "onsenui"
 import * as React from "react"
-import { Button, List, ListHeader, ListItem, Page, Toolbar } from "react-onsenui"
+import { Button, Col, List, ListHeader, ListItem, Page, Row, Toolbar } from "react-onsenui"
 import { RouteComponentProps } from "react-router"
 import { Link, Route, Switch } from "react-router-dom"
 import { getLocale, IText } from "../locales/locales"
@@ -45,15 +45,12 @@ export class WalletList extends React.Component<IProps, IState & IProps> {
         )
     }
 
-    public handleClick() {
-
-    }
     public renderWallet(wallet: {name: string, address: string}) {
         return (
-            <Link to="/wallet">
+            <Link to="/wallet" style={{ textDecoration: "none" }}>
                 <ListItem>
-                    <div>{wallet.name}</div>
-                    <div>{wallet.address}</div>
+                    <Row>{wallet.name}</Row>
+                    <Row>{wallet.address}</Row>
                 </ListItem>
             </Link>
         )
@@ -65,7 +62,16 @@ export class WalletList extends React.Component<IProps, IState & IProps> {
                 <Page renderToolbar={ () => this.renderToolbar()}>
                     <List
                         dataSource={this.state.wallets}
-                        renderHeader={() => <ListHeader>Wallets</ListHeader>}
+                        renderHeader={() =>
+                            <ListHeader>
+                                <Row style={{ justifyContent: "space-between" }}>
+                                    <div>Wallets</div>
+                                    <div>
+                                        <span>Edit</span>
+                                        <span>Add</span>
+                                    </div>
+                                </Row>
+                            </ListHeader>}
                         renderRow={(wallet) => this.renderWallet(wallet)}
                     />
                 </Page>
