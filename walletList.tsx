@@ -22,8 +22,9 @@ const styles = createStyles({
     root: {
         flexGrow: 1,
     },
-    flex: {
-        flexGrow: 1,
+    header: {
+        display: "flex",
+        justifyContent: "space-between",
     },
     menuButton: {
         marginLeft: -12,
@@ -49,6 +50,18 @@ export class WalletList extends React.Component<IProps, IState & IProps> {
                 { name: "Josiah", address: "H3vNt4mMDQuMUzAWdT6fhr5HZByuk2JzS" },
                 { name: "Owen", address: "H3b2Wcz6LoLPpupVjsUNHF8uxHPXu8J6C" },
                 { name: "Shawn", address: "H4PhGGqqkfmPu542EDHvVqtj9RYfA8BtQ" },
+                { name: "Shawn", address: "H4PhGGqqkfmPu542EDHvVqtj9RYfA8BtQ" },
+                { name: "Shawn", address: "H4PhGGqqkfmPu542EDHvVqtj9RYfA8BtQ" },
+                { name: "Shawn", address: "H4PhGGqqkfmPu542EDHvVqtj9RYfA8BtQ" },
+                { name: "Shawn", address: "H4PhGGqqkfmPu542EDHvVqtj9RYfA8BtQ" },
+                { name: "Shawn", address: "H4PhGGqqkfmPu542EDHvVqtj9RYfA8BtQ" },
+                { name: "Shawn", address: "H4PhGGqqkfmPu542EDHvVqtj9RYfA8BtQ" },
+                { name: "Shawn", address: "H4PhGGqqkfmPu542EDHvVqtj9RYfA8BtQ" },
+                { name: "Shawn", address: "H4PhGGqqkfmPu542EDHvVqtj9RYfA8BtQ" },
+                { name: "Shawn", address: "H4PhGGqqkfmPu542EDHvVqtj9RYfA8BtQ" },
+                { name: "Shawn", address: "H4PhGGqqkfmPu542EDHvVqtj9RYfA8BtQ" },
+                { name: "Shawn", address: "H4PhGGqqkfmPu542EDHvVqtj9RYfA8BtQ" },
+                { name: "Shawn", address: "H4PhGGqqkfmPu542EDHvVqtj9RYfA8BtQ" },
             ],
         })
     }
@@ -62,26 +75,19 @@ export class WalletList extends React.Component<IProps, IState & IProps> {
         return true
     }
 
-    public renderWallet(wallet: {name: string, address: string}) {
-        return (
-            <Link to="/wallet" style={{ textDecoration: "none" }}>
-            </Link>
-        )
-    }
-
     public render() {
         return (
             <div style={styles.root}>
                 <AppBar position="static">
-                    <Toolbar style={{ justifyContent: "space-between" }}>
+                    <Toolbar style={styles.header}>
                         <Button style={styles.menuButton} color="inherit">HYCON LOGO</Button>
                         <Button color="inherit">EN</Button>
                     </Toolbar>
                 </AppBar>
                 <List
                     subheader={
-                        <ListSubheader component="div" style={{ display: "flex", justifyContent: "space-between" }}>
-                            <span>Wallets</span>
+                        <ListSubheader disableSticky component="div" style={styles.header}>
+                            <span>WALLET</span>
                             <div>
                                 <span><IconButton aria-label="Edit"><EditIcon style={{ fontSize: 18 }} /></IconButton></span>
                                 <span><IconButton aria-label="Add"><AddIcon style={{ fontSize: 18 }} /></IconButton></span>
@@ -91,15 +97,16 @@ export class WalletList extends React.Component<IProps, IState & IProps> {
                     <Divider/>
                     {this.state.wallets.map((n) => (
                         <div style={{ background: "#FFF" }}>
-                            <ListItem key={`item-${n}`}>
-                                <ListItemText primary={n.name} secondary={n.address} />
-                            </ListItem>
+                            <Link style={{ textDecoration: "none" }}to="/wallet">
+                                <ListItem key={`item-${n}`}>
+                                    <ListItemText primary={n.name} secondary={n.address} />
+                                </ListItem>
+                            </Link>
                             <Divider />
                         </div>
                     ))}
                 </List>
             </div>
-
         )
     }
 
