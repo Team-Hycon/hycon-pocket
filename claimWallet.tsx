@@ -11,13 +11,15 @@ interface IProps {
 }
 // tslint:disable-next-line:no-empty-interface
 interface IState {
-    wallet: string
+    email: string
+    password: string
 }
-export class WalletView extends React.Component<IProps, IState & IProps> {
+export class ClaimWallet extends React.Component<IProps, IState & IProps> {
     public static getDerivedStateFromProps(nextProps: IProps, previousState: IState): IState & IProps {
         return Object.assign(nextProps, {
             // nextState derived from nextProps
-            wallet: "H4PhGGqqkfmPu542EDHvVqtj9RYfA8BtQ",
+            email: "",
+            password: "",
         })
     }
 
@@ -29,12 +31,22 @@ export class WalletView extends React.Component<IProps, IState & IProps> {
         return true
     }
 
+    public handleEmailChange(event: any) {
+        this.setState({ email: event.target.value })
+        console.log(event)
+    }
+
+    public handlePasswordChange(event: any) {
+        this.setState({ password: event.target.value })
+        console.log(event)
+    }
+
     public renderToolbar() {
         return (
             <Toolbar modifier="transparent noshadow">
                 <Link to="/"><div className="left">Back</div></Link>
-                <div className="center"></div>
-                <div className="right">Delete</div>
+                <div className="center">Claim Wallet</div>
+                <div className="right"></div>
             </Toolbar>
         )
     }
@@ -50,22 +62,30 @@ export class WalletView extends React.Component<IProps, IState & IProps> {
                 <Row>
                     <Col verticalAlign="center">
                         <Input
-                            value={this.state.wallet}
-                            disabled
+                            modifier="underbar"
+                            type="text"
+                            placeholder="Email"
+                            value={this.state.email}
+                            onChange={this.handleEmailChange}
                         />
                     </Col>
                 </Row>
-                <ListItem modifier="chevron">
-                    See Activity
-                </ListItem>
-                <ListItem modifier="chevron">
-                    Send HYC
-                </ListItem>
-                <Link to="/claim">
-                    <ListItem modifier="chevron">
-                        Claim Wallet
-                    </ListItem>
-                </Link>
+                <Row>
+                    <Col verticalAlign="center">
+                        <Input
+                            modifier="underbar"
+                            type="password"
+                            placeholder="Password"
+                            value={this.state.password}
+                            onChange={this.handleEmailChange}
+                        />
+                    </Col>
+                </Row>
+                <Row>
+                    <Link to="/confirmClaim">
+                        <Button modifier="large"> Submit </Button>
+                    </Link>
+                </Row>
             </Page>
         )
     }

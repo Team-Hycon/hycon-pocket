@@ -1,19 +1,46 @@
-import { notification } from "onsenui"
+import { createStyles } from "@material-ui/core"
+import AppBar from "@material-ui/core/AppBar"
+import Button from "@material-ui/core/Button"
+import Divider from "@material-ui/core/Divider"
+import IconButton from "@material-ui/core/IconButton"
+import List from "@material-ui/core/List"
+import ListItem from "@material-ui/core/ListItem"
+import ListItemText from "@material-ui/core/ListItemText"
+import ListSubheader from "@material-ui/core/ListSubheader"
+import Toolbar from "@material-ui/core/Toolbar"
+import AddIcon from "@material-ui/icons/Add"
+import EditIcon from "@material-ui/icons/Edit"
+import MenuIcon from "@material-ui/icons/Menu"
 import * as React from "react"
-import { Button, Col, List, ListHeader, ListItem, Page, Row, Toolbar } from "react-onsenui"
 import { RouteComponentProps } from "react-router"
 import { Link, Route, Switch } from "react-router-dom"
 import { getLocale, IText } from "../locales/locales"
 import { IHyconWallet, IRest } from "../rest"
+// tslint:disable:object-literal-sort-keys
+
+const styles = createStyles({
+    root: {
+        flexGrow: 1,
+    },
+    flex: {
+        flexGrow: 1,
+    },
+    menuButton: {
+        marginLeft: -12,
+        marginRight: 20,
+    },
+})
 
 interface IProps {
     rest: IRest
     language: IText
 }
+
 // tslint:disable-next-line:no-empty-interface
 interface IState {
     wallets: IHyconWallet[]
 }
+
 export class WalletList extends React.Component<IProps, IState & IProps> {
     public static getDerivedStateFromProps(nextProps: IProps, previousState: IState): IState & IProps {
         return Object.assign(nextProps, {
@@ -35,47 +62,44 @@ export class WalletList extends React.Component<IProps, IState & IProps> {
         return true
     }
 
-    public renderToolbar() {
-        return (
-            <Toolbar>
-                <div className="left">Hycon Logo</div>
-                <div className="center">_</div>
-                <div className="right">En</div>
-            </Toolbar>
-        )
-    }
-
     public renderWallet(wallet: {name: string, address: string}) {
         return (
             <Link to="/wallet" style={{ textDecoration: "none" }}>
-                <ListItem>
-                    <Row>{wallet.name}</Row>
-                    <Row>{wallet.address}</Row>
-                </ListItem>
             </Link>
         )
     }
 
     public render() {
         return (
-            <div>
-                <Page renderToolbar={ () => this.renderToolbar()}>
-                    <List
-                        dataSource={this.state.wallets}
-                        renderHeader={() =>
-                            <ListHeader>
-                                <Row style={{ justifyContent: "space-between" }}>
-                                    <div>Wallets</div>
-                                    <div>
-                                        <span>Edit</span>
-                                        <span>Add</span>
-                                    </div>
-                                </Row>
-                            </ListHeader>}
-                        renderRow={(wallet) => this.renderWallet(wallet)}
-                    />
-                </Page>
+            <div style={styles.root}>
+                <AppBar position="static">
+                    <Toolbar style={{ justifyContent: "space-between" }}>
+                        <Button style={styles.menuButton} color="inherit">HYCON LOGO</Button>
+                        <Button color="inherit">EN</Button>
+                    </Toolbar>
+                </AppBar>
+                <List
+                    subheader={
+                        <ListSubheader component="div" style={{ display: "flex", justifyContent: "space-between" }}>
+                            <span>Wallets</span>
+                            <div>
+                                <span><IconButton aria-label="Edit"><EditIcon style={{ fontSize: 18 }} /></IconButton></span>
+                                <span><IconButton aria-label="Add"><AddIcon style={{ fontSize: 18 }} /></IconButton></span>
+                            </div>
+                        </ListSubheader>
+                    }>
+                    <Divider/>
+                    {this.state.wallets.map((n) => (
+                        <div style={{ background: "#FFF" }}>
+                            <ListItem key={`item-${n}`}>
+                                <ListItemText primary={n.name} secondary={n.address} />
+                            </ListItem>
+                            <Divider />
+                        </div>
+                    ))}
+                </List>
             </div>
+
         )
     }
 
