@@ -44,7 +44,7 @@ export class ClaimWallet extends React.Component<IProps, IState & IProps> {
     public renderToolbar() {
         return (
             <Toolbar modifier="transparent noshadow">
-                <Link to="/"><div className="left">Back</div></Link>
+                <Link to="/wallet"><div className="left">Back</div></Link>
                 <div className="center">Claim Wallet</div>
                 <div className="right"></div>
             </Toolbar>
