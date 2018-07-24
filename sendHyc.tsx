@@ -8,9 +8,12 @@ import { IHyconWallet, IRest } from "../rest"
 
 var Ons = require('react-onsenui')
 var Long = require('long')
-const pattern1 = /(^[0-9]*)([.]{0,1}[0-9]{0,9})$/
 
-const contacts = [{ name: "Alice", addr: "H123fj43333ffgewf" }, { name: "Marine", addr: "H123fj43kl23j08hf" }, { name: "Luca", addr: "H90lfgd5r67koaq0" }]
+const pattern1 = /(^[0-9]*)([.]{0,1}[0-9]{0,9})$/
+const scale = 9 * Math.log(10) / 100
+
+const contacts = [{ name: "Cat", addr: "H123fj43333ffgewf" }, { name: "Sansa", addr: "H123fj43kl23j08hf" }, { name: "Rob", addr: "H90lfgd5r67koaq0" },
+{ name: "Ned", addr: "H123fj43333ffgewf" }, { name: "Arya", addr: "H123fj43kl23j08hf" }, { name: "John", addr: "H90lfgd5r67koaq0" }]
 
 interface IProps {
     rest: IRest
@@ -32,7 +35,8 @@ export class SendHyc extends React.Component<IProps, any> {
             rangeValue: 0,
             totalMoney: 10,
             amountSending: 0,
-            fee: 0,
+            fee: 1,
+            feeVal: 1,
             address: "",
             fromAddress: "",
             contactsShown: false
@@ -93,7 +97,7 @@ export class SendHyc extends React.Component<IProps, any> {
                         <Row>
                             <Col verticalAlign="center">
                                 <Ons.Button onClick={this.handleMaxClick.bind(this)}>Max</Ons.Button>
-                                <Ons.Input type="text" placeholder='amount' value={this.state.amountSending} onChange={this.handleChangeAmount.bind(this)} /> <text>HYC</text>
+                                <Ons.Input type="number" placeholder='amount' value={this.state.amountSending} onChange={this.handleChangeAmount.bind(this)} /> <text>HYC</text>
                             </Col>
                         </Row>
                     </section>
@@ -101,18 +105,18 @@ export class SendHyc extends React.Component<IProps, any> {
                         <p>FEE</p>
                         <Row>
                             <Col verticalAlign="center">
-                                <Ons.Input type="text" placeholder='fee' value={this.state.fee} onChange={this.handleChange.bind(this)} /> <text>HYC</text>
+                                <Ons.Input type="text" placeholder='fee' value={this.state.feeVal} onChange={this.handleChangeInput.bind(this)} /> <text>HYC</text>
                             </Col>
                         </Row>
                         <Row>
                             <Col verticalAlign="center">
                                 <span>0 </span>
                                 <Ons.Range
-                                    min={0} Max={this.state.totalMoney - this.state.amountSending}
+                                    min={0} Max={100}
                                     onChange={this.handleChange.bind(this)}
                                     value={this.state.fee}
                                 />
-                                <span> {this.state.totalMoney - this.state.amountSending}</span>
+                                <span> 1</span>
                             </Col>
                         </Row>
                     </section>
@@ -177,8 +181,6 @@ export class SendHyc extends React.Component<IProps, any> {
         this.setState({ contactsShown: false });
     }
 
-
-
     private handleChange(e: any) {
         if (e.target.value.match(pattern1) == null) {
             alert("Please enter a number with up to 9 decimal places")
@@ -187,16 +189,25 @@ export class SendHyc extends React.Component<IProps, any> {
             e.target.value = str
             return
         } else {
-            console.log("value : " + e.target.value)
+            console.log("value entered : " + e.target.value)
+
             let val = e.target.value
-            let left = this.state.totalMoney - this.state.amountSending
-            if (val < 0) {
-                val = 0
-            } else if (val > left) {
-                val = left
-            }
-            this.setState({ fee: val });
+
+            let feeValue = (Math.exp(scale * val) / 10e8);
+
+            console.log("value fee : " + e.target.value)
+            console.log("value feeVal : " + feeValue.toFixed(9))
+            this.setState({ fee: val, feeVal: feeValue.toFixed(9) });
         }
+    }
+
+    private handleChangeInput(e: any) {
+        console.log("value  entered: " + e.target.value)
+        let val = e.target.value
+        let feeValue = (Math.log(10e8 * val) / scale);
+        console.log("value fee : " + Math.round(feeValue))
+        console.log("value feeVal : " + e.target.value)
+        this.setState({ fee: Math.round(feeValue), feeVal: val });
     }
 
     private handleChangeAmount(e: any) {
@@ -211,8 +222,8 @@ export class SendHyc extends React.Component<IProps, any> {
             let left = this.state.totalMoney - val
             if (val < 0) {
                 val = 0
-            } else if (val > this.state.totalMoney) {
-                val = this.state.totalMoney
+            } else if (val >= this.state.totalMoney) {
+                alert("You dont have anough hycons for the transaction")
             }
             this.setState({ amountSending: val });
         }
@@ -220,6 +231,16 @@ export class SendHyc extends React.Component<IProps, any> {
 
 
     private handleSubmit(e: any) {
+
+        let sending = Number(this.state.amountSending) + Number(this.state.feeVal)
+        let left = Number(this.state.totalMoney) - Number(sending)
+
+
+        console.log("User send : " + sending
+            + " Hyc. Amount is " + this.state.amountSending + " and miner fee is " + this.state.feeVal +
+            " so we have now " + left + " left.")
+
+
         if (this.state.amountSending <= 0) {
             alert("Enter a valid transaction amount")
             return
@@ -228,11 +249,11 @@ export class SendHyc extends React.Component<IProps, any> {
             alert("Please enter a number with up to 9 decimal places")
             return
         }
-        if (this.hyconfromString(this.state.totalMoney).lessThan(this.hyconfromString(this.state.amountSending).add(this.hyconfromString(this.state.fee)))) {
+        if (this.hyconfromString(this.state.totalMoney).lessThan(this.hyconfromString(this.state.amountSending).add(this.hyconfromString(this.state.feeVal)))) {
             alert("You can't spend the money you don't have")
             return
         }
-        if (this.hyconfromString(this.state.fee).equals(0)) {
+        if (this.hyconfromString(this.state.feeVal).equals(0) || this.state.feeVal.match(pattern1) == null) {
             alert("Enter a valid miner fee")
             return
         }
@@ -245,10 +266,16 @@ export class SendHyc extends React.Component<IProps, any> {
             return
         }
 
+        console.log("User send : " + this.hyconfromString(this.state.amountSending).add(this.hyconfromString(this.state.feeVal))
+            + " Hyc. Amount is " + this.hyconfromString(this.state.amountSending) + " and miner fee is " + this.hyconfromString(this.state.feeVal))
+
     }
 
     private handleMaxClick(e: any) {
-        this.setState({ amountSending: this.state.totalMoney });
+        let max = Number(this.state.totalMoney) - 0.0001
+        let minerFee = 0.0001
+        let displayFee = Math.round(Math.log(10e8 * minerFee) / scale)
+        this.setState({ amountSending: max.toString(), fee: displayFee, feeVal: minerFee.toString() });
     }
 
     private hyconfromString(val: string): Long {
