@@ -1,12 +1,14 @@
-import { createStyles, InputAdornment, ListItemIcon } from "@material-ui/core"
+import { createStyles } from "@material-ui/core"
 import AppBar from "@material-ui/core/AppBar"
 import Button from "@material-ui/core/Button"
 import Divider from "@material-ui/core/Divider"
 import Fade from "@material-ui/core/Fade"
 import IconButton from "@material-ui/core/IconButton"
 import Input from "@material-ui/core/Input"
+import InputAdornment from "@material-ui/core/InputAdornment"
 import List from "@material-ui/core/List"
 import ListItem from "@material-ui/core/ListItem"
+import ListItemIcon from "@material-ui/core/ListItemIcon"
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction"
 import ListItemText from "@material-ui/core/ListItemText"
 import ListSubheader from "@material-ui/core/ListSubheader"
@@ -27,8 +29,8 @@ import { RouteComponentProps } from "react-router"
 import { Link, Route, Switch } from "react-router-dom"
 import { getLocale, IText } from "../locales/locales"
 import { IHyconWallet, IRest } from "../rest"
-// tslint:disable:object-literal-sort-keys
 
+// tslint:disable:object-literal-sort-keys
 const styles = createStyles({
     root: {
         flexGrow: 1,
@@ -36,6 +38,10 @@ const styles = createStyles({
     header: {
         display: "flex",
         justifyContent: "space-between",
+    },
+    flexCenter: {
+        display: "flex",
+        justifyContent: "center",
     },
     menuButton: {
         marginLeft: -12,
@@ -70,25 +76,25 @@ export class WalletView extends React.Component<IProps, IState & IProps> {
 
     public handleClick = () => {
         this.setState({ copied: true })
-        console.log(this.state.copied)
     }
     public handleClose = () => {
         this.setState({ copied: false })
-        console.log(this.state.copied)
     }
     public render() {
         return (
             <div style={styles.root}>
                 <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0 }} position="static">
                     <Toolbar style={styles.header}>
-                        <IconButton style={styles.menuButton}><ArrowBackIcon/></IconButton>
+                        <Link to="/">
+                            <IconButton style={styles.menuButton}><ArrowBackIcon/></IconButton>
+                        </Link>
                         <Typography variant="button" align="center">
                             {this.state.wallet[0].name}
                         </Typography>
                         <IconButton><DeleteIcon/></IconButton>
                     </Toolbar>
                 </AppBar>
-                <div style={{ display: "flex", justifyContent: "center" }}>
+                <div style={ styles.flexCenter }>
                     <Input
                         disabled
                         fullWidth
@@ -106,9 +112,14 @@ export class WalletView extends React.Component<IProps, IState & IProps> {
                         }
                     />
                 </div>
-                <div style={{ display: "flex", justifyContent: "center", marginBottom: "15%" }}>
+                <div style={ styles.flexCenter }>
                     <Typography gutterBottom style={{ fontSize: 24 }}>
                         100000.000000000 <span style={{ fontSize: 10 }}>HYC</span>
+                    </Typography>
+                </div>
+                <div style={{ display: "flex", justifyContent: "center", marginBottom: "15%" }}>
+                    <Typography gutterBottom style={{ fontSize: 14 }}>
+                        <span style={{ fontSize: 10 }}>PENDING:</span> 500.000000000 <span style={{ fontSize: 10 }}>HYC</span>
                     </Typography>
                 </div>
                 <div style={{ backgroundColor: "#FFF" }}>
@@ -121,15 +132,17 @@ export class WalletView extends React.Component<IProps, IState & IProps> {
                                 </IconButton>
                             </ListItemSecondaryAction>
                         </ListItem>
-                        <Divider/>
-                        <ListItem button>
-                            <ListItemText primary="Send Hycon" />
-                            <ListItemSecondaryAction>
-                                <IconButton aria-label="Transaction">
-                                    <ChevronRightIcon />
-                                </IconButton>
-                            </ListItemSecondaryAction>
-                        </ListItem>
+                        <Divider />
+                        <Link to="/sendcoins" style={{ textDecoration: "none" }}>
+                            <ListItem button>
+                                <ListItemText primary="Send Hycon" />
+                                <ListItemSecondaryAction>
+                                    <IconButton aria-label="Transaction">
+                                        <ChevronRightIcon />
+                                    </IconButton>
+                                </ListItemSecondaryAction>
+                            </ListItem>
+                        </Link>
                         <Divider />
                         <Link to="/claim" style={{ textDecoration: "none" }}>
                             <ListItem button>

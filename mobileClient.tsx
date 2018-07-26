@@ -3,15 +3,12 @@ import { RouteComponentProps } from "react-router"
 import { Route, Switch } from "react-router-dom"
 import { getLocale, IText } from "../locales/locales"
 import { IRest } from "../rest"
+import { AddWallet } from "./addWallet"
 import { ClaimWallet } from "./claimWallet"
+import { SendHyc } from "./sendHyc"
+import { WalletActivity } from "./walletActivity"
 import { WalletList } from "./walletList"
 import { WalletView } from "./walletView"
-import { SendHyc } from "./sendHyc"
-import { AddWallet } from "./addWallet"
-import { WalletActivity } from "./walletActivity"
-
-
-
 
 interface IProps {
     rest: IRest

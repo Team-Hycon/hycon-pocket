@@ -1,13 +1,33 @@
-import { notification } from "onsenui"
+import { createStyles, FormControl } from "@material-ui/core"
+import AppBar from "@material-ui/core/AppBar"
+import Button from "@material-ui/core/Button"
+import Divider from "@material-ui/core/Divider"
+import Grid from "@material-ui/core/Grid"
+import IconButton from "@material-ui/core/IconButton"
+import Input from "@material-ui/core/Input"
+import InputAdornment from "@material-ui/core/InputAdornment"
+import InputLabel from "@material-ui/core/InputLabel"
+import List from "@material-ui/core/List"
+import ListItem from "@material-ui/core/ListItem"
+import ListItemIcon from "@material-ui/core/ListItemIcon"
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction"
+import ListItemText from "@material-ui/core/ListItemText"
+import ListSubheader from "@material-ui/core/ListSubheader"
+import Modal from "@material-ui/core/Modal"
+import Paper from "@material-ui/core/Paper"
+import Toolbar from "@material-ui/core/Toolbar"
+import Typography from "@material-ui/core/Typography"
+import ArrowBackIcon from "@material-ui/icons/ArrowBack"
+import SearchIcon from "@material-ui/icons/Search"
+import Slider from "@material-ui/lab/Slider"
 import * as React from "react"
-import { Button, List, ListHeader, ListItem, Page, Toolbar, Icon, Row, Col, Input, Range, AlertDialog } from "react-onsenui"
+import * as CopyToClipboard from "react-copy-to-clipboard"
 import { RouteComponentProps } from "react-router"
 import { Link, Route, Switch } from "react-router-dom"
 import { getLocale, IText } from "../locales/locales"
 import { IHyconWallet, IRest } from "../rest"
-
-var Ons = require('react-onsenui')
-var Long = require('long')
+// tslint:disable-next-line:no-var-requires
+const Long = require("long")
 
 const pattern1 = /(^[0-9]*)([.]{0,1}[0-9]{0,9})$/
 const scale = 9 * Math.log(10) / 100
@@ -15,11 +35,29 @@ const scale = 9 * Math.log(10) / 100
 const contacts = [{ name: "Cat", addr: "H123fj43333ffgewf" }, { name: "Sansa", addr: "H123fj43kl23j08hf" }, { name: "Rob", addr: "H90lfgd5r67koaq0" },
 { name: "Ned", addr: "H123fj43333ffgewf" }, { name: "Arya", addr: "H123fj43kl23j08hf" }, { name: "John", addr: "H90lfgd5r67koaq0" }]
 
+// tslint:disable:object-literal-sort-keys
+const styles = createStyles({
+    root: {
+        flexGrow: 1,
+    },
+    header: {
+        display: "flex",
+        justifyContent: "flex-start",
+    },
+    container: {
+        display: "flex",
+        justifyContent: "center",
+    },
+    menuButton: {
+        marginLeft: -12,
+        marginRight: 20,
+    },
+})
+
 interface IProps {
     rest: IRest
     language: IText
 }
-// tslint:disable-next-line:no-empty-interface
 
 export class SendHyc extends React.Component<IProps, any> {
 
@@ -33,13 +71,15 @@ export class SendHyc extends React.Component<IProps, any> {
         this.state = {
             alertDialogShown: false,
             rangeValue: 0,
-            totalMoney: 10,
+            totalHYC: 10,
+            pendingHYC: 8,
             amountSending: 0,
-            fee: 1,
-            feeVal: 1,
+            amountFee: 0,
             address: "",
-            fromAddress: "",
-            contactsShown: false
+            fromAddress: "test",
+            toAddress: "",
+            contactsShown: false,
+            password: "",
         }
     }
 
@@ -47,122 +87,180 @@ export class SendHyc extends React.Component<IProps, any> {
         return true
     }
 
-    public renderToolbar() {
-        return (
-            <Toolbar>
-                <Link to="/"><div className="left">Back</div></Link>
-                <div className="center">Send Hycon</div>
-                <div className="right"></div>
-            </Toolbar>
-        )
-    }
-
-    public renderWallet(wallet: { name: string, address: string }) {
-        return (
-            <Toolbar modifier="transparent noshadow">
-                <Link to="/"><div className="left">Back</div></Link>
-                <div className="center">Send Hyc</div>
-                <div className="right"></div>
-            </Toolbar>
-        )
-    }
-
     public render() {
         return (
-            <div>
-                <Page renderToolbar={() => this.renderToolbar()}>
-                    <Row>
-                        <Col verticalAlign="center">
-                            <Ons.Button onClick={this.handleContacts.bind(this)}>Contacts</Ons.Button>
-                            <Ons.Input type="text" value={this.state.address} placeholder='Address' />
-                            <Ons.Dialog
-                                isOpen={this.state.contactsShown}
-                                isCancelable={false}>
-                                <div className='alert-dialog-title'>Select one of your contacts</div>
-                                {/* <div className='alert-dialog-content'>Select one of your contacts</div> */}
-                                <Ons.List
-                                    dataSource={contacts}
-                                    renderRow={this.renderRow.bind(this)}
-                                    renderHeader={() => <Ons.ListHeader>Contacts</Ons.ListHeader>}
+            <div style={styles.root}>
+                <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0 }} position="static">
+                    <Toolbar style={styles.header}>
+                        <Link to="/">
+                            <IconButton style={styles.menuButton}><ArrowBackIcon /></IconButton>
+                        </Link>
+                        <Typography variant="button" align="center">
+                            Send HYC
+                        </Typography>
+                    </Toolbar>
+                </AppBar>
+                <Grid container direction="column" style={{ justifyContent: "space-around" }}>
+                    <Grid item>
+                        <List component="nav" style={{ flex: "1 0 auto" }}>
+                            <FormControl fullWidth>
+                                <Input
+                                    id="search-address"
+                                    value={this.state.toAddress}
+                                    onChange={this.handleChange("toAddress")}
+                                    placeholder="Enter a wallet address or select one from favorites"
+                                    inputProps={{ "aria-label": "Search Address" }}
+                                    style={{ fontSize: "0.8em" }}
+                                    startAdornment={
+                                        <InputAdornment position="start">
+                                            <IconButton onClick={this.handleContacts.bind(this)}>
+                                                <SearchIcon style={{ fontSize: 18 }} />
+                                            </IconButton>
+                                        </InputAdornment>
+                                    }
                                 />
-                                <div className='alert-dialog-footer'>
-                                    <button onClick={this.handleContactsClose.bind(this)} className='alert-dialog-button'>Cancel</button>
-                                    <button onClick={this.handleContactsClose.bind(this)} className='alert-dialog-button'>Ok</button>
-                                </div>
-                            </Ons.Dialog>
-                        </Col>
-                    </Row>
-                    <section>
-                        <p>AMOUNT</p>
-                        <Row>
-                            <Col verticalAlign="center">
-                                <Ons.Button onClick={this.handleMaxClick.bind(this)}>Max</Ons.Button>
-                                <Ons.Input type="number" placeholder='amount' value={this.state.amountSending} onChange={this.handleChangeAmount.bind(this)} /> <text>HYC</text>
-                            </Col>
-                        </Row>
-                    </section>
-                    <section>
-                        <p>FEE</p>
-                        <Row>
-                            <Col verticalAlign="center">
-                                <Ons.Input type="text" placeholder='fee' value={this.state.feeVal} onChange={this.handleChangeInput.bind(this)} /> <text>HYC</text>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col verticalAlign="center">
-                                <span>0 </span>
-                                <Ons.Range
-                                    min={0} Max={100}
-                                    onChange={this.handleChange.bind(this)}
-                                    value={this.state.fee}
-                                />
-                                <span> 1</span>
-                            </Col>
-                        </Row>
-                    </section>
-                    <section>
-                        <Row>
-                            <Col verticalAlign="center">
-                                <Ons.Input type="password" placeholder='Password' />
-                                <Ons.Button onClick={this.onClickHint.bind(this)} >Hint</Ons.Button>
-                            </Col>
-                            <Ons.AlertDialog
-                                isOpen={this.state.alertDialogShown}
-                                isCancelable={false}>
-                                <div className='alert-dialog-title'>Hint</div>
-                                <div className='alert-dialog-content'> Hint for your password</div>
-                                <div className='alert-dialog-footer'>
-                                    {/* <button onClick={this.hideAlertDialog.bind(this)} className='alert-dialog-button'>Cancel</button> */}
-                                    <button onClick={this.hideAlertDialog.bind(this)} className='alert-dialog-button'>Ok</button>
-                                </div>
-                            </Ons.AlertDialog>
-                        </Row>
-                    </section>
-                    <Ons.Button onClick={this.handleSubmit.bind(this)}>Send Hycon</Ons.Button>
-                </Page>
+                            </FormControl>
+                            <ListSubheader component="div" style={{ backgroundColor: "#FFF", fontSize: 9, lineHeight: "24px" }}>WALLET INFO</ListSubheader>
+                            <ListItem>
+                                <Grid container alignItems="center">
+                                    <Grid item xs={12} sm={6}>
+                                        <Typography align="center" style={{ fontSize: 12 }}>
+                                            <span style={{ fontSize: 10 }}>TOTAL:</span> {this.state.totalHYC} <span style={{ fontSize: 10 }}>HYC</span>
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        <Typography align="center" gutterBottom style={{ fontSize: 12 }}>
+                                            <span style={{ fontSize: 10 }}>PENDING:</span> {this.state.pendingHYC} <span style={{ fontSize: 10 }}>HYC</span>
+                                        </Typography>
+                                    </Grid>
+                                </Grid>
+                            </ListItem>
+                            <Grid container alignItems="center">
+                                <Grid item xs={12} sm={6}>
+                                    <ListSubheader component="div" style={{ backgroundColor: "#FFF", fontSize: 9, lineHeight: "24px" }}>AMOUNT</ListSubheader>
+                                    <ListItem>
+                                        <Grid container>
+                                            <Grid item xs={3}>
+                                                <Button size="small" style={{ fontSize: 10 }} onClick={this.handleMaxClick.bind(this)}>
+                                                    MAX
+                                                </Button>
+                                            </Grid>
+                                            <Grid item xs={6}>
+                                                <Input
+                                                    fullWidth
+                                                    value={this.state.amountSending}
+                                                    type="number"
+                                                    placeholder="0.000000000"
+                                                    onChange={this.handleChange("amountSending")}
+                                                    inputProps={{ "aria-label": "Send Amount" }}
+                                                    style={{ fontSize: "1.2em" }}
+                                                    endAdornment={<InputAdornment position="end">HYC</InputAdornment>}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={3}>
+                                            </Grid>
+                                        </Grid>
+                                    </ListItem>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <ListSubheader component="div" style={{ backgroundColor: "#FFF", fontSize: 9, lineHeight: "24px" }}>FEE</ListSubheader>
+                                    <ListItem>
+                                        <Grid container>
+                                            <Grid item xs={3}>
+                                            </Grid>
+                                            <Grid item xs={6}>
+                                                <Input
+                                                    fullWidth
+                                                    value={this.state.amountFee}
+                                                    type="number"
+                                                    placeholder="0.000000000"
+                                                    onChange={this.handleChange("amountFee")}
+                                                    inputProps={{ "aria-label": "Send Fee" }}
+                                                    style={{ fontSize: "1.2em" }}
+                                                    endAdornment={<InputAdornment position="end">HYC</InputAdornment>}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={3}>
+                                            </Grid>
+                                        </Grid>
+                                    </ListItem>
+                                    <ListItem style={{ padding: 0, margin: 0 }}>
+                                        <Grid container>
+                                            <Grid item xs={2}>
+                                            </Grid>
+                                            <Grid item xs={8}>
+                                                <Slider value={this.state.amountFee}
+                                                    min={0} max={this.state.totalHYC - this.state.amountSending}
+                                                    aria-labelledby="Send Fee"
+                                                    onChange={this.handleFeeSlider}
+                                                    style={{ padding: 0 }}
+                                                />
+                                            </Grid>
+                                            <Grid item xs={2}>
+                                            </Grid>
+                                        </Grid>
+                                    </ListItem>
+                                </Grid>
+                            </Grid>
+                        </List>
+                    </Grid>
+                    <Grid item style={{ paddingTop: "5vh" }}>
+                        <FormControl fullWidth style={{ flexShrink: 0 }}>
+                            <Input
+                                id="password"
+                                value={this.state.password}
+                                onChange={this.handleChange("password")}
+                                placeholder="Wallet Password"
+                                inputProps={{ "aria-label": "Wallet Password" }}
+                                style={{ margin: "0 16% 3% 16%", fontSize: "0.8em" }}
+                                endAdornment={
+                                    <InputAdornment
+                                        position="end"
+                                        style={{ fontSize: 8 }}
+                                        onChange={this.onClickHint.bind(this)}>
+                                        <Button size="small" style={{ fontSize: 9 }} onClick={this.onClickHint.bind(this)}>
+                                            HINT
+                                        </Button>
+                                    </InputAdornment>
+                                }
+                            />
+                        </FormControl>
+                        <Button
+                            onClick={this.handleSubmit.bind(this)}
+                            style={{ backgroundColor: "#2196f3", color: "#fff", width: "100%", height: "8%" }}>
+                            SEND HYC
+                        </Button>
+                    </Grid>
+                </Grid>
+
+                <Modal aria-labelledby="contact-list" open={this.state.contactsShown} onClose={this.handleContactsClose.bind(this)}>
+                    <div style={{ top: "50%", left: "50%", transform: "translate(-50%, -50%)", position: "absolute"}}>
+                        <Paper style={{ padding: 10, maxWidth: 350 }}>
+                            <List subheader={<ListSubheader style={{ fontSize: 10 }}>Select a wallet address</ListSubheader>}>
+                                {contacts.map((value) => (
+                                    <div>
+                                        <ListItem button key={value.addr} onClick={this.setContactandClose(value.addr)}>
+                                            <ListItemText primary={value.name} secondary={value.addr}/>
+                                        </ListItem>
+                                        <Divider />
+                                    </div>
+                                ))}
+                            </List>
+                        </Paper>
+                    </div>
+                </Modal>
+
+                <Modal aria-labelledby="password-hint" open={this.state.alertDialogShown} onClose={this.hideAlertDialog.bind(this)}>
+                    <div style={{ top: "50%", left: "50%", transform: "translate(-50%, -50%)", position: "absolute"}}>
+                        <Paper style={{ padding: 10 }}>
+                            <Typography>
+                                Lorem Ipsum Dolor
+                            </Typography>
+                        </Paper>
+                    </div>
+                </Modal>
             </div>
         )
-    }
-
-    private renderRow(row: any, index: any) {
-        return (
-            <Ons.ListItem key={index} name={contacts[index].addr} >
-                <div className='left'>
-                    {contacts[index].name}
-                </div>
-                <div className='center' onClick={this.handleSelectedItem.bind(this)}>
-                    {contacts[index].addr}
-                </div>
-            </Ons.ListItem>
-        );
-    }
-
-    private handleSelectedItem(e: any) {
-        this.setState({ address: e.target.innerText })
-    }
-
-    private setWallets(wallets: IHyconWallet[]) {
-        this.setState({ wallets })
     }
 
     private onClickHint() {
@@ -170,76 +268,26 @@ export class SendHyc extends React.Component<IProps, any> {
     }
 
     private hideAlertDialog() {
-        this.setState({ alertDialogShown: false });
+        this.setState({ alertDialogShown: false })
     }
 
     private handleContacts() {
         this.setState({ contactsShown: true })
     }
 
+    private setContactandClose = (prop: any) => (event: any) => {
+        this.setState({ toAddress: prop })
+        this.handleContactsClose()
+    }
+
     private handleContactsClose() {
-        this.setState({ contactsShown: false });
+        this.setState({ contactsShown: false })
     }
-
-    private handleChange(e: any) {
-        if (e.target.value.match(pattern1) == null) {
-            alert("Please enter a number with up to 9 decimal places")
-            var val: String = e.target.value
-            let str = val.substring(0, val.length - 1)
-            e.target.value = str
-            return
-        } else {
-            console.log("value entered : " + e.target.value)
-
-            let val = e.target.value
-
-            let feeValue = (Math.exp(scale * val) / 10e8);
-
-            console.log("value fee : " + e.target.value)
-            console.log("value feeVal : " + feeValue.toFixed(9))
-            this.setState({ fee: val, feeVal: feeValue.toFixed(9) });
-        }
-    }
-
-    private handleChangeInput(e: any) {
-        console.log("value  entered: " + e.target.value)
-        let val = e.target.value
-        let feeValue = (Math.log(10e8 * val) / scale);
-        console.log("value fee : " + Math.round(feeValue))
-        console.log("value feeVal : " + e.target.value)
-        this.setState({ fee: Math.round(feeValue), feeVal: val });
-    }
-
-    private handleChangeAmount(e: any) {
-        if (e.target.value.match(pattern1) == null) {
-            alert("Please enter a number with up to 9 decimal places")
-            var val: String = e.target.value
-            let str = val.substring(0, val.length - 1)
-            e.target.value = str
-            return
-        } else {
-            let val = e.target.value
-            let left = this.state.totalMoney - val
-            if (val < 0) {
-                val = 0
-            } else if (val >= this.state.totalMoney) {
-                alert("You dont have anough hycons for the transaction")
-            }
-            this.setState({ amountSending: val });
-        }
-    }
-
 
     private handleSubmit(e: any) {
 
-        let sending = Number(this.state.amountSending) + Number(this.state.feeVal)
-        let left = Number(this.state.totalMoney) - Number(sending)
-
-
-        console.log("User send : " + sending
-            + " Hyc. Amount is " + this.state.amountSending + " and miner fee is " + this.state.feeVal +
-            " so we have now " + left + " left.")
-
+        const sending = Number(this.state.amountSending) + Number(this.state.amountFee)
+        const left = Number(this.state.totalMoney) - Number(sending)
 
         if (this.state.amountSending <= 0) {
             alert("Enter a valid transaction amount")
@@ -249,35 +297,41 @@ export class SendHyc extends React.Component<IProps, any> {
             alert("Please enter a number with up to 9 decimal places")
             return
         }
-        if (this.hyconfromString(this.state.totalMoney).lessThan(this.hyconfromString(this.state.amountSending).add(this.hyconfromString(this.state.feeVal)))) {
-            alert("You can't spend the money you don't have")
+        if (this.hyconfromString(this.state.totalHYC).lessThan(this.hyconfromString(this.state.amountSending).add(this.hyconfromString(this.state.amountFee)))) {
+            alert("Insufficient Funds")
             return
         }
-        if (this.hyconfromString(this.state.feeVal).equals(0) || this.state.feeVal.match(pattern1) == null) {
+        if (this.hyconfromString(this.state.amountFee).equals(0)) {
             alert("Enter a valid miner fee")
             return
         }
-        if (this.state.fromAddress === this.state.address) {
+        if (this.state.fromAddress === this.state.toAddress) {
             alert("You cannot send HYCON to yourself")
             return
         }
-        if (this.state.address === "" || this.state.address === undefined) {
+        if (this.state.toAddress === "" || this.state.toAddress === undefined) {
             alert("Enter a to address")
             return
         }
 
-        console.log("User send : " + this.hyconfromString(this.state.amountSending).add(this.hyconfromString(this.state.feeVal))
-            + " Hyc. Amount is " + this.hyconfromString(this.state.amountSending) + " and miner fee is " + this.hyconfromString(this.state.feeVal))
+        console.log("User send : " + this.hyconfromString(this.state.amountSending).add(this.hyconfromString(this.state.amountFee))
+            + " Hyc. Amount is " + this.hyconfromString(this.state.amountSending) + " and miner fee is " + this.hyconfromString(this.state.amountFee))
 
     }
 
     private handleMaxClick(e: any) {
-        let max = Number(this.state.totalMoney) - 0.0001
-        let minerFee = 0.0001
-        let displayFee = Math.round(Math.log(10e8 * minerFee) / scale)
-        this.setState({ amountSending: max.toString(), fee: displayFee, feeVal: minerFee.toString() });
+        const max = Number(this.state.totalMoney) - 0.0001
+        const minerFee = 0.0001
+        const displayFee = Math.round(Math.log(10e8 * minerFee) / scale)
+        this.setState({ amountSending: max.toString(), amountFee: minerFee.toString() })
     }
 
+    private handleFeeSlider = (event: any, value: any) => {
+        this.setState({ value, amountFee: value })
+    }
+    private handleChange = (prop: any) => (event: any) => {
+        this.setState({ [prop]: event.target.value })
+    }
     private hyconfromString(val: string): Long {
         if (val === "" || val === undefined || val === null) { return Long.fromNumber(0, true) }
         if (val[val.length - 1] === ".") { val += "0" }
