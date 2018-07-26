@@ -8,6 +8,9 @@ import { WalletList } from "./walletList"
 import { WalletView } from "./walletView"
 import { SendHyc } from "./sendHyc"
 import { AddWallet } from "./addWallet"
+import { WalletActivity } from "./walletActivity"
+
+
 
 
 interface IProps {
@@ -40,12 +43,13 @@ export class MobileApp extends React.Component<IProps, IState & IProps> {
         }
         return (
             <Switch>
-                <Route exact path="/" component={() => <SendHyc rest={this.state.rest} language={this.state.language} />} />
+                <Route exact path="/" component={() => <WalletActivity rest={this.state.rest} language={this.state.language} />} />
                 {/* <Route exact path="/" component={() => <WalletList rest={this.state.rest} language={this.state.language} />} /> */}
                 <Route exact path="/wallet" component={() => <WalletView rest={this.state.rest} language={this.state.language} />} />
                 <Route exact path="/claim" component={() => <ClaimWallet rest={this.state.rest} language={this.state.language} />} />
                 <Route exact path="/addwallet" component={() => <AddWallet rest={this.state.rest} language={this.state.language} />} />
                 <Route exact path="/sendcoins" component={() => <SendHyc rest={this.state.rest} language={this.state.language} />} />
+                <Route exact path="/walletactivity" component={() => <WalletActivity rest={this.state.rest} language={this.state.language} />} />
             </Switch>
         )
     }
