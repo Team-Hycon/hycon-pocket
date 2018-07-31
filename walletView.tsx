@@ -124,14 +124,16 @@ export class WalletView extends React.Component<IProps, IState & IProps> {
                 </div>
                 <div style={{ backgroundColor: "#FFF" }}>
                     <List component="nav">
-                        <ListItem button>
-                            <ListItemText primary="See Activity" />
-                            <ListItemSecondaryAction>
-                                <IconButton aria-label="Activity">
-                                    <ChevronRightIcon />
-                                </IconButton>
-                            </ListItemSecondaryAction>
-                        </ListItem>
+                        <Link to="/walletactivity" style={{ textDecoration: "none" }}>
+                            <ListItem button>
+                                <ListItemText primary="See Activity" />
+                                <ListItemSecondaryAction>
+                                    <IconButton aria-label="Activity">
+                                        <ChevronRightIcon />
+                                    </IconButton>
+                                </ListItemSecondaryAction>
+                            </ListItem>
+                        </Link>
                         <Divider />
                         <Link to="/sendcoins" style={{ textDecoration: "none" }}>
                             <ListItem button>
