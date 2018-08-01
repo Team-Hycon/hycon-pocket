@@ -89,8 +89,8 @@ export class WalletList extends React.Component<IProps, IState & IProps> {
                         <ListSubheader disableSticky component="div" style={styles.header}>
                             <span>WALLET</span>
                             <div>
-                                <span><IconButton aria-label="Edit"><EditIcon style={{ fontSize: 18 }} /></IconButton></span>
-                                <span><IconButton aria-label="Add"><AddIcon style={{ fontSize: 18 }} /></IconButton></span>
+                                <span><Link to="/addwallet"><IconButton aria-label="Edit"><EditIcon style={{ fontSize: 18 }} /></IconButton></Link></span>
+                                <span><Link to="/addwallet"><IconButton aria-label="Add"><AddIcon style={{ fontSize: 18 }} /></IconButton></Link></span>
                             </div>
                         </ListSubheader>
                     }>
