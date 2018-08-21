@@ -181,12 +181,12 @@ export class AddWallet extends React.Component<IProps, any> {
                     value="check moral submit print museum couple ghost source solution armor evolve actual"
                     style={{ paddingBottom: "10%" }}
                 />
-                <Input
+                <TextField
                     id="confirm-mnemonic"
                     fullWidth
                     multiline
                     rowsMax="2"
-                    placeholder="Enter the above mnemonic"
+                    helperText="Enter the above mnemonic"
                     value={this.state.confirmMnemonic}
                     onChange={this.handleChange("confirmMnemonic")}
                 />
@@ -200,12 +200,12 @@ export class AddWallet extends React.Component<IProps, any> {
                 <Typography align="left" style={{ fontSize: "1.2em", paddingBottom: "10%" }}>
                     Please retype the mnemonic from the previous screen.
                 </Typography>
-                <Input
+                <TextField
                     id="reconfirm-mnemonic"
                     fullWidth
                     multiline
                     rowsMax="2"
-                    placeholder="Enter the mnemonic from the previous screen"
+                    helperText="Enter the mnemonic from the previous screen"
                     value={this.state.reconfirmMnemonic}
                     onChange={this.handleChange("reconfirmMnemonic")}
                 />
@@ -251,7 +251,7 @@ export class AddWallet extends React.Component<IProps, any> {
                                 style={{ backgroundColor: "#2196f3", color: "#fff", width: "100%", padding: "16px 24px" }}>
                                 CONTINUE
                             </Button> :
-                            <Link to="/">
+                            <Link to="/" style={{ textDecoration: "none" }}>
                                 <Button
                                     style={{ backgroundColor: "#2196f3", color: "#fff", width: "100%", padding: "16px 24px" }}>
                                     FINISH

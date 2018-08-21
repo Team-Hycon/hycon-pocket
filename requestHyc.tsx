@@ -220,6 +220,23 @@ export class RequestHyc extends React.Component<IProps, any> {
                         </Link>
                     </Grid>
                 </Grid>
+
+                <Modal aria-labelledby="contact-list" open={this.state.contactsShown} onClose={this.handleContactsClose.bind(this)}>
+                    <div style={{ top: "50%", left: "50%", transform: "translate(-50%, -50%)", position: "absolute" }}>
+                        <Paper style={{ padding: 10, maxWidth: 375 }}>
+                            <List subheader={<ListSubheader style={{ fontSize: 10 }}>Select a wallet address</ListSubheader>}>
+                                {contacts.map((value) => (
+                                    <div>
+                                        <ListItem button key={value.addr} onClick={this.setContactandClose(value.addr)}>
+                                            <ListItemText primary={value.name} secondary={value.addr} />
+                                        </ListItem>
+                                        <Divider />
+                                    </div>
+                                ))}
+                            </List>
+                        </Paper>
+                    </div>
+                </Modal>
             </div >
         )
     }
