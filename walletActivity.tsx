@@ -1,12 +1,12 @@
 import { notification } from "onsenui"
 import * as React from "react"
-import { Button, List, ListHeader, ListItem, Page, Toolbar, Icon, Row, Col, Input, Range, Select, Checkbox } from "react-onsenui"
+import { Button, Checkbox, Col, Icon, Input, List, ListHeader, ListItem, Page, Range, Row, Select, Toolbar } from "react-onsenui"
 import { RouteComponentProps } from "react-router"
 import { Link, Route, Switch } from "react-router-dom"
 import { getLocale, IText } from "../locales/locales"
 import { IHyconWallet, IRest } from "../rest"
 
-var Ons = require('react-onsenui')
+const Ons = require("react-onsenui")
 const transactionList = [
     {
         status: "pending",
@@ -15,7 +15,7 @@ const transactionList = [
         to: "Hbfb2btbc02c58bc1ab911572a55935h",
         amount: "100",
         fee: "0.00025",
-        hash: "020e11ba07c56c469af5e7be2920bf"
+        hash: "020e11ba07c56c469af5e7be2920bf",
     },
     {
         status: "completed",
@@ -24,7 +24,7 @@ const transactionList = [
         to: "H8bb2btbc02c1bf911572a55935h5abc",
         amount: "100",
         fee: "0.00025",
-        hash: "020e11ba07c56c469af5e7be2920bf"
+        hash: "020e11ba07c56c469af5e7be2920bf",
     },
     {
         status: "completed",
@@ -33,7 +33,7 @@ const transactionList = [
         to: "H8bc1a59bfb2btbc02c535hb911572a5",
         amount: "34",
         fee: "0.0019",
-        hash: "a07c9a020e11920bfbf56c465e7be2"
+        hash: "a07c9a020e11920bfbf56c465e7be2",
     },
     {
         status: "completed",
@@ -42,7 +42,7 @@ const transactionList = [
         to: "Hab911bfb2b1572a55935htbc02c58bc",
         amount: "10",
         fee: "0.00000001",
-        hash: "56c46020e11b9af5e7be2920bfa07c"
+        hash: "56c46020e11b9af5e7be2920bfa07c",
     },
     {
         status: "completed",
@@ -51,7 +51,7 @@ const transactionList = [
         to: "H8bc1ab911bfb2btbc02c5572a559fg7",
         amount: "580",
         fee: "0.0000045",
-        hash: "0e7be2920bf20e11ba07c56c469af5"
+        hash: "0e7be2920bf20e11ba07c56c469af5",
     },
     {
         status: "completed",
@@ -60,38 +60,36 @@ const transactionList = [
         to: "Htbc02c58bc1ab91157bfb2b2a55dy8h",
         amount: "45",
         fee: "0.00005",
-        hash: "f25w1ba07c56c469af5e7be2927i1"
-    }
+        hash: "f25w1ba07c56c469af5e7be2927i1",
+    },
 ]
-
 
 const minerFeeList = [
     {
         timestamp: "2018/02/05 22:14:56",
         miner: "Hbfb2aab1bc02cbc1ab911572a559314",
         fee: "0.00025",
-        block: "020e11ba07c56c469af5e7be2920bf"
+        block: "020e11ba07c56c469af5e7be2920bf",
     },
     {
         timestamp: "2018/03/07 13:06:01",
         miner: "H2r72a572a5c02cbc1ab91193145ab1b",
         fee: "0.00025",
-        block: "020e11ba07c56c469af5e7be2920bf"
+        block: "020e11ba07c56c469af5e7be2920bf",
     },
     {
         timestamp: "2018/11/10 16:04:03",
         miner: "Hcbc1abc02bf1b911572a559314b2aab",
         fee: "0.00025",
-        block: "7c56c469a0e7b920bfe2af5020e11b"
+        block: "7c56c469a0e7b920bfe2af5020e11b",
     },
     {
         timestamp: "2018/06/09 23:48:53",
         miner: "H2r72a572a5c02cbc1ab91193145ab1b",
         fee: "0.0000001",
-        block: "0a07c5611b9af5e7be2920bc4620eg"
-    }
+        block: "0a07c5611b9af5e7be2920bc4620eg",
+    },
 ]
-
 
 interface IProps {
     rest: IRest
@@ -115,7 +113,7 @@ export class WalletActivity extends React.Component<IProps, any> {
             isDialogShown: false,
             isMinerShown: false,
             isHashShown: false,
-            dialogVal: ""
+            dialogVal: "",
         }
         // props.rest.getWalletList().then((w) => this.setWallets(w.walletList))
     }
@@ -166,7 +164,7 @@ export class WalletActivity extends React.Component<IProps, any> {
                     </Col>
                 </Row>
             </Ons.ListItem>
-        );
+        )
     }
 
     public renderFeeRow(row: any, index: any) {
@@ -192,7 +190,7 @@ export class WalletActivity extends React.Component<IProps, any> {
                     </Col>
                 </Row>
             </Ons.ListItem>
-        );
+        )
     }
 
     public renderContent() {
@@ -239,34 +237,34 @@ export class WalletActivity extends React.Component<IProps, any> {
 
     private makeTransactionsList(e: any) {
         this.setState({
-            transactionSelected: true
+            transactionSelected: true,
         })
     }
 
     private makeFeesList(e: any) {
         this.setState({
-            transactionSelected: false
+            transactionSelected: false,
         })
     }
 
     private openDialog(e: any) {
         this.setState({
             isDialogShown: true,
-            dialogVal: e.target.id
+            dialogVal: e.target.id,
         })
     }
 
     private openMinerDialog(e: any) {
         this.setState({
             isMinerShown: true,
-            dialogVal: e.target.id
+            dialogVal: e.target.id,
         })
     }
 
     private openHashDialog(e: any) {
         this.setState({
             isHashShown: true,
-            dialogVal: e.target.id
+            dialogVal: e.target.id,
         })
     }
 
@@ -275,51 +273,51 @@ export class WalletActivity extends React.Component<IProps, any> {
             isDialogShown: false,
             isMinerShown: false,
             isHashShown: false,
-            dialogVal: ""
+            dialogVal: "",
         })
     }
 
     private showUsersDialog() {
-        var from: String = this.state.dialogVal.split("/")[0]
-        var to: String = this.state.dialogVal.split("/")[1]
+        const from: String = this.state.dialogVal.split("/")[0]
+        const to: String = this.state.dialogVal.split("/")[1]
         return (
             <Ons.Dialog
                 isOpen={this.state.isDialogShown}
                 isCancelable={false}>
-                <div className='alert-dialog-title'>From - To</div>
-                <div className='alert-dialog-content'>{from}<br />to<br />{to}</div>
-                <div className='alert-dialog-footer'>
-                    <button onClick={this.hideDialog.bind(this)} className='alert-dialog-button'>Close</button>
+                <div className="alert-dialog-title">From - To</div>
+                <div className="alert-dialog-content">{from}<br />to<br />{to}</div>
+                <div className="alert-dialog-footer">
+                    <button onClick={this.hideDialog.bind(this)} className="alert-dialog-button">Close</button>
                 </div>
             </Ons.Dialog>)
 
     }
 
     private showMinerDialog() {
-        var miner: String = this.state.dialogVal
+        const miner: String = this.state.dialogVal
         return (
             <Ons.Dialog
                 isOpen={this.state.isMinerShown}
                 isCancelable={false}>
-                <div className='alert-dialog-title'>Miner Address</div>
-                <div className='alert-dialog-content'>{miner}</div>
-                <div className='alert-dialog-footer'>
-                    <button onClick={this.hideDialog.bind(this)} className='alert-dialog-button'>Close</button>
+                <div className="alert-dialog-title">Miner Address</div>
+                <div className="alert-dialog-content">{miner}</div>
+                <div className="alert-dialog-footer">
+                    <button onClick={this.hideDialog.bind(this)} className="alert-dialog-button">Close</button>
                 </div>
             </Ons.Dialog>)
 
     }
 
     private showHashDialog() {
-        var h: String = this.state.dialogVal
+        const h: String = this.state.dialogVal
         return (
             <Ons.Dialog
                 isOpen={this.state.isHashShown}
                 isCancelable={false}>
-                <div className='alert-dialog-title'>Hash</div>
-                <div className='alert-dialog-content'>{h}</div>
-                <div className='alert-dialog-footer'>
-                    <button onClick={this.hideDialog.bind(this)} className='alert-dialog-button'>Close</button>
+                <div className="alert-dialog-title">Hash</div>
+                <div className="alert-dialog-content">{h}</div>
+                <div className="alert-dialog-footer">
+                    <button onClick={this.hideDialog.bind(this)} className="alert-dialog-button">Close</button>
                 </div>
             </Ons.Dialog>)
 

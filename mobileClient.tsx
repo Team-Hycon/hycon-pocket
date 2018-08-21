@@ -5,6 +5,7 @@ import { getLocale, IText } from "../locales/locales"
 import { IRest } from "../rest"
 import { AddWallet } from "./addWallet"
 import { ClaimWallet } from "./claimWallet"
+import { RequestHyc } from "./requestHyc"
 import { SendHyc } from "./sendHyc"
 import { WalletActivity } from "./walletActivity"
 import { WalletList } from "./walletList"
@@ -45,6 +46,7 @@ export class MobileApp extends React.Component<IProps, IState & IProps> {
                 <Route exact path="/claim" component={() => <ClaimWallet rest={this.state.rest} language={this.state.language} />} />
                 <Route exact path="/addwallet" component={() => <AddWallet rest={this.state.rest} language={this.state.language} />} />
                 <Route exact path="/sendcoins" component={() => <SendHyc rest={this.state.rest} language={this.state.language} />} />
+                <Route exact path="/requestcoins" component={() => <RequestHyc rest={this.state.rest} language={this.state.language} />} />
                 <Route exact path="/walletactivity" component={() => <WalletActivity rest={this.state.rest} language={this.state.language} />} />
             </Switch>
         )

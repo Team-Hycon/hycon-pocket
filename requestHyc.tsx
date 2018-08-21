@@ -60,7 +60,7 @@ interface IProps {
     language: IText
 }
 
-export class SendHyc extends React.Component<IProps, any> {
+export class RequestHyc extends React.Component<IProps, any> {
 
     public static getDerivedStateFromProps(nextProps: IProps, previousState: any): any & IProps {
         return Object.assign(nextProps, {})
@@ -99,7 +99,7 @@ export class SendHyc extends React.Component<IProps, any> {
                                     <IconButton style={styles.menuButton}><ArrowBackIcon /></IconButton>
                                 </Link>
                                 <Typography variant="button" align="center">
-                                    Send HYC
+                                    Request HYC
                                 </Typography>
                             </Toolbar>
                         </AppBar>
@@ -122,21 +122,6 @@ export class SendHyc extends React.Component<IProps, any> {
                                         }
                                     />
                                 </FormControl>
-                                <ListSubheader component="div" style={{ backgroundColor: "#FFF", fontSize: 9, lineHeight: "24px" }}>WALLET INFO</ListSubheader>
-                                <ListItem>
-                                    <Grid container alignItems="center">
-                                        <Grid item xs={12} sm={6}>
-                                            <Typography align="center" style={{ fontSize: 12 }}>
-                                                <span style={{ fontSize: 10 }}>TOTAL:</span> {this.state.totalHYC} <span style={{ fontSize: 10 }}>HYC</span>
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={12} sm={6}>
-                                            <Typography align="center" gutterBottom style={{ fontSize: 12 }}>
-                                                <span style={{ fontSize: 10 }}>PENDING:</span> {this.state.pendingHYC} <span style={{ fontSize: 10 }}>HYC</span>
-                                            </Typography>
-                                        </Grid>
-                                    </Grid>
-                                </ListItem>
                                 <Grid container alignItems="center">
                                     <Grid item xs={12} sm={6}>
                                         <ListSubheader component="div" style={{ backgroundColor: "#FFF", fontSize: 9, lineHeight: "24px" }}>AMOUNT</ListSubheader>
@@ -203,36 +188,36 @@ export class SendHyc extends React.Component<IProps, any> {
                                             </Grid>
                                         </ListItem>
                                     </Grid>
+                                    <Grid item xs={12} style={{ paddingTop: "4%" }}>
+                                        <ListSubheader component="div" style={{ backgroundColor: "#FFF", fontSize: 9, lineHeight: "24px" }}>QR Code</ListSubheader>
+                                        <ListItem>
+                                            <Grid container>
+                                                <Grid item xs={12} sm={6}>
+                                                    <Typography align="center" style={{ fontSize: "0.8em", paddingBottom: "10%" }}>
+                                                        Please show the sender the generated QR Code.
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={12} sm={6}>
+                                                    <Typography align="center" style={{ fontSize: "1.2em", paddingBottom: "10%" }}>
+                                                        Placeholder: QR Code
+                                                    </Typography>
+                                                </Grid>
+                                                <Grid item xs={3}>
+                                                </Grid>
+                                            </Grid>
+                                        </ListItem>
+                                    </Grid>
                                 </Grid>
                             </List>
                         </Grid>
                     </Grid>
                     <Grid item alignContent="center">
-                        <FormControl fullWidth style={{ flexShrink: 0 }}>
-                            <Input
-                                id="password"
-                                value={this.state.password}
-                                onChange={this.handleChange("password")}
-                                placeholder="Wallet Password"
-                                inputProps={{ "aria-label": "Wallet Password" }}
-                                style={{ margin: "0 16% 3% 16%", fontSize: "0.8em" }}
-                                endAdornment={
-                                    <InputAdornment
-                                        position="end"
-                                        style={{ fontSize: 8 }}
-                                        onChange={this.onClickHint.bind(this)}>
-                                        <Button size="small" style={{ fontSize: 9 }} onClick={this.onClickHint.bind(this)}>
-                                            HINT
-                                        </Button>
-                                    </InputAdornment>
-                                }
-                            />
-                        </FormControl>
-                        <Button
-                            onClick={this.handleSubmit.bind(this)}
-                            style={{ backgroundColor: "#2196f3", color: "#fff", width: "100%", height: "8%" }}>
-                            SEND HYC
-                        </Button>
+                        <Link to="/">
+                            <Button
+                                style={{ backgroundColor: "#2196f3", color: "#fff", width: "100%", height: "8%" }}>
+                                COMPLETE
+                            </Button>
+                        </Link>
                     </Grid>
                 </Grid>
             </div >

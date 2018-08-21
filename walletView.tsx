@@ -139,7 +139,18 @@ export class WalletView extends React.Component<IProps, IState & IProps> {
                             <ListItem button>
                                 <ListItemText primary="Send Hycon" />
                                 <ListItemSecondaryAction>
-                                    <IconButton aria-label="Transaction">
+                                    <IconButton aria-label="SendTx">
+                                        <ChevronRightIcon />
+                                    </IconButton>
+                                </ListItemSecondaryAction>
+                            </ListItem>
+                        </Link>
+                        <Divider />
+                        <Link to="/requestcoins" style={{ textDecoration: "none" }}>
+                            <ListItem button>
+                                <ListItemText primary="Request Hycon" />
+                                <ListItemSecondaryAction>
+                                    <IconButton aria-label="ReceiveTx">
                                         <ChevronRightIcon />
                                     </IconButton>
                                 </ListItemSecondaryAction>
