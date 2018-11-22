@@ -26,8 +26,8 @@ import CopyIcon from "@material-ui/icons/FileCopy"
 import * as React from "react"
 import * as CopyToClipboard from "react-copy-to-clipboard"
 import { Link } from "react-router-dom"
-import { IText } from "../locales/mobile/m_locales"
 import { IHyconWallet, IRest } from "../rest"
+import { IText } from "./locales/m_locales"
 
 const patternAddress = /^H[A-Za-z0-9+]{20,}$/
 
@@ -110,18 +110,13 @@ export class Contacts extends React.Component<IProps, any> {
                             onMouseUp={this.handleButtonRelease.bind(this)}
                         >
                             <ListItemText primary={value.alias} secondary={value.address} />
-                            <CopyToClipboard text={value.address}>
-                                <IconButton onClick={this.handleClick}>
-                                    <CopyIcon style={{ fontSize: 18 }} />
-                                </IconButton>
-                            </CopyToClipboard>
-                            {this.state.isRemoving ?
-                                <ListItemSecondaryAction>
-                                    <Checkbox
-                                        onChange={this.handleToggle(value)}
-                                        checked={this.state.checked.indexOf(value) !== -1}
-                                    />
-                                </ListItemSecondaryAction> : ""}
+                            {!this.state.isRemoving
+                                ? <CopyToClipboard text={value.address}>
+                                    <IconButton onClick={this.handleClick}><CopyIcon style={{ fontSize: 18 }} /></IconButton>
+                                </CopyToClipboard>
+                                : <ListItemSecondaryAction>
+                                    <Checkbox onChange={this.handleToggle(value)} checked={this.state.checked.indexOf(value) !== -1} />
+                                </ListItemSecondaryAction>}
                         </ListItem>
                         <Divider />
                     </Grid>))
@@ -189,7 +184,6 @@ export class Contacts extends React.Component<IProps, any> {
                         <Toolbar style={{ display: "flex", justifyContent: "flex-end" }}>
                             <Button
                                 variant="fab"
-                                color="primary"
                                 aria-label="Close Scanner"
                                 onClick={this.closeScan.bind(this)}
                                 style={{ backgroundColor: "#424242", color: "#fff" }}>

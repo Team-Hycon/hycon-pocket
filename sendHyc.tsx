@@ -24,12 +24,12 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack"
 import CameraEnhanceIcon from "@material-ui/icons/CameraEnhance"
 import QRScannerIcon from "@material-ui/icons/CenterFocusWeak"
 import CloseIcon from "@material-ui/icons/Close"
-import AddressBookIcon from "@material-ui/icons/CollectionsBookmark"
+import AddressBookIcon from "@material-ui/icons/Contacts"
 import TooltipIcon from "@material-ui/icons/Help"
 import * as React from "react"
 import { Link } from "react-router-dom"
-import { IText } from "../locales/mobile/m_locales"
 import { IRest } from "../rest"
+import { IText } from "./locales/m_locales"
 
 // tslint:disable-next-line:no-var-requires
 const Long = require("long")
@@ -92,9 +92,9 @@ export class SendHyc extends React.Component<IProps, any> {
             dialogStatus: false,
             alertDialogShown: false,
             rangeValue: 0,
-            totalHYC: this.props.wallet.balance,
+            totalHYC: this.props.wallet.hycBalance,
             pendingHYC: this.props.wallet.pendingAmount,
-            amountSending: "",
+            amountSending: am,
             amountFee: "",
             address: "",
             fromAddress: this.props.wallet.address,
@@ -281,7 +281,6 @@ export class SendHyc extends React.Component<IProps, any> {
                         <Toolbar style={{ display: "flex", justifyContent: "flex-end" }}>
                             <Button
                                 variant="fab"
-                                color="primary"
                                 aria-label="Close Scanner"
                                 onClick={this.closeScan.bind(this)}
                                 style={{ backgroundColor: "#424242", color: "#fff" }}>
@@ -552,7 +551,12 @@ export class SendHyc extends React.Component<IProps, any> {
     }
 
     private handleChange = (prop: any) => (event: any) => {
-        this.setState({ [prop]: event.target.value })
+        if (prop.toString()=="amountSending") {
+            console.log("amountSending " + event.target.value)
+            this.setState({ [prop]: Number(event.target.value).toFixed(9)})
+        } else {
+            this.setState({ [prop]: event.target.value })
+        }
     }
 
     private hyconfromString(val: string): Long {

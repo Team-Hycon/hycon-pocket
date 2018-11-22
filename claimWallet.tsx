@@ -20,9 +20,9 @@ import Visibility from "@material-ui/icons/Visibility"
 import VisibilityOff from "@material-ui/icons/VisibilityOff"
 import * as React from "react"
 import { Link } from "react-router-dom"
-import { getMobileLocale, IText } from "../locales/mobile/m_locales"
 import { IRest } from "../rest"
 import { IHyconWallet } from "../rest"
+import { IText } from "./locales/m_locales"
 
 export interface ILogin {
     email: string
@@ -209,10 +209,10 @@ export class ClaimWallet extends React.Component<IProps, any> {
                                 <FormControlLabel
                                     control={
                                         <Checkbox
+                                            color="primary"
                                             checked={this.state.checked}
                                             onChange={this.handleAdvancedOption("checked")}
                                             value="checked"
-                                            color="primary"
                                         />
                                     }
                                     style={{ fontSize: "1em" }}

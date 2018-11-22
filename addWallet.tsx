@@ -27,8 +27,8 @@ import * as React from "react"
 import { Redirect } from "react-router"
 import { Link } from "react-router-dom"
 import { encodingMnemonic } from "../desktop/stringUtil"
-import { IText } from "../locales/mobile/m_locales"
 import { IHyconWallet, IResponseError, IRest } from "../rest"
+import { IText } from "./locales/m_locales"
 
 // tslint:disable:object-literal-sort-keys
 const styles = createStyles({
@@ -39,7 +39,7 @@ const styles = createStyles({
     },
     header: {
         display: "flex",
-        justifyContent: "flex-start",
+        justifyContent: "space-between",
         padding: 0,
     },
     disableTextSelect: {
@@ -157,10 +157,10 @@ export class AddWallet extends React.Component<IProps, any> {
                     <FormControlLabel
                         control={
                             <Checkbox
+                                color="primary"
                                 checked={this.state.checked}
                                 onChange={this.handleAdvancedOption("checked")}
                                 value="checked"
-                                color="primary"
                             />
                         }
                         style={{ fontSize: "1em" }}
@@ -202,13 +202,13 @@ export class AddWallet extends React.Component<IProps, any> {
             <Grid container spacing={8}>
                 <Grid item xs={12}>
                     <Typography variant="body1" align="left" gutterBottom>
-                        {this.props.language["common-choice-create-recover"]}
+                        {this.props.language["common-select-create-or-recover"]}
                     </Typography>
                 </Grid>
                 <Grid item xs={12}>
                     <Button
                         fullWidth
-                        color="primary"
+                        style={{ backgroundColor: "#172349", color: "#fff" }}
                         variant="contained"
                         size="large"
                         onClick={this.newWallet.bind(this)}>
@@ -218,7 +218,7 @@ export class AddWallet extends React.Component<IProps, any> {
                 <Grid item xs={12}>
                     <Button
                         fullWidth
-                        color="primary"
+                        style={{ backgroundColor: "#172349", color: "#fff" }}
                         variant="contained"
                         size="large"
                         onClick={this.recoverWallet.bind(this)}>
@@ -369,6 +369,7 @@ export class AddWallet extends React.Component<IProps, any> {
                             <Typography variant="button" align="center">
                                 {this.props.language["common-title"]}
                             </Typography>
+                            <div style={{ width: 48, height: 48 }} />
                         </Toolbar>
                     </AppBar>
                     <Divider />

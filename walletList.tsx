@@ -4,8 +4,6 @@ import Button from "@material-ui/core/Button"
 import Checkbox from "@material-ui/core/Checkbox"
 import Dialog from "@material-ui/core/Dialog"
 import DialogActions from "@material-ui/core/DialogActions"
-import DialogContent from "@material-ui/core/DialogContent"
-import DialogContentText from "@material-ui/core/DialogContentText"
 import DialogTitle from "@material-ui/core/DialogTitle"
 import Divider from "@material-ui/core/Divider"
 import Grid from "@material-ui/core/Grid"
@@ -13,6 +11,7 @@ import IconButton from "@material-ui/core/IconButton"
 import Input from "@material-ui/core/Input"
 import List from "@material-ui/core/List"
 import ListItem from "@material-ui/core/ListItem"
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction"
 import ListItemText from "@material-ui/core/ListItemText"
 import ListSubheader from "@material-ui/core/ListSubheader"
 import MenuItem from "@material-ui/core/MenuItem"
@@ -20,12 +19,14 @@ import TextField from "@material-ui/core/TextField"
 import Toolbar from "@material-ui/core/Toolbar"
 import Typography from "@material-ui/core/Typography"
 import AddIcon from "@material-ui/icons/Add"
-import AddressBookIcon from "@material-ui/icons/CollectionsBookmark"
+import AddressBookIcon from "@material-ui/icons/Contacts"
+import SettingsIcon from "@material-ui/icons/Settings"
 import * as React from "react"
 import { Link } from "react-router-dom"
 import SwipeableViews from "react-swipeable-views"
-import { IText } from "../locales/mobile/m_locales"
 import { IRest } from "../rest"
+import { TermsOfUseContent } from "./content/termsOfUse"
+import { IText } from "./locales/m_locales"
 // tslint:disable:no-var-requires
 const logo = require("./img/logo.png")
 const logoBall = require("./img/hycon-logo-ball.png")
@@ -199,7 +200,7 @@ export class WalletList extends React.Component<IProps, any> {
                         </Grid>
                         <Grid item xs={12}>
                             <List>
-                                <ListItem key={1} disableRipple button onClick={this.handleCheckbox("secureOnDevice")}>
+                                <ListItem key={1} disableRipple button>
                                     <Checkbox disableRipple checked={this.state.secureOnDevice} onChange={this.handleCheckbox("secureOnDevice")} value="secureOnDevice" style={{ color: "white" }}/>
                                     <ListItemText disableTypography
                                         primary={<Typography variant="caption" style={{ color: "white" }}>
@@ -207,7 +208,7 @@ export class WalletList extends React.Component<IProps, any> {
                                         </Typography>}
                                     />
                                 </ListItem>
-                                <ListItem key={2} disableRipple button onClick={this.handleCheckbox("recoverWithPhrase")}>
+                                <ListItem key={2} disableRipple button>
                                     <Checkbox disableRipple checked={this.state.recoverWithPhrase} onChange={this.handleCheckbox("recoverWithPhrase")} value="recoverWithPhrase" style={{ color: "white" }}/>
                                     <ListItemText disableTypography
                                         primary={<Typography variant="caption" style={{ color: "white" }}>
@@ -215,13 +216,27 @@ export class WalletList extends React.Component<IProps, any> {
                                         </Typography>}
                                     />
                                 </ListItem>
-                                <ListItem key={3} disableRipple button onClick={this.handleCheckbox("termsOfUse")}>
+                                <ListItem key={3} disableRipple button>
                                     <Checkbox disableRipple checked={this.state.termsOfUse} onChange={this.handleCheckbox("termsOfUse")} value="termsOfUse" style={{ color: "white" }}/>
                                     <ListItemText disableTypography
                                         primary={<Typography variant="caption" style={{ color: "white" }}>
-                                            {this.props.language["onboarding-step5-checkbox3"]} <a onClick={this.handleDialog} style={{ color: "#0095a2", textDecoration: "underline" }}>{this.props.language["help-terms-of-use"]}</a>
+                                            {this.props.language["onboarding-step5-checkbox3"]} <a onClick={this.handleDialog} style={{ color: "#0095a2", textDecoration: "underline" }}>{this.props.language["terms-of-use"]}</a>
                                         </Typography>}
                                     />
+                                </ListItem>
+                                <ListItem key={4} disableRipple button onClick={this.handleCheckbox("all")}>
+                                    <ListItemText disableTypography
+                                        primary={<Typography align="right" variant="caption" style={{ color: "white" }}>{this.props.language["check-all"]}</Typography>}
+                                    />
+                                    <ListItemSecondaryAction>
+                                        <Checkbox
+                                            disableRipple
+                                            checked={ [this.state.secureOnDevice, this.state.recoverWithPhrase, this.state.termsOfUse].filter((v) => (v)).length === 3 }
+                                            onChange={this.handleCheckbox("all")}
+                                            value="checkAll"
+                                            style={{ color: "white" }}
+                                        />
+                                    </ListItemSecondaryAction>
                                 </ListItem>
                             </List>
                         </Grid>
@@ -257,46 +272,10 @@ export class WalletList extends React.Component<IProps, any> {
                     ))}
                 </SwipeableViews>
                 <Dialog open={this.state.openDialog} onClose={this.handleDialog} scroll={this.state.scroll}>
-                    <DialogTitle id="terms-of-use-title"><Typography variant="h6">{this.props.language["help-terms-of-use"]}</Typography></DialogTitle>
-                    <DialogContent><DialogContentText>
-                        <Typography style={{ textAlign: "justify" }} variant="caption" gutterBottom>
-                            {this.props.language["terms-of-use-text1"]}
-                        </Typography><br />
-                        <Typography variant="button" gutterBottom>{this.props.language["terms-of-use-subtitle1"]}</Typography>
-                        <Typography style={{ textAlign: "justify" }} variant="caption" gutterBottom>
-                            {this.props.language["terms-of-use-text2"]}
-                        </Typography>
-                        <Typography style={{ textAlign: "justify" }} variant="caption" gutterBottom>
-                            {this.props.language["terms-of-use-text3"]}
-                        </Typography>
-                        <Typography style={{ textAlign: "justify" }} variant="caption" gutterBottom>
-                            {this.props.language["terms-of-use-text4"]}
-                        </Typography>
-                        <Typography style={{ textAlign: "justify" }} variant="caption" gutterBottom>
-                            {this.props.language["terms-of-use-text5"]}
-                        </Typography><br />
-                        <Typography variant="button" gutterBottom>{this.props.language["terms-of-use-subtitle2"]}</Typography>
-                        <Typography style={{ textAlign: "justify" }} variant="caption" gutterBottom>
-                            {this.props.language["terms-of-use-text6"]}
-                        </Typography><br />
-                        <Typography variant="button" gutterBottom>{this.props.language["terms-of-use-subtitle3"]}</Typography>
-                        <Typography style={{ textAlign: "justify" }} variant="caption" gutterBottom>
-                            {this.props.language["terms-of-use-text7"]}
-                        </Typography><br />
-                        <Typography variant="button" gutterBottom>{this.props.language["terms-of-use-subtitle4"]}</Typography>
-                        <Typography style={{ textAlign: "justify" }} variant="caption" gutterBottom>
-                            {this.props.language["terms-of-use-text8"]}
-                        </Typography><br />
-                        <Typography variant="button" gutterBottom>{this.props.language["terms-of-use-subtitle5"]}</Typography>
-                        <Typography style={{ textAlign: "justify" }} variant="caption" gutterBottom>
-                            {this.props.language["terms-of-use-text9"]}
-                        </Typography>
-                        <Typography style={{ textAlign: "right", fontSize: 8 }} variant="caption" gutterBottom>
-                            {this.props.language["terms-of-use-revision-date"]}
-                        </Typography>
-                    </DialogContentText></DialogContent>
+                    <DialogTitle id="terms-of-use-title"><Typography variant="h6">{this.props.language["terms-of-use"]}</Typography></DialogTitle>
+                    <TermsOfUseContent language={this.props.language} />
                     <DialogActions>
-                        <Button onClick={this.handleDialog} color="primary">{this.props.language["btn-close"]}</Button>
+                        <Button style={{ color: "#172349" }} onClick={this.handleDialog}>{this.props.language["btn-close"]}</Button>
                     </DialogActions>
                 </Dialog>
             </Grid>
@@ -311,8 +290,9 @@ export class WalletList extends React.Component<IProps, any> {
                         <ListSubheader disableSticky component="div" style={styles.subheader}>
                             <span style={{ margin: "auto 0" }}>{this.props.language["wallet-list"]} ({this.state.wallets.length})</span>
                             <div>
-                                <span><Link to="/addwallet"><IconButton aria-label="Add"><AddIcon style={{ fontSize: 18 }} /></IconButton></Link></span>
+                                <span><Link to="/addwallet"><IconButton aria-label="add-wallet"><AddIcon style={{ fontSize: 20 }} /></IconButton></Link></span>
                                 <span><Link to="/contacts"><IconButton aria-label="contacts"><AddressBookIcon style={{ fontSize: 18 }} /></IconButton></Link></span>
+                                <span><Link to="/settings"><IconButton aria-label="settings"><SettingsIcon style={{ fontSize: 20 }} /></IconButton></Link></span>
                             </div>
                         </ListSubheader>
                     }>
@@ -337,10 +317,10 @@ export class WalletList extends React.Component<IProps, any> {
                     <Grid container direction="column" justify="space-around" style={{ flexGrow: 1 }}>
                         <Grid item xs={12}>
                             <Typography variant="h6" align="center">
-                                {this.props.language["detail-guide1"]}
+                                {this.props.language["home-guide-add-wallet"]}
                             </Typography>
                             <Typography variant="caption" align="center" style={{ paddingBottom: "10%" }}>
-                                {this.props.language["detail-guide2"]}
+                                {this.props.language["home-guide-tap-plus"]}
                             </Typography>
                         </Grid>
                     </Grid> : ""
@@ -425,7 +405,13 @@ export class WalletList extends React.Component<IProps, any> {
     }
 
     private handleCheckbox = (name) => (event) => {
-        this.setState({ [name]: event.target.checked })
+        if (name === "all" && ([this.state.secureOnDevice, this.state.recoverWithPhrase, this.state.termsOfUse].filter((v) => (v)).length < 3)) {
+            this.setState({ secureOnDevice: true, recoverWithPhrase: true, termsOfUse: true })
+        } else if ([this.state.secureOnDevice, this.state.recoverWithPhrase, this.state.termsOfUse].filter((v) => (v)).length === 3) {
+            this.setState({ secureOnDevice: false, recoverWithPhrase: false, termsOfUse: false })
+        } else {
+            this.setState({ [name]: event.target.checked })
+        }
     }
     private handleFinish = () => {
         storage.setItem("onboarding", "true")
@@ -435,12 +421,6 @@ export class WalletList extends React.Component<IProps, any> {
     private handleNext = () => {
         this.setState((prevState) => ({
             activeStep: prevState.activeStep + 1,
-        }))
-    }
-
-    private handleBack = () => {
-        this.setState((prevState) => ({
-            activeStep: prevState.activeStep - 1,
         }))
     }
 
