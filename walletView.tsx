@@ -682,7 +682,7 @@ export class WalletView extends React.Component<IProps, IState> {
             case 2:
                 ret = "\u039E" + this.state.balance.eth; break
             case 3:
-                ret = "\u20BF" + this.state.balance.btc; break
+                ret = "\u0243" + this.state.balance.btc; break
             default:
                 ret = this.state.hycBalance + " HYC"; break
         }

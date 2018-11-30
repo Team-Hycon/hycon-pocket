@@ -551,12 +551,8 @@ export class SendHyc extends React.Component<IProps, any> {
     }
 
     private handleChange = (prop: any) => (event: any) => {
-        if (prop.toString()=="amountSending") {
-            console.log("amountSending " + event.target.value)
-            this.setState({ [prop]: Number(event.target.value).toFixed(9)})
-        } else {
-            this.setState({ [prop]: event.target.value })
-        }
+       this.setState({ [prop]: event.target.value })
+        
     }
 
     private hyconfromString(val: string): Long {
