@@ -718,11 +718,11 @@ export class WalletView extends React.Component<IProps, IState> {
     private getDate(epoch: any): string {
         const d = new Date(epoch)
 
-        let month = d.getMonth().toString()
+        let month = (d.getMonth() + 1).toString()
         if (month.length === 1) {
             month = "0" + month
         }
-        const str = d.getDate() + "/" + month + "/" + d.getFullYear() + " " + d.toLocaleTimeString()
+        const str = d.getFullYear() + "/" + month + "/" + d.getDate() + " " + d.toLocaleTimeString()
         return str
     }
     private sendQr() {
