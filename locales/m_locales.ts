@@ -10,6 +10,7 @@ export function getMobileLocale(code: string): IText {
     }
 }
 export interface IText {
+    "grammar": string
     "currency": string
     "currency-symbol": string
 
@@ -42,6 +43,9 @@ export interface IText {
     "btn-submit": string
     "btn-cancel": string
     "btn-yes": string
+    "btn-show-me": string
+    "btn-create-now": string
+    "btn-create-later": string
 
     // PLACEHOLDER / LABEL
     "ph-contact-name": string
@@ -105,9 +109,18 @@ export interface IText {
 
     // WALLET DETIAL
     "detail-no-data": string
-    "detail-title": string
+    "title-wallet": string
     "detail-your-balance": string
     "datail-balance-tooltip": string
+    "show-mnemonic": string
+    "display-mnemonic": string
+    "enter-password": string
+    "your-mnemonic-is": string
+    "erase-recover-wallet": string
+    "wallet-settings": string
+    "set-tx-speed": string
+    "set-tx-speed-help": string
+    "set-tx-speed-disabled-help": string
     "detail-last": string
     "detail-txs": string
     "detail-amount": string
@@ -120,6 +133,9 @@ export interface IText {
     "detail-share-qr": string
     "detail-request-share-qr": string
     "detail-delete-wallet": string
+    "balance-hidden": string
+    "txs-hidden": string
+    "txs-hidden-help": string
 
     // WALLET DETAIL - ACTIVITY
     "activity-title": string
@@ -141,6 +157,7 @@ export interface IText {
     "send-hyc-add-contact": string
     "send-hyc-select-address": string
     "send-hyc-add-contact-hint": string
+    "fee-helper-text": string
 
     // WALLET DETAIL - REQUEST HYCON
     "request-hyc-title": string
@@ -154,6 +171,7 @@ export interface IText {
     "help-notification": string
     "help-comming-soon": string
     "help-copied": string
+    "help-refreshed": string
 
     // ALERT / CONFIRM
     "confirm-add-address-to-contact": string
@@ -166,6 +184,7 @@ export interface IText {
     "alert-password-not-match": string
     "confirm-password-null": string
     "alert-wallet-name-duplicate": string
+    "alert-error-add-wallet": string
     "alert-mnemonic-not-match": string
     "alert-mnemonic-lang-not-match": string
     "alert-wallet-address-duplicate": string
@@ -184,14 +203,30 @@ export interface IText {
     "alert-claim-fail": string
     "alert-invalid-2fa": string
     "alert-cannot-find-account": string
+    "alert-error-show-mnemonic": string
+    "alert-unknown-error-show-mnemonic": string
 
     // SETTINGS
     "settings-title": string
+    "settings-general": string
+    "hide-balance": string
+    "show-balance": string
+    "set-tx-speed-global-help": string
     "settings-about": string
+    "settings-support": string
     "settings-app-version": string
     "settings-copyright": string
     "settings-copyright-hycon": string
-    "settings-inquiry": string
+    "settings-feedback": string
+
+    // FEE SETTINGS
+    "option-fee-faster": string
+    "option-fee-fast": string
+    "option-fee-normal": string
+    "option-fee-manually": string
+    "option-fee-general": string
+    "set-fee-all-wallets": string
+    "set-fee-for": string
 
     // TERMS OF USE
     "terms-of-use": string
@@ -238,13 +273,27 @@ export interface IText {
     "changelog-101-content1": string
     "changelog-101-content2": string
     "changelog-101-content3": string
-    "changelog-102": string
-    "changelog-102-content1": string
-    "changelog-102-content2": string
-    "changelog-102-content3": string
-    "changelog-102-content4": string
-    "changelog-102-content5": string
-    "changelog-102-content6": string
-    "changelog-102-content7": string
-    "changelog-102-content8": string
+    "changelog-111": string
+    "changelog-111-content1": string
+    "changelog-111-content2": string
+    "changelog-111-content3": string
+    "changelog-111-content4": string
+    "changelog-111-content5": string
+    "changelog-111-content6": string
+    "changelog-111-content7": string
+    "changelog-111-content8": string
+    "changelog-112": string
+    "changelog-112-content1": string
+    "changelog-112-content2": string
+    "changelog-112-content3": string
+    "changelog-112-content4": string
+    "changelog-112-content5": string
+    "changelog-112-content6": string
+    "changelog-112-content7": string
+    "changelog-112-content8": string
+    "changelog-112-content9": string
+    "changelog-112-content10": string
+    "changelog-112-content11": string
+    "changelog-112-content12": string
+    "changelog-112-content13": string
 }

@@ -1,5 +1,6 @@
 export default {
     // tslint:disable:object-literal-sort-keys
+    "grammar": "reverse",
     "currency": "KRW",
     "currency-symbol": "\u20A9",
 
@@ -32,6 +33,9 @@ export default {
     "btn-submit": "제출",
     "btn-cancel": "취소",
     "btn-yes": "예",
+    "btn-show-me": "조회하기",
+    "btn-create-now": "지금 지갑 생성하기",
+    "btn-create-later": "나중에 하기",
 
     // PLACEHOLDER / LABEL
     "ph-contact-name": "연락처 이름",
@@ -95,9 +99,18 @@ export default {
 
     // WALLET DETIAL
     "detail-no-data": "현재 지갑에 대한 데이터가 없습니다.",
-    "detail-title": "지갑 ",
+    "title-wallet": "의 지갑",
     "detail-your-balance": "잔액:",
-    "datail-balance-tooltip": "잔액을 탭하여 통화를 변환할 수도 있습니다. 변환된 결과는 근사치 값입니다.",
+    "datail-balance-tooltip": "잔액을 탭하여 통화를 변환할 수도 있습니다. 변환된 결과는 근사치 값입니다. 환경설정에서 잔액을 표시하거나 숨길 수 있습니다.",
+    "show-mnemonic": "니모닉 보기",
+    "display-mnemonic": "니모닉 조회",
+    "enter-password": "지갑 패스워드 입력:",
+    "your-mnemonic-is": "니모닉은 다음과 같습니다:",
+    "erase-recover-wallet": "이전 버전의 하이콘 포켓으로 지갑을 만들었을 수 있습니다. 해당 지갑의 니모닉을 조회하려면 지갑을 지우고 복구하십시오.",
+    "wallet-settings": "지갑 환경설정",
+    "set-tx-speed": "트랜잭션 속도 설정",
+    "set-tx-speed-help": "에서 전송할 트랜잭션 수수료 변경",
+    "set-tx-speed-disabled-help": "이미 전역으로 설정된 상태입니다. '환경설정 > 일반'에서 변경 가능합니다.",
     "detail-last": "지난",
     "detail-txs": "개의 트랜잭션 내역",
     "detail-amount": "금액",
@@ -110,6 +123,9 @@ export default {
     "detail-share-qr": "탭하여 지갑 주소 공유",
     "detail-request-share-qr": "탭하여 HYCON 요청 공유",
     "detail-delete-wallet": "이 지갑을 삭제하시겠습니까?",
+    "balance-hidden": "비공개",
+    "txs-hidden": "트랜잭션 비공개",
+    "txs-hidden-help": "'잔액 숨기기'로 설정된 상태에서는 트랜잭션을 조회할 수 없습니다. '환경설정 > 일반'에서 변경 가능합니다.",
 
     // WALLET DETAIL - ACTIVITY
     "activity-title": "활동 내역 - ",
@@ -131,6 +147,7 @@ export default {
     "send-hyc-add-contact": "새로운 연락처를 추가하려면 '추가'를 탭하십시오.",
     "send-hyc-select-address": "수신인 지갑 주소를 선택하십시오.",
     "send-hyc-add-contact-hint": "추가할 새로운 연락처의 정보를 입력하십시오.",
+    "fee-helper-text": "환경설정에서 기본 수수료를 설정할 수 있습니다.",
 
     // WALLET DETAIL - REQUEST HYCON
     "request-hyc-title": "HYCON 요청",
@@ -144,6 +161,7 @@ export default {
     "help-notification": "알림",
     "help-comming-soon": "준비중 입니다",
     "help-copied": "복사되었습니다",
+    "help-refreshed": "지갑 정보가 새로 고침되었습니다!",
 
     // ALERT / CONFIRM
     "confirm-add-address-to-contact": "이 지갑 주소를 연락처에 추가하시겠습니까?",
@@ -156,6 +174,7 @@ export default {
     "alert-password-not-match": "패스워드가 일치하지 않습니다.",
     "confirm-password-null": "패스워드는 HYCON을 전송할 때 입력하는 값으로 보안을 위해서 설정할 것을 권장합니다. 패스워드를 설정하지 않고 다음 단계를 진행하시겠습니까?",
     "alert-wallet-name-duplicate": "이미 존재하는 지갑 이름입니다. 다른 이름을 입력해 주십시오.",
+    "alert-error-add-wallet": "지갑을 추가하는 중에 에러가 발생했습니다.",
     "alert-mnemonic-not-match": "니모닉이 일치하지 않습니다. 다시 확인해 주십시오.",
     "alert-mnemonic-lang-not-match": "니모닉 언어와 입력한 니모닉을 다시 확인해 주십시오.",
     "alert-wallet-address-duplicate": "이미 생성했거나 복구한 지갑 주소입니다.",
@@ -174,14 +193,30 @@ export default {
     "alert-claim-fail": "클레임 에러",
     "alert-invalid-2fa": "유효하지 않은 2FA 입니다.",
     "alert-cannot-find-account": "사용자의 계정을 찾을 수 없습니다.",
+    "alert-error-show-mnemonic": "니모닉을 가져오는데 실패했습니다. 이전 버전의 하이콘 포켓으로 지갑을 만든 경우, 지갑을 삭제하고 복구한 뒤에 다시 시도해 주십시오.",
+    "alert-unknown-error-show-mnemonic": "패스워드가 유효하지 않거나 니모닉을 가져올 수 없습니다. 계속해서 이 에러가 발생할 경우, '환경설정 > 문의하기'로 문의바랍니다.",
 
     // SETTINGS
     "settings-title": "환경설정",
+    "settings-general": "일반",
+    "hide-balance": "잔액 숨기기",
+    "show-balance": "잔액 보이기",
+    "set-tx-speed-global-help": "모든 지갑에 적용할 트랜잭션 수수료를 설정합니다.",
     "settings-about": "앱 정보",
+    "settings-support": "고객지원",
     "settings-app-version": "앱 버전",
     "settings-copyright": "저작권",
     "settings-copyright-hycon": "2018 HYCON, All Rights Reserved",
-    "settings-inquiry": "문의하기",
+    "settings-feedback": "피드백 보내기",
+
+    // FEE SETTINGS
+    "option-fee-faster": "더 빠르게",
+    "option-fee-fast": "빠르게",
+    "option-fee-normal": "보통",
+    "option-fee-manually": "직접 입력",
+    "option-fee-general": "환경설정에서 설정한 값 사용",
+    "set-fee-all-wallets": "모든 지갑의 기본 수수료 설정",
+    "set-fee-for": "의 기본 수수료 설정",
 
     // TERMS OF USE
     "terms-of-use": "이용 약관",
@@ -196,14 +231,14 @@ export default {
     "terms-of-use-subtitle3": "관할법",
     "terms-of-use-text7": "본 계약과 그 적용 및 해석은 국제사법과는 관계 없이 대한민국의 법에 의해서만 규율됩니다. 귀하는 본 계약 하에 발생하는 모든 분쟁에 대해 대한민국 사법제도에 독점적 관할권이 있다는 점에 동의합니다.",
     "terms-of-use-subtitle4": "분리가능성",
-    "terms-of-use-text8": "법원에서 본 계약의 일부 조항을 무효로 선언할 경우 이로써 계약 전체가 무효화되지는 않으며 본 계약의 다른 모든 부분은 완전한 효력을 유지합니다.",
+    "terms-of-use-text8": "법원에서 본 계약의 일부 조항을 무효로 선언할 경우 이로써 계약 전체가 무효화되지는 않으며 법원에서 본 계약이 무효로 선언된 일부 조항을 제외한 다른 모든 부분은 완전한 효력을 유지합니다.",
     "terms-of-use-subtitle5": "법적 구속력",
-    "terms-of-use-text9": "본 계약의 조건 및 조항은 귀하의 상속인, 승계인, 양도인 및 기타 대리인에게 구속력을 갖습니다. 귀하는 본 소프트웨어 사용과 관련한 모든 위험을 감수합니다. 당사는 본 계약을 수시로 수정할 권리가 있습니다.",
-    "terms-of-use-revision-date": "최종 수정일: 2018년 11월 21일",
+    "terms-of-use-text9": "본 계약의 조건 및 조항은 귀하의 상속인, 승계인, 양도인 및 기타 대리인에게 구속력을 갖습니다. 귀하는 본 소프트웨어 사용과 관련한 모든 위험을 감수합니다. 당사는 본 계약을 수시로 수정할 권리가 있고, 계약이 수정된 경우 수정된 내용을 e-mail, sms 등을 통해 귀하에게 즉시 통지합니다.",
+    "terms-of-use-revision-date": "최종 수정일: 2018년 12월 20일",
 
     // PRIVACY POLICY
     "privacy-policy": "개인정보 보호정책",
-    "privacy-policy-intro": "본 웹사이트(https://hycon.io) 및 관련 서비스 고객으로부터 수신하는 개인 정보의 수집, 사용 및 처리에 대한 정책을 알려드립니다. 당사는 고객의 사이트 사용 현황을 파악하고 트래픽 통계를 수집하기 위해 귀하의 개인 정보를 활용합니다. 본 웹사이트를 사용함으로써 귀하는 본 정책에 따른 개인 정보 수집 및 사용에 동의합니다.",
+    "privacy-policy-intro": "본 웹사이트(https://hycon.io) 및 관련 서비스 고객으로부터 수신하는 개인 정보의 수집, 사용 및 처리에 대한 정책을 알려드립니다. 당사는 \"정보통신망이용촉진 및 정보보호 등에 관한 법률\", \"개인정보 보호법\" 등 관련법령에 따라 고객의 개인정보 보호와 개인정보보호정책을 수립하고 이를 준수합니다. 당사는 고객의 사이트 사용 현황을 파악하고 트래픽 통계를 수집하기 위해 귀하의 개인 정보를 활용합니다.본 웹사이트를 사용함으로써 귀하는 본 정책에 따른 아래와 같은 개인 정보 수집 및 사용에 동의하는 것으로 간주합니다.",
     "privacy-policy-log-data": "로그 데이터",
     "privacy-policy-log-data-content": "여타 웹사이트 운영진과 마찬가지로 당사는 고객이 웹사이트를 방문할 때마다 해당 브라우저에서 전송하는 정보(이하 \"로그 데이터\")를 수집합니다. 컴퓨터의 인터넷 프로토콜(\"IP\") 주소(끝 부분 제외) 및 브라우저 종류, 브라우저 버전, 방문 페이지, 방문 일시, 각 페이지 체류 시간, 기타 통계 자료가 이 로그 데이터에 포함될 수 있습니다",
     "privacy-policy-cookies": "쿠키",
@@ -217,7 +252,7 @@ export default {
     "privacy-policy-ga-content3": "고객은 구글이 제공하는 ‘구글 애널리틱스 차단 브라우저 부가 기능’을 다운로드 받아 구글 애널리틱스의 개인 정보 수집을 차단하여 해당 정보 사용을 방지할 수 있습니다. 이 부가 기능을 추가해도 웹사이트 사용에는 아무런 지장이 없습니다. 다음 링크에서 해당 부가 기능을 다운로드 받을 수 있습니다(https://goo.gl/1sg2fr). 또한 추적 금지 헤더 사용을 존중하며 본 헤더 스위치가 켜져 있는 고객은 추적하지 않습니다.",
     "privacy-policy-changes": "개인정보 보호정책 변경 사항",
     "privacy-policy-changes-content": "본 개인정보 보호정책은 수시로 변경될 수 있습니다. 변경 사항 발생 시 업데이트된 정책이 웹사이트에 공지됩니다. 본 정책을 주기적으로 검토하는 것을 권장합니다.",
-    "privacy-policy-revision-date": "최종 수정일: 2018년 11월 27일",
+    "privacy-policy-revision-date": "최종 수정일: 2018년 12월 20일",
 
     // CHANGELOG
     "changelog": "변경 기록",
@@ -228,13 +263,27 @@ export default {
     "changelog-101-content1": "- 하이콘 포켓으로 앱 타이틀 변경",
     "changelog-101-content2": "- UI/UX 업데이트",
     "changelog-101-content3": "- 간단한 버그 수정",
-    "changelog-102": "버전 1.0.2",
-    "changelog-102-content1": "- 이용약관 업데이트",
-    "changelog-102-content2": "- 개인정보 보호정책 추가",
-    "changelog-102-content3": "- 지갑정보 화면에 통화 변환 기능 추가(HYC -> USD/KRW, BTC, ETH)",
-    "changelog-102-content4": "- 온보딩 화면에 \"모두 선택\" 기능 추가",
-    "changelog-102-content5": "- \"환경설정\" 페이지 추가",
-    "changelog-102-content6": "- 아래로 스와이프하여 지갑정보 새로고침 기능 추가",
-    "changelog-102-content7": "- 간단한 UI 업데이트",
-    "changelog-102-content8": "- 간단한 버그 수정",
+    "changelog-111": "버전 1.1.1",
+    "changelog-111-content1": "- 이용약관 업데이트",
+    "changelog-111-content2": "- 개인정보 보호정책 추가",
+    "changelog-111-content3": "- 지갑정보 화면에 통화 변환 기능 추가(HYC -> USD/KRW, BTC, ETH)",
+    "changelog-111-content4": "- 온보딩 화면에 \"모두 선택\" 기능 추가",
+    "changelog-111-content5": "- \"환경설정\" 페이지 추가",
+    "changelog-111-content6": "- 아래로 스와이프하여 지갑정보 새로고침 기능 추가",
+    "changelog-111-content7": "- 간단한 UI 업데이트",
+    "changelog-111-content8": "- 간단한 버그 수정",
+    "changelog-112": "버전 1.1.2",
+    "changelog-112-content1": "- 이용약관 업데이트",
+    "changelog-112-content2": "- 개인정보 보호정책 업데이트",
+    "changelog-112-content3": "- 앱 버전 통일",
+    "changelog-112-content4": "- 지갑 상세 화면 레이아웃 수정",
+    "changelog-112-content5": "- 지갑 상세 화면 최적화",
+    "changelog-112-content6": "- 니모닉 UI/UX 개선",
+    "changelog-112-content7": "- 지갑 추가 UI 버그 수정",
+    "changelog-112-content8": "- 에러 메세지 업데이트",
+    "changelog-112-content9": "- 환경설정 새로운 기능 업데이트",
+    "changelog-112-content10": "- '기본 수수료 설정' 기능 추가",
+    "changelog-112-content11": "- '잔액 숨기기' 기능 추가",
+    "changelog-112-content12": "- 라이트/다크 테마 추가",
+    "changelog-112-content13": "- 온보딩 업데이트",
 }

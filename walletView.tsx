@@ -1,6 +1,5 @@
 import { createStyles } from "@material-ui/core"
 import AppBar from "@material-ui/core/AppBar"
-import Avatar from "@material-ui/core/Avatar"
 import Button from "@material-ui/core/Button"
 import Card from "@material-ui/core/Card"
 import CardContent from "@material-ui/core/CardContent"
@@ -25,8 +24,8 @@ import List from "@material-ui/core/List"
 import ListItem from "@material-ui/core/ListItem"
 import Menu from "@material-ui/core/Menu"
 import MenuItem from "@material-ui/core/MenuItem"
+import Paper from "@material-ui/core/Paper"
 import Snackbar from "@material-ui/core/Snackbar"
-import SwipeableDrawer from "@material-ui/core/SwipeableDrawer"
 import TextField from "@material-ui/core/TextField"
 import Toolbar from "@material-ui/core/Toolbar"
 import Tooltip from "@material-ui/core/Tooltip"
@@ -41,13 +40,17 @@ import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
 import CopyIcon from "@material-ui/icons/FileCopy"
 import TooltipIcon from "@material-ui/icons/Help"
 import MoreIcon from "@material-ui/icons/MoreVert"
+import Visibility from "@material-ui/icons/Visibility"
+import VisibilityOff from "@material-ui/icons/VisibilityOff"
+import * as blake2b from "blake2b"
 import * as React from "react"
 import * as CopyToClipboard from "react-copy-to-clipboard"
 import { PullToRefresh } from "react-js-pull-to-refresh"
 import { Redirect } from "react-router"
 import { Link } from "react-router-dom"
 import { Textfit } from "react-textfit"
-import { IHyconWallet, IResponseError, IRest, ITxProp } from "../rest"
+import { IHyconWallet, IResponseError, IRest } from "../rest"
+import { FeeSettings } from "./content/feeSettings"
 import { IText } from "./locales/m_locales"
 import { IPrice } from "./mobileClient"
 
@@ -83,7 +86,6 @@ const styles = createStyles({
         borderRight: 1,
         borderRadius: 4,
         boxShadow: "0px 1px 3px 0px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12)",
-        backgroundColor: "white",
         bottom: 0,
         position: "fixed",
         zIndex: 999,
@@ -102,6 +104,9 @@ const styles = createStyles({
         backgroundColor: "#172349",
         marginRight: 5,
     },
+    btn: {
+        color: "#172349",
+    },
 })
 
 // tslint:disable:no-var-requires
@@ -116,47 +121,34 @@ interface IProps {
     price: IPrice
     select: (wallet: any) => void
     name: string
+    paletteType: string
 }
-// tslint:disable-next-line:no-empty-interface
-interface IState {
-    rest: IRest
-    language: IText
-    price: IPrice
-    balance: IPrice
-    name: string
-    wallet: IHyconWallet[]
-    copied: boolean
-    txs: ITxProp[]
-    pendings: ITxProp[]
-    address: string
-    notFound: boolean
-    hycBalance: string
-    pendingAmount: string
-    askDelete: boolean
-    isDeleted: boolean
-    qrDrawer: boolean
-    reqDrawer: boolean
-    pendingSize: number
-    anchorEl: any
-    amountSending: any
-    createQr: boolean
-    refreshed: boolean
-    displayedBalance: string
-    collapse: boolean
-    tooltipOpen: boolean
-}
-export class WalletView extends React.Component<IProps, IState> {
+export class WalletView extends React.Component<IProps, any> {
     public mounted: boolean = false
     private balanceIndex: number = 0
 
     constructor(props: IProps) {
         super(props)
 
+        let wallets = JSON.parse(storage.getItem("/wallets"))
+
+        if (!wallets) {
+            const obj = {}
+            obj[this.props.name] = { miningFee: "" }
+            obj[""] = { miningFee: "" }
+            storage.setItem("/wallets", JSON.stringify(obj))
+            wallets = JSON.parse(storage.getItem("/wallets"))
+        } else if (!wallets[this.props.name]) {
+            wallets[this.props.name] = { miningFee: "" }
+            storage.setItem("/wallets", JSON.stringify(wallets))
+            wallets = JSON.parse(storage.getItem("/wallets"))
+        }
+
         this.state = {
             rest: this.props.rest,
             language: this.props.language,
             price: this.props.price,
-            balance: { fiat: "", eth: "", btc: ""},
+            balance: { fiat: "", eth: "", btc: "" },
             wallet: [{ name: "", address: "" }],
             copied: false,
             txs: [],
@@ -178,10 +170,22 @@ export class WalletView extends React.Component<IProps, IState> {
             displayedBalance: "",
             collapse: storage.getItem("walletViewCollapse") !== null ? (storage.getItem("walletViewCollapse") === "true") : true,
             tooltipOpen: false,
+            dialogMore: false,
+            isExpand: false,
+            globalFee: wallets[""].miningFee === null ? false : wallets[""].miningFee !== "",
+            miningFee: wallets[this.props.name].miningFee === "" ? wallets[""].miningFee : "",
+            showBalance: storage.getItem("showBalance") === null ? true : (storage.getItem("showBalance") === "true"),
+            openMnemonic: false,
+            password: "",
+            showPassword: false,
+            passwordValidated: false,
+            passwordInvalid: false,
+            mnemonic: "",
+            hasMnemonic: false,
         }
     }
 
-    public shouldComponentUpdate(nextProps: IProps, nextState: IState): boolean {
+    public shouldComponentUpdate(nextProps: IProps, nextState: any): boolean {
         return true
     }
 
@@ -193,8 +197,15 @@ export class WalletView extends React.Component<IProps, IState> {
         this.mounted = true
         this.props.rest.getWalletDetail(this.state.name).then((data: IHyconWallet & IResponseError) => {
             if (this.mounted && data.address) {
-                this.setState({ name: this.state.name, address: data.address, hycBalance: data.balance, txs: data.txs, pendings: data.pendings, pendingAmount: data.pendingAmount, pendingSize: data.pendings.length, displayedBalance: data.balance + " HYC" })
-                this.props.select({ name: this.state.name, address: data.address, hycBalance: data.balance, txs: data.txs, pendings: data.pendings, pendingAmount: data.pendingAmount, pendingSize: data.pendings.length, displayedBalance: data.balance + " HYC" })
+                if (data.mnemonic !== "") {
+                    this.setState({ name: this.state.name, address: data.address, hycBalance: data.balance, txs: data.txs, pendings: data.pendings, pendingAmount: data.pendingAmount, pendingSize: data.pendings.length, displayedBalance: data.balance + " HYC", hasMnemonic: true })
+                    this.props.select({ name: this.state.name, address: data.address, hycBalance: data.balance, txs: data.txs, pendings: data.pendings, pendingAmount: data.pendingAmount, pendingSize: data.pendings.length, displayedBalance: data.balance + " HYC", hasMnemonic: true })
+                } else {
+                    this.setState({ name: this.state.name, address: data.address, hycBalance: data.balance, txs: data.txs, pendings: data.pendings, pendingAmount: data.pendingAmount, pendingSize: data.pendings.length, displayedBalance: data.balance + " HYC", hasMnemonic: false })
+                    this.props.select({ name: this.state.name, address: data.address, hycBalance: data.balance, txs: data.txs, pendings: data.pendings, pendingAmount: data.pendingAmount, pendingSize: data.pendings.length, displayedBalance: data.balance + " HYC", hasMnemonic: false })
+
+                }
+
             } else {
                 this.setState({ notFound: true })
             }
@@ -213,6 +224,7 @@ export class WalletView extends React.Component<IProps, IState> {
     public handleClick = () => {
         this.setState({ copied: true })
     }
+
     public handleClose = () => {
         this.setState({ copied: false, refreshed: false, askDelete: false, anchorEl: null })
     }
@@ -233,6 +245,7 @@ export class WalletView extends React.Component<IProps, IState> {
     public toggleMenu = (event: any) => {
         this.setState({ anchorEl: event.currentTarget })
     }
+
     public handleDelete = () => {
         this.state.rest.deleteWallet(this.state.name).then((res) => {
             if (res) {
@@ -245,7 +258,15 @@ export class WalletView extends React.Component<IProps, IState> {
         })
         this.setState({ copied: false, askDelete: false })
     }
+
     public render() {
+        const feeSet = [
+            { label: this.props.language["option-fee-faster"] + " (10 HYC)", value: "10" },
+            { label: this.props.language["option-fee-fast"] + " (1 HYC)", value: "1" },
+            { label: this.props.language["option-fee-normal"] + " (0.000000001 HYC)", value: "0.000000001" },
+            { label: this.props.language["option-fee-manually"], value: "" },
+        ]
+
         if (this.state.notFound) {
             return <div>{this.props.language["detail-no-data"]}</div>
         }
@@ -264,11 +285,10 @@ export class WalletView extends React.Component<IProps, IState> {
                     pullDownThreshold={5}
                     onRefresh={this.onRefresh.bind(this)}
                     triggerHeight={250}
-                    backgroundColor="white"
                 >
-                    { this.state.address === "" ?
+                    {this.state.address === "" ?
                         <Grid item xs={12}><LinearProgress /></Grid>
-                    : ""}
+                        : ""}
                     <Grid item xs={12}>
                         <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0 }} position="static">
                             <Toolbar style={styles.header}>
@@ -276,14 +296,14 @@ export class WalletView extends React.Component<IProps, IState> {
                                     <IconButton><ArrowBackIcon /></IconButton>
                                 </Link>
                                 <Typography variant="button" align="center">
-                                    {this.props.language["detail-title"]}<b>{this.state.name}</b>
+                                    <b>{this.state.name}</b>{this.props.language["title-wallet"]}
                                 </Typography>
                                 <IconButton onClick={this.deleteWallet.bind(this)}><DeleteIcon /></IconButton>
                             </Toolbar>
                         </AppBar>
                         <Divider />
                     </Grid>
-                    <Card elevation={0}>
+                    <Card elevation={0} square style={{ backgroundColor: "transparent" }}>
                         <CardContent>
                             <Card elevation={1}>
                                 <CardContent>
@@ -313,8 +333,14 @@ export class WalletView extends React.Component<IProps, IState> {
                                             </Typography>
                                             <Grid container direction="row" alignItems="center" justify="space-between">
                                                 <Grid item style={{ width: "80%", fontFamily: "Roboto, Helventica, Arial, sans-serif" }}>
-                                                    <Textfit mode="single" forceSingleModeWidth={false} max={32} onClick={this.switchBalance.bind(this, -1)}>
-                                                        {this.state.displayedBalance}
+                                                    <Textfit
+                                                        mode="single"
+                                                        style={{ color: this.props.paletteType === "light" ? "black" : "white" }}
+                                                        forceSingleModeWidth={false}
+                                                        max={32}
+                                                        onClick={this.switchBalance.bind(this, -1)}
+                                                    >
+                                                        {this.state.showBalance ? this.state.displayedBalance : this.props.language["balance-hidden"]}
                                                     </Textfit>
                                                 </Grid>
                                                 <Grid item>
@@ -330,22 +356,22 @@ export class WalletView extends React.Component<IProps, IState> {
                                                             <Chip
                                                                 label="HYC"
                                                                 onClick={this.switchBalance.bind(this, 0)}
-                                                                style={ this.balanceIndex === 0 ? styles.balanceSelectFocus : styles.balanceSelect}
+                                                                style={this.balanceIndex === 0 ? styles.balanceSelectFocus : styles.balanceSelect}
                                                             />
                                                             <Chip
                                                                 label={this.props.language.currency.toUpperCase()}
                                                                 onClick={this.switchBalance.bind(this, 1)}
-                                                                style={ this.balanceIndex === 1 ? styles.balanceSelectFocus : styles.balanceSelect}
-                                                                />
+                                                                style={this.balanceIndex === 1 ? styles.balanceSelectFocus : styles.balanceSelect}
+                                                            />
                                                             <Chip
                                                                 label="Ethereum"
                                                                 onClick={this.switchBalance.bind(this, 2)}
-                                                                style={ this.balanceIndex === 2 ? styles.balanceSelectFocus : styles.balanceSelect}
+                                                                style={this.balanceIndex === 2 ? styles.balanceSelectFocus : styles.balanceSelect}
                                                             />
                                                             <Chip
                                                                 label="Bitcoin"
                                                                 onClick={this.switchBalance.bind(this, 3)}
-                                                                style={ this.balanceIndex === 3 ? styles.balanceSelectFocus : styles.balanceSelect}
+                                                                style={this.balanceIndex === 3 ? styles.balanceSelectFocus : styles.balanceSelect}
                                                             />
                                                         </Grid>
                                                         <Grid item>
@@ -357,9 +383,9 @@ export class WalletView extends React.Component<IProps, IState> {
                                                                     onClose={this.handleTooltipClose}
                                                                     title={this.props.language["datail-balance-tooltip"]}
                                                                     style={{ fontSize: "0.5em" }}
-                                                                    >
+                                                                >
                                                                     <IconButton>
-                                                                        <TooltipIcon onClick={this.handleTooltipOpen}/>
+                                                                        <TooltipIcon onClick={this.handleTooltipOpen} />
                                                                     </IconButton>
                                                                 </Tooltip>
                                                             </ClickAwayListener>
@@ -383,42 +409,39 @@ export class WalletView extends React.Component<IProps, IState> {
                             </Card>
                         </CardContent>
                     </Card>
-                    <Grid container direction="row" alignItems="center" justify="space-around">
-                        <Grid item xs={4} style={{ textAlign: "center" }}>
-                            <Link to="/sendcoins" style={{ textDecoration: "none" }}>
-                                <Button disabled={this.state.address === "" } variant="fab" mini aria-label="Send HYC" style={{ backgroundColor: "#2195a0", color: "white" }}>
-                                    <SendIcon />
+                    <Card elevation={0} square style={{ backgroundColor: "transparent" }}>
+                        <Grid container direction="row" alignItems="center" justify="space-around">
+                            <Grid item xs={4} style={{ textAlign: "center" }}>
+                                <Link to="/sendcoins" style={{ textDecoration: "none" }}>
+                                    <Button mini disabled={this.state.address === ""} variant="fab" aria-label="Send HYC" style={{ backgroundColor: "#2195a0", color: "white" }}>
+                                        <SendIcon />
+                                    </Button>
+                                </Link>
+                                <Typography variant="caption" style={{ paddingTop: 10 }}>
+                                    {this.props.language["btn-send"]}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={4} style={{ textAlign: "center" }}>
+                                <Button mini disabled={this.state.address === ""} variant="fab" onClick={this.toggleReqDrawer(true)} aria-label="Receive HYC" style={{ backgroundColor: "#172349", color: "#fff" }}>
+                                    <RequestIcon />
                                 </Button>
-                            </Link>
-                            <Typography variant="caption" style={{ paddingTop: 10 }}>
-                                {this.props.language["btn-send"]}
-                            </Typography>
+                                <Typography variant="caption" style={{ paddingTop: 10 }}>
+                                    {this.props.language["btn-request"]}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={4} style={{ textAlign: "center" }}>
+                                <Button mini disabled={this.state.address === ""} variant="fab" onClick={this.toggleMenu} aria-label="More" aria-owns={this.state.anchorEl ? "more-menu" : undefined} aria-haspopup="true">
+                                    <MoreIcon color="primary" />
+                                </Button>
+                                <Typography variant="caption" style={{ paddingTop: 10 }}>
+                                    {this.props.language["btn-more"]}
+                                </Typography>
+                            </Grid>
                         </Grid>
-                        <Grid item xs={4} style={{ textAlign: "center" }}>
-                            <Button disabled={this.state.address === "" } variant="fab" onClick={this.toggleReqDrawer(true)} mini aria-label="Receive HYC" style={{ backgroundColor: "#172349", color: "#fff" }}>
-                                <RequestIcon />
-                            </Button>
-                            <Typography variant="caption" style={{ paddingTop: 10 }}>
-                                {this.props.language["btn-request"]}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={4} style={{ textAlign: "center" }}>
-                            <Button variant="fab" mini
-                                aria-label="More"
-                                aria-owns={this.state.anchorEl ? "more-menu" : undefined}
-                                aria-haspopup="true"
-                                onClick={this.toggleMenu}
-                            >
-                                <MoreIcon color="primary" />
-                            </Button>
-                            <Typography variant="caption" style={{ paddingTop: 10 }}>
-                                {this.props.language["btn-more"]}
-                            </Typography>
-                        </Grid>
-                    </Grid>
-                    <Card elevation={0} style={{ paddingBottom: 30 }}>
+                    </Card>
+                    <Card elevation={0} style={{ backgroundColor: "transparent", paddingBottom: 30 }} square>
                         <CardContent>
-                            {this.state.pendings.concat(this.state.txs).length !== 0 ?
+                            {((this.state.pendings.concat(this.state.txs).length !== 0) && this.state.showBalance) ?
                                 <Grid item xs={12}>
                                     <Typography variant="subtitle2" align="left" gutterBottom>
                                         {this.props.language["detail-last"]} {this.state.pendings.concat(this.state.txs).length} {this.props.language["detail-txs"]}
@@ -500,10 +523,10 @@ export class WalletView extends React.Component<IProps, IState> {
                                 </Grid> :
                                 <Grid item xs={12} style={{ flexGrow: 1 }}>
                                     <Typography variant="h6" align="center">
-                                        {this.props.language["detail-guide-make-your-tx"]}
+                                        {this.state.showBalance ? this.props.language["detail-guide-make-your-tx"] : this.props.language["txs-hidden"]}
                                     </Typography>
                                     <Typography variant="caption" align="center">
-                                        {this.props.language["detail-guide-tap-send-or-request"]}
+                                        {this.state.showBalance ? this.props.language["detail-guide-tap-send-or-request"] : this.props.language["txs-hidden-help"]}
                                     </Typography>
                                 </Grid>
                             }
@@ -511,24 +534,9 @@ export class WalletView extends React.Component<IProps, IState> {
                     </Card>
 
                     <Menu id="more-menu" anchorEl={this.state.anchorEl} open={Boolean(this.state.anchorEl)} onClose={this.handleClose}>
-                        <MenuItem onClick={this.handleClose}>{this.props.language["help-comming-soon"]}</MenuItem>
+                        <MenuItem onClick={this.showMnemonic.bind(this)}>{this.props.language["show-mnemonic"]}</MenuItem>
+                        <MenuItem onClick={this.handleDialogMore}>{this.props.language["wallet-settings"]}</MenuItem>
                     </Menu>
-                    <SwipeableDrawer
-                        anchor="bottom"
-                        open={this.state.qrDrawer}
-                        onClose={this.toggleQRDrawer(false)}
-                        onOpen={this.toggleQRDrawer(true)}
-                        swipeAreaWidth={30}
-                        disableDiscovery
-                    >
-                        <Card elevation={0} square>
-                            <CardContent>
-                                <Grid container alignItems="center" alignContent="center">
-                                    {this.state.address !== "" ? <QRCode size={192} style={{ margin: "0 auto" }} value={JSON.stringify({ address: this.state.address })} /> : <CircularProgress />}
-                                </Grid>
-                            </CardContent>
-                        </Card>
-                    </SwipeableDrawer >
 
                     <Drawer
                         anchor="bottom"
@@ -581,10 +589,22 @@ export class WalletView extends React.Component<IProps, IState> {
                                                         <Typography variant="caption">{this.props.language["detail-request-share-qr"]}</Typography>
                                                     </Grid>
                                                 </div>
-                                                :
-                                                ""
+                                                : ""
                                         }
                                     </Grid>
+                                </Grid>
+                            </CardContent>
+                        </Card>
+                    </Drawer>
+                    <Drawer
+                        anchor="bottom"
+                        open={this.state.qrDrawer}
+                        onClose={this.toggleQRDrawer(false)}
+                    >
+                        <Card elevation={0} square>
+                            <CardContent>
+                                <Grid container alignItems="center" alignContent="center">
+                                    {this.state.address !== "" ? <QRCode size={192} style={{ margin: "0 auto" }} value={JSON.stringify({ address: this.state.address })} /> : <CircularProgress />}
                                 </Grid>
                             </CardContent>
                         </Card>
@@ -605,7 +625,7 @@ export class WalletView extends React.Component<IProps, IState> {
                         onClose={this.handleClose}
                         TransitionComponent={Fade}
                         ContentProps={{ "aria-describedby": "message-id" }}
-                        message={<span id="message-id">Wallet information refreshed!</span>}
+                        message={<span id="message-id">{this.props.language["help-refreshed"]}</span>}
                     />
 
                     <Dialog
@@ -636,14 +656,105 @@ export class WalletView extends React.Component<IProps, IState> {
                             </Button>
                         </DialogActions>
                     </Dialog>
+
+                    <Dialog
+                        open={this.state.openMnemonic}
+                        onClose={this.closeMnemonic}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description">
+                        <DialogTitle id="alert-dialog-title">{this.props.language["display-mnemonic"]}</DialogTitle>
+
+                        {this.state.hasMnemonic ?
+                            <DialogContent>
+                                {!this.state.passwordValidated ?
+                                    <DialogContentText id="alert-dialog-description">
+                                        {this.props.language["enter-password"]}
+                                    </DialogContentText> :
+                                    <DialogContentText id="alert-dialog-description">
+                                        {this.props.language["your-mnemonic-is"]}
+                                    </DialogContentText>
+                                }
+                                {!this.state.passwordValidated ?
+                                    <TextField
+                                        fullWidth
+                                        id="adornment-password"
+                                        error={this.state.passwordInvalid}
+                                        label={this.props.language["ph-password"]}
+                                        type={this.state.showPassword ? "text" : "password"}
+                                        value={this.state.password}
+                                        helperText={this.state.passwordInvalid ? this.props.language["alert-invalid-password"] : ""}
+                                        style={{ fontSize: "1em" }}
+                                        onChange={this.handleChangePassword()}
+                                        InputProps={{
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    <IconButton
+                                                        aria-label="Toggle password visibility"
+                                                        onClick={this.handleClickShowPassword}
+                                                        onMouseDown={this.handleMouseDownPassword}>
+                                                        {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            ),
+                                        }} /> :
+                                    <DialogContentText id="alert-dialog-description" style={{ fontFamily: "monospace" }}>
+                                        {this.state.mnemonic}
+                                    </DialogContentText>
+                                }
+                            </DialogContent>
+                            :
+                            <DialogContent>
+                                <DialogContentText id="alert-dialog-description" >
+                                    {this.props.language["erase-recover-wallet"]}
+                                </DialogContentText>
+                            </DialogContent>
+                        }
+                        {this.state.hasMnemonic ?
+                            <DialogActions>
+                                {!this.state.passwordValidated ?
+                                    <Button style={{ color: "#172349" }} onClick={this.closeMnemonic}>
+                                        {this.props.language["btn-close"]}
+                                    </Button> : ""
+                                }
+                                <Button
+                                    style={{ backgroundColor: "#172349", color: "#fff" }}
+                                    onClick={!this.state.passwordValidated ? this.validatePassword.bind(this) : this.closeMnemonic}
+                                >
+                                    {this.state.passwordValidated ? this.props.language["btn-close"] : this.props.language["btn-submit"]}
+                                </Button>
+                            </DialogActions> :
+                            <DialogActions>
+                                <Button style={{ backgroundColor: "#172349", color: "#fff" }} onClick={this.closeMnemonic}>
+                                    {this.props.language["btn-close"]}
+                                </Button>
+                            </DialogActions>
+                        }
+
+                    </Dialog>
+
+                    <Dialog fullScreen open={this.state.dialogMore} onClose={this.handleDialogMore}>
+                        <DialogTitle><Typography variant="h6">{this.state.name + this.props.language["title-wallet"] + " " + this.props.language["settings-title"]}</Typography></DialogTitle>
+                        <DialogContent style={{ padding: 0 }}>
+                            <List>
+                                <FeeSettings language={this.props.language} name={this.props.name}/>
+                                <Divider />
+                            </List>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button style={styles.btn} onClick={this.handleDialogMore}>{this.props.language["btn-close"]}</Button>
+                        </DialogActions>
+                    </Dialog>
+
                 </PullToRefresh>
                 <Grid container spacing={0} style={styles.swipeArea} onClick={this.toggleQRDrawer(true)}>
-                    <Grid item xs={12} justify="center" style={{ textAlign: "center", marginTop: "5px" }}>
-                        <BlurOn />
-                    </Grid>
-                    <Grid item xs={12} justify="center" style={{ textAlign: "center", marginBottom: "10px" }}>
-                        <Typography variant="caption">{this.props.language["detail-share-qr"]}</Typography>
-                    </Grid>
+                    <Paper style={{ width: "100%" }}>
+                        <Grid item xs={12} justify="center" style={{ textAlign: "center", marginTop: "5px" }}>
+                            <BlurOn style={{ color: this.props.paletteType === "light" ? "black" : "white" }}/>
+                        </Grid>
+                        <Grid item xs={12} justify="center" style={{ textAlign: "center", marginBottom: "10px" }}>
+                            <Typography variant="caption">{this.props.language["detail-share-qr"]}</Typography>
+                        </Grid>
+                    </Paper>
                 </Grid>
             </Grid >
         )
@@ -661,6 +772,7 @@ export class WalletView extends React.Component<IProps, IState> {
         this.setState((state) => ({ collapse: !state.collapse }))
         storage.setItem("walletViewCollapse", (!this.state.collapse).toString())
     }
+
     private switchBalance(selectIndex: number) {
         if (selectIndex !== -1) {
             this.balanceIndex = selectIndex
@@ -688,6 +800,7 @@ export class WalletView extends React.Component<IProps, IState> {
         }
         this.setState({ displayedBalance: ret })
     }
+
     private onRefresh() {
         this.setState({ refreshed: true })
         this.componentDidMount()
@@ -697,6 +810,40 @@ export class WalletView extends React.Component<IProps, IState> {
             setTimeout(resolve, 2000)
         })
     }
+
+    private handleDialogMore = () => {
+        this.setState({ anchorEl: false, dialogMore: !this.state.dialogMore })
+    }
+
+    private showMnemonic = () => {
+        this.setState({ openMnemonic: true, anchorEl: false })
+    }
+
+    private closeMnemonic = () => {
+        this.setState({ openMnemonic: false, passwordValidated: false, password: "", mnemonic: "" })
+    }
+
+    private validatePassword = () => {
+        this.props.rest.getDecryptedMnemonic(this.state.name, this.state.password).then((data: string) => {
+            if (data != null && data !== undefined && data !== "unable to decrypt data") {
+                console.log(data)
+                this.setState({ passwordValidated: true, mnemonic: data })
+            } else if (data === "unable to decrypt data") {
+                this.setState({ passwordInvalid: true })
+            } else {
+                alert(this.props.language["alert-error-show-mnemonic"])
+            }
+        }).catch((e) => { alert(this.props.language["alert-unknown-error-show-mnemonic"]) })
+    }
+
+    private handleClickShowPassword = () => {
+        this.setState((state: any) => ({ showPassword: !this.state.showPassword }))
+    }
+
+    private handleMouseDownPassword = (event: any) => {
+        event.preventDefault()
+    }
+
     private testCompleted(index: number): boolean {
         if (this.state.pendingSize === 0) {
             return true
@@ -725,6 +872,7 @@ export class WalletView extends React.Component<IProps, IState> {
         const str = d.getFullYear() + "/" + month + "/" + d.getDate() + " " + d.toLocaleTimeString()
         return str
     }
+
     private sendQr() {
         html2canvas(document.getElementById("sendingCanvas")).then((canvas: any) => {
             window.plugins.socialsharing.shareViaEmail(
@@ -741,6 +889,10 @@ export class WalletView extends React.Component<IProps, IState> {
         })
     }
 
+    private handleChangePassword = () => (event: any) => {
+        this.setState({ password: event.target.value })
+    }
+
     private handleChange = (event: any) => {
         this.setState({ amountSending: event.target.value, createQr: false })
     }
@@ -755,6 +907,7 @@ export class WalletView extends React.Component<IProps, IState> {
             this.setState({ createQr: true })
         }
     }
+
     private deleteWallet() {
         this.setState({ askDelete: true })
     }

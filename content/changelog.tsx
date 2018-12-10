@@ -17,14 +17,31 @@ export class ChangelogContent extends React.Component<IProps, any> {
         return (
             <DialogContent><DialogContentText>
                 <Typography style={{ textAlign: "justify", paddingBottom: 20 }} variant="caption" gutterBottom>
-                    {this.props.language["changelog-102-content1"]}<br />
-                    {this.props.language["changelog-102-content2"]}<br />
-                    {this.props.language["changelog-102-content3"]}<br />
-                    {this.props.language["changelog-102-content4"]}<br />
-                    {this.props.language["changelog-102-content5"]}<br />
-                    {this.props.language["changelog-102-content6"]}<br />
-                    {this.props.language["changelog-102-content7"]}<br />
-                    {this.props.language["changelog-102-content8"]}
+                    {this.props.language["changelog-112-content1"]}<br />
+                    {this.props.language["changelog-112-content2"]}<br />
+                    {this.props.language["changelog-112-content3"]}<br />
+                    {this.props.language["changelog-112-content4"]}<br />
+                    {this.props.language["changelog-112-content5"]}<br />
+                    {this.props.language["changelog-112-content6"]}<br />
+                    {this.props.language["changelog-112-content7"]}<br />
+                    {this.props.language["changelog-112-content8"]}<br />
+                    {this.props.language["changelog-112-content9"]}<br />
+                    {this.props.language["changelog-112-content10"]}<br />
+                    {this.props.language["changelog-112-content11"]}<br />
+                    {this.props.language["changelog-112-content12"]}<br />
+                    {this.props.language["changelog-112-content13"]}<br />
+                </Typography>
+                <br />
+                <Typography variant="overline" style={{ fontWeight: 600 }} gutterBottom>{this.props.language["changelog-111"]}</Typography>
+                <Typography style={{ textAlign: "justify" }} variant="caption" gutterBottom>
+                    {this.props.language["changelog-111-content1"]}<br />
+                    {this.props.language["changelog-111-content2"]}<br />
+                    {this.props.language["changelog-111-content3"]}<br />
+                    {this.props.language["changelog-111-content4"]}<br />
+                    {this.props.language["changelog-111-content5"]}<br />
+                    {this.props.language["changelog-111-content6"]}<br />
+                    {this.props.language["changelog-111-content7"]}<br />
+                    {this.props.language["changelog-111-content8"]}
                 </Typography>
                 <br />
                 <Typography variant="overline" style={{ fontWeight: 600 }} gutterBottom>{this.props.language["changelog-101"]}</Typography>

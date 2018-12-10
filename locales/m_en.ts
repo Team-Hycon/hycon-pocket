@@ -1,5 +1,6 @@
 export default {
     // tslint:disable:object-literal-sort-keys
+    "grammar": "normal",
     "currency": "USD",
     "currency-symbol": "\u0024",
 
@@ -32,6 +33,9 @@ export default {
     "btn-submit": "SUBMIT",
     "btn-cancel": "CANCEL",
     "btn-yes": "YES",
+    "btn-show-me": "SHOW ME",
+    "btn-create-now": "Create a wallet now",
+    "btn-create-later": "I will create a wallet later",
 
     // PLACEHOLDER / LABEL
     "ph-contact-name": "Contact Name",
@@ -95,9 +99,18 @@ export default {
 
     // WALLET DETIAL
     "detail-no-data": "No data found for the current wallet",
-    "detail-title": "Wallet ",
+    "title-wallet": "'s Wallet",
     "detail-your-balance": "Your Balance:",
-    "datail-balance-tooltip": "You can also tap your balance to cycle currencies. Conversions between HYC are only approximations.",
+    "datail-balance-tooltip": "You can also tap your balance to cycle currencies. Conversions between HYC are only approximations. You can show or hide your balance in the app's general settings.",
+    "show-mnemonic": "Show Mnemonic",
+    "display-mnemonic": "Display Mnemonic",
+    "enter-password": "Enter your password:",
+    "your-mnemonic-is": "Your wallet's mnemonic is:",
+    "erase-recover-wallet": "You may have created your wallet with a previous version of the application. Please erase and recover your wallet to save your mnemonic.",
+    "wallet-settings": "Wallet Settings",
+    "set-tx-speed": "Set Transaction Speed",
+    "set-tx-speed-help": "Change transaction fee for ",
+    "set-tx-speed-disabled-help": "Already set to global. You can change it in 'Settings> General'.",
     "detail-last": "Last",
     "detail-txs": "Transactions",
     "detail-amount": "AMOUNT",
@@ -110,6 +123,9 @@ export default {
     "detail-share-qr": "Tap for QR Code to share your wallet address",
     "detail-request-share-qr": "Tap to share QR Code",
     "detail-delete-wallet": "Do you really want to delete your wallet?",
+    "balance-hidden": "Hidden",
+    "txs-hidden": "Transactions Hidden",
+    "txs-hidden-help": "Transactions are not viewable when balances are hidden",
 
     // WALLET DETAIL - ACTIVITY
     "activity-title": "Activity for ",
@@ -131,6 +147,7 @@ export default {
     "send-hyc-add-contact": "Tap 'ADD' to add a new contact.",
     "send-hyc-select-address": "Select a wallet address",
     "send-hyc-add-contact-hint": "Enter the new contact information",
+    "fee-helper-text": "You can edit the fee by changing your default fee settings",
 
     // WALLET DETAIL - REQUEST HYCON
     "request-hyc-title": "Request HYCON",
@@ -144,6 +161,7 @@ export default {
     "help-notification": "Notification",
     "help-comming-soon": "Coming Soon",
     "help-copied": "Copied!",
+    "help-refreshed": "Wallet information refreshed!",
 
     // ALERT / CONFIRM
     "confirm-add-address-to-contact": "Do you want to add this wallet address to your contacts?",
@@ -159,6 +177,7 @@ export default {
     "alert-mnemonic-not-match": "Please check again your mnemonic.",
     "alert-mnemonic-lang-not-match": "Please check again mnemonic language and your mnemonic.",
     "alert-wallet-address-duplicate": "Duplicate wallet address.",
+    "alert-error-add-wallet": "Error when creating wallet.",
     "alert-recover-fail": "We could not retrieve your wallet with the mnemonic and language entered. Please try again.",
     "alert-delete-wallet-fail": "We could not delete your wallet, please try again.",
     "alert-9decimal-amount": "Please enter a valid amount up to 9 decimal places",
@@ -174,14 +193,30 @@ export default {
     "alert-claim-fail": "Claiming error",
     "alert-invalid-2fa": "Invalid 2FA",
     "alert-cannot-find-account": "We could not find your account.",
+    "alert-error-show-mnemonic": "Problem in getting your mnemonic. If you have created your wallet before the update please delete and recover it.",
+    "alert-unknown-error-show-mnemonic": "Invalid password or mnemonic not saved. If you continue to receive this error, please contact us by 'Settings > Send Feedback'.",
 
     // SETTINGS
     "settings-title": "Settings",
+    "settings-general": "General",
+    "hide-balance": "Hide Balance",
+    "show-balance": "Show Balance",
+    "set-tx-speed-global-help": "Sets default fee for all wallets",
     "settings-about": "About",
+    "settings-support": "Support",
     "settings-app-version": "App Version",
     "settings-copyright": "Copyright",
     "settings-copyright-hycon": "2018 HYCON, All Rights Reserved",
-    "settings-inquiry": "Send Feedback",
+    "settings-feedback": "Send Feedback",
+
+    // FEE SETTINGS
+    "option-fee-faster": "FASTER",
+    "option-fee-fast": "FAST",
+    "option-fee-normal": "NORMAL",
+    "option-fee-manually": "MANUAL (no default fee)",
+    "option-fee-general": "USE GENERAL FEE SETTINGS",
+    "set-fee-all-wallets": "Set default fee for all wallets",
+    "set-fee-for": "Set default fee for ",
 
     // TERMS OF USE
     "terms-of-use": "Terms of Use",
@@ -199,7 +234,7 @@ export default {
     "terms-of-use-text8": "In the event any court shall declare any section or sections of this Agreement invalid or void, such declaration shall not invalidate the entire Agreement and all other paragraphs of the Agreement shall remain in full force and effect.",
     "terms-of-use-subtitle5": "BINDING AGREEMENT",
     "terms-of-use-text9": "The terms and provisions of this Agreement are binding upon Your heirs, successors, assigns, and other representatives. You assume any and all risks associated with the use of the Software. We reserve the right to modify this Agreement from time to time.",
-    "terms-of-use-revision-date": "Last Revision: 21 November, 2018",
+    "terms-of-use-revision-date": "Last Revision: 20 December, 2018",
 
     // PRIVACY POLICY
     "privacy-policy": "Privacy Policy",
@@ -217,7 +252,7 @@ export default {
     "privacy-policy-ga-content3": "You can opt-out of having your information collected by Google Analytics by downloading the Google Analytics opt-out browser add-on provided by Google. This will prevent your information being used by Google Analytics. Doing this will not affect your ability to use our Site in any way. You can download the opt-out browser add-on here (https://goo.gl/1sg2fr). We also honor the Do Not Track header and will not track visitors who have Do Not Track switched on.",
     "privacy-policy-changes": "Changes to this Privacy Policy",
     "privacy-policy-changes-content": "We may update this privacy policy from time to time. We will notify you of any changes by posting the new privacy policy on the Site. You are advised to review this privacy policy periodically for any changes.",
-    "privacy-policy-revision-date": "Last Revision: 27 November, 2018",
+    "privacy-policy-revision-date": "Last Revision: 20 December, 2018",
 
     // CHANGELOG
     "changelog": "Changelog",
@@ -228,13 +263,27 @@ export default {
     "changelog-101-content1": "- Renamed to Hycon Pocket",
     "changelog-101-content2": "- UI/UX Updates",
     "changelog-101-content3": "- Minor Bug Fixes",
-    "changelog-102": "Version 1.0.2",
-    "changelog-102-content1": "- Updated Terms of Use Agreement",
-    "changelog-102-content2": "- Added Privacy Policy",
-    "changelog-102-content3": "- Added currency conversion from HYC to fiat, BTC, and ETH",
-    "changelog-102-content4": "- \"Check All\" button added to Onboarding Screen",
-    "changelog-102-content5": "- \"Settings\" page added",
-    "changelog-102-content6": "- Swipe-down to refresh info in Wallet View",
-    "changelog-102-content7": "- Minor UI Updates",
-    "changelog-102-content8": "- Minor Bug Fixes",
+    "changelog-111": "Version 1.1.1",
+    "changelog-111-content1": "- Updated Terms of Use Agreement",
+    "changelog-111-content2": "- Added Privacy Policy",
+    "changelog-111-content3": "- Added currency conversion from HYC to fiat, BTC, and ETH",
+    "changelog-111-content4": "- \"Check All\" button added to Onboarding Screen",
+    "changelog-111-content5": "- \"Settings\" page added",
+    "changelog-111-content6": "- Swipe-down to refresh info in Wallet View",
+    "changelog-111-content7": "- Minor UI Updates",
+    "changelog-111-content8": "- Minor Bug Fixes",
+    "changelog-112": "Version 1.1.2",
+    "changelog-112-content1": "- Updated Terms of Use Agreement",
+    "changelog-112-content2": "- Updated Privacy Policy",
+    "changelog-112-content3": "- Unified App Version Number",
+    "changelog-112-content4": "- Modified Layout of Wallet Activity View",
+    "changelog-112-content5": "- Optimized Wallet Activity",
+    "changelog-112-content6": "- Improved Mnemonic UI/UX",
+    "changelog-112-content7": "- Fixed 'Add Wallet' UI bugs",
+    "changelog-112-content8": "- Updated 'Error Handling' messages",
+    "changelog-112-content9": "- Updated 'Settings' with new functionality",
+    "changelog-112-content10": "- Added 'Set Default Fee' to 'Settings'",
+    "changelog-112-content11": "- Added 'Hide Balance' to 'Settings'",
+    "changelog-112-content12": "- Added Light/Dark Theme options",
+    "changelog-112-content13": "- Updated Onboarding Slides",
 }

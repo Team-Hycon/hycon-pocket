@@ -13,6 +13,7 @@ import Grid from "@material-ui/core/Grid"
 import IconButton from "@material-ui/core/IconButton"
 import Input from "@material-ui/core/Input"
 import InputAdornment from "@material-ui/core/InputAdornment"
+import LinearProgress from "@material-ui/core/LinearProgress"
 import MenuItem from "@material-ui/core/MenuItem"
 import Snackbar from "@material-ui/core/Snackbar"
 import TextField from "@material-ui/core/TextField"
@@ -24,7 +25,6 @@ import TooltipIcon from "@material-ui/icons/Help"
 import Visibility from "@material-ui/icons/Visibility"
 import VisibilityOff from "@material-ui/icons/VisibilityOff"
 import * as React from "react"
-import { Redirect } from "react-router"
 import { Link } from "react-router-dom"
 import { encodingMnemonic } from "../desktop/stringUtil"
 import { IHyconWallet, IResponseError, IRest } from "../rest"
@@ -73,8 +73,12 @@ export class AddWallet extends React.Component<IProps, any> {
             generatedMnemonic: "",
             confirmMnemonic: "",
             reconfirmMnemonic: "",
-            walletViewRedirect: false,
+            redirectOnRecoverSuccess: false,
+            redirectOnCreateSuccess: false,
             mnemonicLanguage: "english",
+            showMnemonicDialog: false,
+            isMnemonic: false,
+            isCreating: false,
         }
     }
 
@@ -83,9 +87,6 @@ export class AddWallet extends React.Component<IProps, any> {
     }
 
     public renderWalletInfo() {
-        if (this.state.isDeleted === true) {
-            return (<Redirect to="/your/redirect/page" />)
-        }
         return (
             <Grid container spacing={16}>
                 <Grid item xs={12} sm={8}>
@@ -208,6 +209,7 @@ export class AddWallet extends React.Component<IProps, any> {
                 <Grid item xs={12}>
                     <Button
                         fullWidth
+                        disabled={this.state.redirectOnCreateSuccess}
                         style={{ backgroundColor: "#172349", color: "#fff" }}
                         variant="contained"
                         size="large"
@@ -218,6 +220,7 @@ export class AddWallet extends React.Component<IProps, any> {
                 <Grid item xs={12}>
                     <Button
                         fullWidth
+                        disabled={this.state.redirectOnCreateSuccess}
                         style={{ backgroundColor: "#172349", color: "#fff" }}
                         variant="contained"
                         size="large"
@@ -225,67 +228,23 @@ export class AddWallet extends React.Component<IProps, any> {
                         {this.props.language["btn-recover-wallet"]}
                     </Button>
                 </Grid>
-            </Grid>
-        )
-    }
 
-    public renderMnemonic() {
-        return (
-            <Grid container spacing={16}>
-                <Grid item xs={12}>
-                    <Typography variant="body1" align="left" gutterBottom>
-                        {this.props.language["create-type-mnemonic"]}
-                    </Typography>
-                </Grid>
-                <Grid item xs={12}>
-                    <TextField
-                        id="generated-mnemonic"
-                        label={this.props.language["ph-generated-mnemonic"]}
-                        variant="outlined"
-                        fullWidth
-                        multiline
-                        disabled
-                        rowsMax="4"
-                        value={this.state.generatedMnemonic}
-                        style={styles.disableTextSelect}
-                    />
-                </Grid>
-                <Grid container direction="row" alignItems="center" alignContent="flex-end">
-                    <Grid item xs />
-                    <Grid item xs>
-                        <Typography align="right" style={{ padding: "0 auto" }}>
-                            {this.props.language["create-what-is-this"]}
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={2}>
-                        <ClickAwayListener onClickAway={this.handleTooltipClose}>
-                            <Tooltip
-                                disableTouchListener
-                                interactive
-                                open={this.state.tooltipOpen}
-                                onClose={this.handleTooltipClose}
-                                placement="bottom-end"
-                                title={this.props.language["create-answer-what-is-this"]}>
-                                <IconButton>
-                                    <TooltipIcon onClick={this.handleTooltipOpen} />
-                                </IconButton>
-                            </Tooltip>
-                        </ClickAwayListener>
-                    </Grid>
-                </Grid>
-                <Grid item xs={12}>
-                    <TextField
-                        id="confirm-mnemonic"
-                        label={this.props.language["ph-enter-mnemonic"]}
-                        variant="outlined"
-                        fullWidth
-                        multiline
-                        rowsMax="4"
-                        value={this.state.confirmMnemonic}
-                        onChange={this.handleChange("confirmMnemonic")}
-                        style={styles.disableTextSelect}
-                    />
-                </Grid>
+                <Snackbar
+                    anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                    open={this.state.redirectOnCreateSuccess}
+                    TransitionComponent={Fade}
+                    ContentProps={{ "aria-describedby": "message-id" }}
+                    message={
+                        <span id="message-id">
+                            {this.props.language["create-success"]} {this.props.language["your-mnemonic-is"]}
+                            <br/><br />
+                            <span style={{ fontFamily: "monospace" }}>{this.state.generatedMnemonic}</span>
+                        </span>
+                    }
+                    action={
+                        <Link to="/" style={{ textDecoration: "none" }}><Button color="primary" size="small">{this.props.language["btn-confirm"]}</Button></Link>
+                    }
+                />
             </Grid>
         )
     }
@@ -319,10 +278,10 @@ export class AddWallet extends React.Component<IProps, any> {
 
                 <Snackbar
                     anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-                    open={this.state.walletViewRedirect}
+                    open={this.state.redirectOnRecoverSuccess}
                     TransitionComponent={Fade}
                     ContentProps={{ "aria-describedby": "message-id" }}
-                    message={<span id="message-id">{this.state.step === 3 ? this.props.language["create-success"] : this.props.language["recover-success"]}</span>}
+                    message={<span id="message-id">{this.props.language["recover-success"]}</span>}
                     action={
                         <Link to="/" style={{ textDecoration: "none" }}><Button color="primary" size="small">{this.props.language["btn-confirm"]}</Button></Link>
                     }
@@ -341,11 +300,6 @@ export class AddWallet extends React.Component<IProps, any> {
                 component = this.renderChoice()
                 break
             case 2:
-                if (this.state.generatedMnemonic === "") {
-                    this.generateMnemonic()
-                } else {
-                    component = this.renderMnemonic()
-                }
                 break
             case 3:
                 component = this.renderConfirm()
@@ -357,6 +311,7 @@ export class AddWallet extends React.Component<IProps, any> {
         return (
             <Grid container justify="space-between" style={styles.root}>
                 <Grid item>
+                    {!this.state.isCreating ? undefined : <LinearProgress />}
                     <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0 }} position="static">
                         <Toolbar style={styles.header}>
                             {
@@ -452,14 +407,14 @@ export class AddWallet extends React.Component<IProps, any> {
                 generatedMnemonic: "",
                 confirmMnemonic: "",
                 reconfirmMnemonic: "",
-                walletViewRedirect: false,
+                redirectOnRecoverSuccess: false,
             })
         } else if (this.state.step === 3) {
             this.setState({
                 step: 2,
                 confirmMnemonic: "",
                 reconfirmMnemonic: "",
-                walletViewRedirect: false,
+                redirectOnRecoverSuccess: false,
             })
         } else if (this.state.step === 4) {
             this.setState({
@@ -467,25 +422,17 @@ export class AddWallet extends React.Component<IProps, any> {
                 generatedMnemonic: "",
                 confirmMnemonic: "",
                 reconfirmMnemonic: "",
-                walletViewRedirect: false,
+                redirectOnRecoverSuccess: false,
             })
         }
     }
 
     private newWallet() {
-        this.setState({ step: 2 })
+        this.generateMnemonic()
     }
 
     private recoverWallet() {
         this.setState({ step: 4 })
-    }
-
-    private handleTooltipClose = () => {
-        this.setState({ tooltipOpen: false })
-    }
-
-    private handleTooltipOpen = () => {
-        this.setState({ tooltipOpen: true })
     }
 
     private hideAlertDialog = () => {
@@ -514,15 +461,24 @@ export class AddWallet extends React.Component<IProps, any> {
     private generateMnemonic() {
         this.props.rest.getMnemonic(this.state.mnemonicLanguage).then((data: string) => {
             this.setState({ generatedMnemonic: data, isMnemonic: true })
+            this.generateWallet(data)
         })
 
     }
 
-    private generateWallet() {
-        this.setState({ isMnemonic: true })
-        const encodedMnemonic = encodingMnemonic(this.state.reconfirmMnemonic)
+    private generateWallet(data: string) {
+        this.setState({ isCreating: true, isMnemonic: true })
+        let encodedMnemonic = ""
+        if (this.state.step === 4) {
+            encodedMnemonic = encodingMnemonic(this.state.reconfirmMnemonic)
+        } else if (data !== "") {
+            encodedMnemonic = encodingMnemonic(data)
+        } else {
+            alert(this.props.language["alert-error-add-wallet"])
+            return
+        }
 
-        if (this.state.step === 3 && (this.state.generatedMnemonic !== encodedMnemonic)) {
+        if (encodedMnemonic === "") {
             alert(this.props.language["alert-mnemonic-not-match"])
             return
         }
@@ -534,10 +490,15 @@ export class AddWallet extends React.Component<IProps, any> {
             passphrase: this.state.passphrase,
             password: this.state.password,
         }).then((res: string) => {
-            this.setState({ walletViewRedirect: true, address: res })
-            this.props.rest.getWalletDetail(this.state.walletName).then((data: IHyconWallet | IResponseError) => {
-                if (data != null && data !== undefined) {
-                    console.log(data)
+
+            this.props.rest.getWalletDetail(this.state.walletName).then((wdata: IHyconWallet | IResponseError) => {
+                if (wdata != null && wdata !== undefined) {
+                    console.log(wdata)
+                    if (this.state.step === 4) {
+                        this.setState({ isCreating: false, redirectOnRecoverSuccess: true, generatedMnemonic: encodedMnemonic })
+                    } else {
+                        this.setState({ isCreating: false, redirectOnCreateSuccess: true, generatedMnemonic: encodedMnemonic })
+                    }
                 }
             })
         }).catch((e: string) => {

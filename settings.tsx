@@ -18,14 +18,16 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack"
 import InfoIcon from "@material-ui/icons/Info"
 import * as React from "react"
 import { Link } from "react-router-dom"
+import { IRest } from "../rest"
 import { ChangelogContent } from "./content/changelog"
+import { FeeSettings } from "./content/feeSettings"
 import { PrivacyPolicyContent } from "./content/privacyPolicy"
 import { TermsOfUseContent } from "./content/termsOfUse"
 import { IText } from "./locales/m_locales"
 
 // tslint:disable:object-literal-sort-keys
 // CHECK VERSION EVERYTIME BEFORE RELEASING
-const VERSION = "1.0.2"
+const VERSION = "1.1.2"
 const storage = window.localStorage
 
 const styles = createStyles({
@@ -40,11 +42,15 @@ const styles = createStyles({
         padding: 0,
     },
     listSubheader: {
-        margin: "auto 0 auto 20px",
+        margin: "auto 16px",
+    },
+    btn: {
+        color: "#172349",
     },
 })
 
 interface ISettingsProps {
+    rest: IRest
     language: IText
 }
 
@@ -52,15 +58,18 @@ export class Settings extends React.Component<ISettingsProps, any> {
     constructor(props: ISettingsProps) {
         super(props)
         this.state = {
+            globalFee: JSON.parse(storage.getItem("globalFee")) ? (JSON.parse(storage.getItem("globalFee")).active === "true") : false,
+            miningFee: JSON.parse(storage.getItem("globalFee")) ? JSON.parse(storage.getItem("globalFee")).value : "1",
             dialogTermsOfUse: false,
             dialogPrivacyPolicy: false,
-            dialogChangelog: false,
+            dialogWhatsNew: false,
+            showBalance: storage.getItem("showBalance") === null ? true : (storage.getItem("showBalance") === "true"),
         }
     }
 
     public render() {
         return (
-            <div style={styles.root}>
+            <Grid style={styles.root}>
                 <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0 }} position="static">
                     <Toolbar style={styles.header}>
                         <Link to="/">
@@ -73,19 +82,51 @@ export class Settings extends React.Component<ISettingsProps, any> {
                     </Toolbar>
                 </AppBar>
                 {this.renderListSettings()}
-            </div>
+            </Grid>
         )
     }
 
     public renderListSettings() {
         return (
-            <List>
-                <Grid item xs={12}>
-                    <ListItem button onClick={this.handleSendInquiry} key="item-inquiry">
-                        <ListItemText primary={this.props.language["settings-inquiry"]}/>
+            <Grid>
+                {/* General Settings */}
+                <List
+                    subheader={
+                        <ListSubheader disableSticky color="primary" component="div" style={styles.header}>
+                            <span style={styles.listSubheader}>{this.props.language["settings-general"]}</span>
+                        </ListSubheader>
+                    }
+                >
+                    <ListItem button onClick={this.showBalance} key="item-show-balance">
+                        <ListItemText primary={this.state.showBalance ? this.props.language["hide-balance"] : this.props.language["show-balance"]}/>
                     </ListItem>
                     <Divider />
+                    <FeeSettings language={this.props.language} name={""} />
+                    <Divider />
+                </List><br />
 
+                {/* Support */}
+                <List
+                    subheader={
+                        <ListSubheader disableSticky color="primary" component="div" style={styles.header}>
+                            <span style={styles.listSubheader}>{this.props.language["settings-support"]}</span>
+                        </ListSubheader>
+                    }
+                >
+                    <ListItem button onClick={this.handleSendFeedback} key="item-inquiry">
+                        <ListItemText primary={this.props.language["settings-feedback"]}/>
+                    </ListItem>
+                    <Divider />
+                </List><br />
+
+                {/* About */}
+                <List
+                    subheader={
+                        <ListSubheader disableSticky color="primary" component="div" style={styles.header}>
+                            <span style={styles.listSubheader}>{this.props.language["settings-about"]}</span>
+                        </ListSubheader>
+                    }
+                >
                     <ListItem button onClick={this.handleDialogTermsOfUse} key="item-terms-of-use">
                         <ListItemText primary={this.props.language["terms-of-use"]} />
                     </ListItem>
@@ -93,7 +134,7 @@ export class Settings extends React.Component<ISettingsProps, any> {
                         <DialogTitle><Typography variant="h6">{this.props.language["terms-of-use"]}</Typography></DialogTitle>
                         <TermsOfUseContent language={this.props.language} />
                         <DialogActions>
-                            <Button style={{ color: "#172349" }} onClick={this.handleDialogTermsOfUse}>{this.props.language["btn-close"]}</Button>
+                            <Button style={styles.btn} onClick={this.handleDialogTermsOfUse}>{this.props.language["btn-close"]}</Button>
                         </DialogActions>
                     </Dialog>
                     <Divider />
@@ -105,7 +146,7 @@ export class Settings extends React.Component<ISettingsProps, any> {
                         <DialogTitle><Typography variant="h6">{this.props.language["privacy-policy"]}</Typography></DialogTitle>
                         <PrivacyPolicyContent language={this.props.language} />
                         <DialogActions>
-                            <Button style={{ color: "#172349" }} onClick={this.handleDialogPrivacyPolicy}>{this.props.language["btn-close"]}</Button>
+                            <Button style={styles.btn} onClick={this.handleDialogPrivacyPolicy}>{this.props.language["btn-close"]}</Button>
                         </DialogActions>
                     </Dialog>
                     <Divider />
@@ -120,11 +161,11 @@ export class Settings extends React.Component<ISettingsProps, any> {
                             </ListItemSecondaryAction> : ""
                         }
                     </ListItem>
-                    <Dialog fullScreen open={this.state.dialogChangelog} onClose={this.handleDialogChangelog} scroll={this.state.scroll}>
+                    <Dialog fullScreen open={this.state.dialogWhatsNew} onClose={this.handleDialogChangelog} scroll={this.state.scroll}>
                         <DialogTitle><Typography variant="h6">{this.props.language["changelog-whats-new"]}</Typography></DialogTitle>
                         <ChangelogContent language={this.props.language} />
                         <DialogActions>
-                            <Button style={{ color: "#172349" }} onClick={this.handleDialogChangelog}>{this.props.language["btn-close"]}</Button>
+                            <Button style={styles.btn} onClick={this.handleDialogChangelog}>{this.props.language["btn-close"]}</Button>
                         </DialogActions>
                     </Dialog>
                     <Divider />
@@ -133,9 +174,14 @@ export class Settings extends React.Component<ISettingsProps, any> {
                         <ListItemText primary={this.props.language["settings-copyright"]} secondary={this.props.language["settings-copyright-hycon"]} />
                     </ListItem>
                     <Divider />
-                </Grid>
-            </List>
+                </List><br />
+            </Grid>
         )
+    }
+
+    private showBalance = () => {
+        this.setState({ showBalance: !this.state.showBalance })
+        storage.setItem("showBalance", (!this.state.showBalance).toString())
     }
 
     private handleDialogTermsOfUse = () => {
@@ -147,14 +193,14 @@ export class Settings extends React.Component<ISettingsProps, any> {
     }
 
     private handleDialogChangelog = () => {
-        this.setState({ dialogChangelog: !this.state.dialogChangelog })
+        this.setState({ dialogWhatsNew: !this.state.dialogWhatsNew })
         storage.setItem("seenChangelog", VERSION)
     }
 
-    private handleSendInquiry = () => {
+    private handleSendFeedback = () => {
         window.plugins.socialsharing.shareViaEmail(
             "\n\n\n\n\n\n" + window.navigator.appVersion ,
-            this.props.language["settings-inquiry"],
+            this.props.language["settings-feedback"],
             ["support@hycon.io"],
             null,
             null,

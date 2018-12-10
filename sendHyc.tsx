@@ -72,11 +72,13 @@ export class SendHyc extends React.Component<IProps, any> {
         return Object.assign(nextProps, {})
     }
     public mounted: boolean = false
-    private MIN_HYC = 0.000000001
 
     constructor(props: IProps) {
         super(props)
         const storage = window.localStorage
+        const wallets = JSON.parse(storage.getItem("/wallets"))
+        const globalFee = wallets[""].miningFee
+        const fee = wallets[this.props.wallet.name].miningFee
         let add = ""
         let am = 0
         if (storage.getItem("hpay") !== "" && storage.getItem("hpay") != null) {
@@ -94,8 +96,10 @@ export class SendHyc extends React.Component<IProps, any> {
             rangeValue: 0,
             totalHYC: this.props.wallet.hycBalance,
             pendingHYC: this.props.wallet.pendingAmount,
-            amountSending: am,
-            amountFee: "",
+            amountSending: am === 0 ? "" : 0,
+            globalFee: globalFee === "",
+            miningFee: fee === "" ? wallets[""].miningFee : fee,
+            canType: (globalFee === "" && fee === "") ? true : false,
             address: "",
             fromAddress: this.props.wallet.address,
             toAddress: add,
@@ -107,6 +111,7 @@ export class SendHyc extends React.Component<IProps, any> {
             isScanning: false,
             isScannedForContact: false,
             tooltipOpen: false,
+            feeTooltipOpen: false,
             error: this.props.language["send-hyc-fail"],
         }
 
@@ -232,14 +237,17 @@ export class SendHyc extends React.Component<IProps, any> {
                                         }}
                                     />
                                 </Grid>
-                                <Grid item xs={12} sm={6}>
+                                <Grid item xs={12} sm={6} onClick={this.handleFeeTooltip}>
                                     <TextField
-                                        value={this.state.amountFee}
+                                        error={this.state.feeTooltipOpen}
+                                        disabled={!this.state.canType}
+                                        value={this.state.miningFee}
+                                        onChange={this.handleChange("miningFee")}
                                         type="number"
                                         label={this.props.language["ph-fee"]}
                                         placeholder="0"
+                                        helperText={this.state.feeTooltipOpen ? this.props.language["fee-helper-text"] : ""}
                                         variant="outlined"
-                                        onChange={this.handleChange("amountFee")}
                                         style={{ width: "100%" }}
                                         inputProps={{ style: { maxWidth: "100%", textAlign: "right" } }}
                                         InputProps={{
@@ -394,19 +402,14 @@ export class SendHyc extends React.Component<IProps, any> {
                         </Button>
                     </div>
                 </Dialog >
-
-                {/* MODAL - HINT : This is be implemented later */}
-                {/* <Modal aria-labelledby="password-hint" open={this.state.alertDialogShown} onClose={this.hideAlertDialog.bind(this)}>
-                    <div style={{ top: "50%", left: "50%", transform: "translate(-50%, -50%)", position: "absolute" }}>
-                        <Paper style={{ padding: 10 }}>
-                            <Typography>
-                                Lorem Ipsum Dolor
-                            </Typography>
-                        </Paper>
-                    </div>
-                </Modal> */}
             </Grid >
         )
+    }
+
+    private handleFeeTooltip = () => {
+        if (!this.state.canType) {
+            this.setState({ feeTooltipOpen: true })
+        }
     }
 
     private handleTooltipClose = () => {
@@ -425,10 +428,6 @@ export class SendHyc extends React.Component<IProps, any> {
 
     private closeDialog() {
         this.setState({ dialogStatus: false })
-    }
-
-    private hideAlertDialog() {
-        this.setState({ alertDialogShown: false })
     }
 
     private openContacts() {
@@ -481,10 +480,6 @@ export class SendHyc extends React.Component<IProps, any> {
     }
 
     private handleSubmit() {
-
-        const sending = Number(this.state.amountSending) + Number(this.state.amountFee)
-        const left = Number(this.state.totalMoney) - Number(sending)
-
         if (this.state.amountSending <= 0) {
             alert(this.props.language["alert-invalid-amount"])
             return
@@ -493,15 +488,15 @@ export class SendHyc extends React.Component<IProps, any> {
             alert(this.props.language["alert-9decimal-amount"])
             return
         }
-        if (this.state.amountFee.match(patternHycon) == null) {
+        if (this.state.miningFee.match(patternHycon) == null) {
             alert(this.props.language["alert-9decimal-fee"])
             return
         }
-        if (this.hyconfromString(this.state.totalHYC).lessThan(this.hyconfromString(this.state.amountSending).add(this.hyconfromString(this.state.amountFee)))) {
+        if (this.hyconfromString(this.state.totalHYC).lessThan(this.hyconfromString(this.state.amountSending).add(this.hyconfromString(this.state.miningFee)))) {
             alert(this.props.language["alert-insufficient-balance"])
             return
         }
-        if (this.hyconfromString(this.state.amountFee).equals(0)) {
+        if (this.hyconfromString(this.state.miningFee).equals(0)) {
             alert(this.props.language["alert-invalid-fee"])
             return
         }
@@ -518,7 +513,7 @@ export class SendHyc extends React.Component<IProps, any> {
             alert(this.props.language["alert-invalid-address"])
             return
         }
-        this.props.rest.sendTx({ name: this.props.wallet.name, password: this.state.password, address: this.state.toAddress, amount: this.state.amountSending, minerFee: this.state.amountFee, nonce: undefined })
+        this.props.rest.sendTx({ name: this.props.wallet.name, password: this.state.password, address: this.state.toAddress, amount: this.state.amountSending, minerFee: this.state.miningFee, nonce: undefined })
             .then((data) => {
                 if (data.res === true) {
                     this.setState({ sendingStatus: data.res, dialogStatus: true })
@@ -539,20 +534,16 @@ export class SendHyc extends React.Component<IProps, any> {
     }
 
     private handleMaxClick(e: any) {
-        if (this.state.totalHYC <= this.MIN_HYC) {
+        if (this.state.totalHYC <= this.state.miningFee) {
             alert(this.props.language["alert-insufficient-balance"])
         } else {
-            const max = Number(this.state.totalHYC) - this.MIN_HYC
-            const minerFee = this.MIN_HYC
-            const displayFee = Math.round(Math.log(10e8 * minerFee) / scale)
-            this.setState({ amountSending: max.toFixed(9), amountFee: minerFee.toFixed(9) })
+            const max = Number(this.state.totalHYC) - Number(this.state.miningFee)
+            this.setState({ amountSending: max.toFixed(9) })
         }
-
     }
 
     private handleChange = (prop: any) => (event: any) => {
-       this.setState({ [prop]: event.target.value })
-        
+        this.setState({ [prop]: event.target.value })
     }
 
     private hyconfromString(val: string): Long {

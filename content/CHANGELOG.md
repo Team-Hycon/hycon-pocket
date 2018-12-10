@@ -1,7 +1,22 @@
 HYCON POCKET CHANGELOG
 ======
 
-## Version 1.0.2
+## Version 1.1.2
+- Unify App Version Number
+- Modify Layout of Wallet Activity View
+- Optimize Wallet Activity
+- Improve Mnemonic UI
+- Fix ‘Add Wallet’ UI bugs
+- Fix Autofocus in textfields
+- Update ‘Error Handling’ Messages
+- Update “Settings” Feature
+- Add ‘Set Default Fee’ to “Settings”
+- Add ‘Hide Balance’ to “Settings”
+- Update ‘Terms and Conditions’ and ‘Privacy Policy’
+- Add ‘Gift Card’ Feature in “More
+
+
+## Version 1.0.2 (1.1.1)
 - Updated Terms of Use Agreement
 - Added Privacy Policy
 - Added currency conversion from HYC to fiat, BTC, and ETH
