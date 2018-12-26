@@ -402,6 +402,39 @@ export class SendHyc extends React.Component<IProps, any> {
                         </Button>
                     </div>
                 </Dialog >
+
+                <Dialog
+                    aria-labelledby="password-popup"
+                    open={this.state.askForPassword}
+                    onClose={this.closeAskForPassword.bind(this)}
+                >
+                    <div style={{ margin: "7px", textAlign: "center" }}>
+
+                        {this.state.wrongPassword ?
+                            <Typography style={{ fontSize: 10, margin: "5px" }}>
+                                Invalid password, please try again to make the transaction
+                            </Typography> :
+                            <Typography style={{ fontSize: 10, margin: "5px" }}>
+                                We need a password to make the transaction
+                            </Typography>
+                        }
+
+                        <Input
+                            fullWidth
+                            id="password"
+                            type="password"
+                            value={this.state.password}
+                            style={{ fontSize: "1em" }}
+                            onChange={this.handleChange("password")}
+                            placeholder={this.props.language["ph-wallet-password"]}
+                        />
+                        <Button
+                            onClick={this.validPassword.bind(this)}
+                            style={{ backgroundColor: "#172349", color: "#fff", width: "100%", marginTop: "20px" }}>
+                            {this.props.language["btn-continue"]}
+                        </Button>
+                    </div>
+                </Dialog >
             </Grid >
         )
     }
@@ -441,6 +474,14 @@ export class SendHyc extends React.Component<IProps, any> {
 
     private closeContacts() {
         this.setState({ dialogContacts: false })
+    }
+
+    private validPassword() {
+        this.handleSubmit()
+    }
+
+    private closeAskForPassword() {
+        this.setState({ askForPassword: false })
     }
 
     private openAddContact() {
@@ -515,11 +556,19 @@ export class SendHyc extends React.Component<IProps, any> {
         }
         this.props.rest.sendTx({ name: this.props.wallet.name, password: this.state.password, address: this.state.toAddress, amount: this.state.amountSending, minerFee: this.state.miningFee, nonce: undefined })
             .then((data) => {
+                console.log(data)
                 if (data.res === true) {
-                    this.setState({ sendingStatus: data.res, dialogStatus: true })
+                    this.setState({ askForPassword: false, wrongPassword: false, sendingStatus: data.res, dialogStatus: true })
                 } else {
                     if (data.case === 1) {
-                        this.setState({ sendingStatus: data.res, dialogStatus: true, error: this.props.language["alert-invalid-password"] })
+                        // this.setState({ sendingStatus: data.res, dialogStatus: true, error: this.props.language["alert-invalid-password"] })
+                        console.log("askforPassword : " + this.state.askForPassword)
+                        if (this.state.askForPassword) {
+                            this.setState({ wrongPassword: true })
+                        } else {
+                            this.setState({ askForPassword: true })
+                        }
+
                     } else if (data.case === 2) {
                         this.setState({ sendingStatus: data.res, dialogStatus: true, error: this.props.language["alert-invalid-address"] })
                     } else if (data.case === 3) {
