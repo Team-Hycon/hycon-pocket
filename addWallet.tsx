@@ -54,6 +54,9 @@ const styles = createStyles({
 interface IProps {
     rest: IRest
     language: IText
+    handleDialog?: () => void
+    handleWalletSelect?: () => void
+    setWallets?: (fromDelete?: boolean) => void
 }
 
 export class AddWallet extends React.Component<IProps, any> {
@@ -86,6 +89,14 @@ export class AddWallet extends React.Component<IProps, any> {
         return true
     }
 
+    public componentDidMount() {
+        document.addEventListener("backbutton", (event) => {
+            event.preventDefault()
+            this.props.handleDialog()
+            window.location.hash = "#/"
+            return
+        }, false)
+    }
     public renderWalletInfo() {
         return (
             <Grid container spacing={16}>
@@ -242,7 +253,7 @@ export class AddWallet extends React.Component<IProps, any> {
                         </span>
                     }
                     action={
-                        <Link to="/" style={{ textDecoration: "none" }}><Button color="primary" size="small">{this.props.language["btn-confirm"]}</Button></Link>
+                        <Button color="primary" size="small" onClick={this.finishAddWallet.bind(this)}>{this.props.language["btn-confirm"]}</Button>
                     }
                 />
             </Grid>
@@ -283,7 +294,7 @@ export class AddWallet extends React.Component<IProps, any> {
                     ContentProps={{ "aria-describedby": "message-id" }}
                     message={<span id="message-id">{this.props.language["recover-success"]}</span>}
                     action={
-                        <Link to="/" style={{ textDecoration: "none" }}><Button color="primary" size="small">{this.props.language["btn-confirm"]}</Button></Link>
+                        <Button color="primary" size="small" onClick={this.finishAddWallet.bind(this)}>{this.props.language["btn-confirm"]}</Button>
                     }
                 />
             </Grid>
@@ -309,16 +320,17 @@ export class AddWallet extends React.Component<IProps, any> {
                 break
         }
         return (
-            <Grid container justify="space-between" style={styles.root}>
-                <Grid item>
+            <Grid justify="space-between" style={styles.root}>
+                <Grid>
                     {!this.state.isCreating ? undefined : <LinearProgress />}
                     <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0 }} position="static">
                         <Toolbar style={styles.header}>
                             {
                                 this.state.step === 0 ?
-                                    <Link to="/">
-                                        <IconButton><ArrowBackIcon /></IconButton>
-                                    </Link> :
+                                    <IconButton onClick={this.finishAddWallet.bind(this)}>
+                                        <ArrowBackIcon />
+                                    </IconButton>
+                                    :
                                     <IconButton onClick={this.decrementStep.bind(this)}><ArrowBackIcon /></IconButton>
                             }
                             <Typography variant="button" align="center">
@@ -329,14 +341,14 @@ export class AddWallet extends React.Component<IProps, any> {
                     </AppBar>
                     <Divider />
                 </Grid>
-                <Grid item alignContent="center">
+                <Grid alignContent="center">
                     <Card elevation={0} square>
                         <CardContent>
                             {component}
                         </CardContent>
                     </Card>
                 </Grid>
-                <Grid item alignContent="center">
+                <Grid alignContent="center">
                     {this.state.step === 1 ?
                         <p></p> :
                         this.state.step < 3 ?
@@ -425,6 +437,12 @@ export class AddWallet extends React.Component<IProps, any> {
                 redirectOnRecoverSuccess: false,
             })
         }
+    }
+
+    private finishAddWallet() {
+        this.props.setWallets()
+        this.props.handleWalletSelect()
+        this.props.handleDialog()
     }
 
     private newWallet() {

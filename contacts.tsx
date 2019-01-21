@@ -48,6 +48,7 @@ const styles = createStyles({
 interface IProps {
     rest: IRest
     language: IText
+    handleDialog: () => void
 }
 
 interface IState {
@@ -86,6 +87,20 @@ export class Contacts extends React.Component<IProps, any> {
 
     public shouldComponentUpdate(nextProps: IProps, nextState: IState): boolean {
         return true
+    }
+
+    public componentDidMount() {
+        document.addEventListener("backbutton", (event) => {
+            event.preventDefault()
+            if (this.state.dialogAddContact || this.state.isScanning) {
+                this.setState({ dialogAddContact: false, isScanning: false })
+                window.location.hash = "#/contacts"
+            } else {
+                this.props.handleDialog()
+                window.location.hash = "#/"
+            }
+            return
+        }, false)
     }
 
     public renderListContacts() {
@@ -166,9 +181,7 @@ export class Contacts extends React.Component<IProps, any> {
             <div style={styles.root}>
                 <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0 }} position="static">
                     <Toolbar style={styles.header}>
-                        <Link to="/">
-                            <IconButton><ArrowBackIcon /></IconButton>
-                        </Link>
+                        <IconButton onClick={this.props.handleDialog}><ArrowBackIcon /></IconButton>
                         <Typography variant="button" align="center">
                             {this.props.language["contacts-title"]}
                         </Typography>
@@ -298,11 +311,13 @@ export class Contacts extends React.Component<IProps, any> {
 
     private openQrScanner() {
         this.setState({ isScanning: true })
+        document.getElementById("body").style.visibility = "hidden"
         document.getElementById("blockexplorer").style.visibility = "hidden"
         window.QRScanner.scan((err, text) => {
             if (err) {
                 console.error(err)
             }
+            document.getElementById("body").style.visibility = "visible"
             document.getElementById("blockexplorer").style.visibility = "visible"
 
             if (text.charAt(0) === "H") {
@@ -323,6 +338,7 @@ export class Contacts extends React.Component<IProps, any> {
         window.QRScanner.destroy()
         this.setState({ isScanning: false })
         document.getElementById("qrCloseButton").style.visibility = "hidden"
+        document.getElementById("body").style.visibility = "visible"
         document.getElementById("blockexplorer").style.visibility = "visible"
     }
 }

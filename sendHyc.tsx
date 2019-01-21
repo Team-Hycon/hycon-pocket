@@ -31,6 +31,7 @@ import CloseIcon from "@material-ui/icons/Close"
 import AddressBookIcon from "@material-ui/icons/Contacts"
 import TooltipIcon from "@material-ui/icons/Help"
 import * as React from "react"
+import { Redirect} from "react-router"
 import { Link } from "react-router-dom"
 import { IRest } from "../rest"
 import { IText } from "./locales/m_locales"
@@ -72,6 +73,7 @@ interface IProps extends WithStyles<typeof styles> {
     rest: IRest
     language: IText
     wallet: any
+    handleDialog: () => void
 }
 
 class SendHyc extends React.Component<IProps, any> {
@@ -103,7 +105,7 @@ class SendHyc extends React.Component<IProps, any> {
             dialogStatus: false,
             alertDialogShown: false,
             rangeValue: 0,
-            totalHYC: this.props.wallet.hycBalance,
+            totalHYC: this.props.wallet.balance,
             pendingHYC: this.props.wallet.pendingAmount,
             amountSending: am === 0 ? "" : 0,
             globalFee: globalFee === "",
@@ -136,6 +138,14 @@ class SendHyc extends React.Component<IProps, any> {
 
     public componentDidMount() {
         this.mounted = true
+
+        document.addEventListener("backbutton", (event) => {
+            event.preventDefault()
+            this.props.handleDialog()
+            window.location.hash = "#/"
+            return
+        }, false)
+
         this.getContacts()
     }
 
@@ -145,143 +155,155 @@ class SendHyc extends React.Component<IProps, any> {
 
     public render() {
         return (
-            <Grid container justify="space-between" className={this.props.classes.root}>
-                <Grid item xs={12}>
-                    <Grid item xs={12}>
-                        <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0 }} position="static">
-                            <Toolbar className={this.props.classes.header}>
-                                <Link to={"/wallet/" + this.props.wallet.name}>
-                                    <IconButton><ArrowBackIcon /></IconButton>
-                                </Link>
-                                <Typography variant="button" align="center">
-                                    {this.props.language["send-hyc-title"]}
-                                </Typography>
-                                <IconButton aria-label="Qr" disabled={!this.state.qrScannerReady} onClick={this.openQrScanner.bind(this)}><QRScannerIcon /></IconButton>
-                            </Toolbar>
-                        </AppBar>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <TextField
-                            fullWidth
-                            id="search-address"
-                            value={this.state.toAddress}
-                            onChange={this.handleChange("toAddress")}
-                            placeholder={this.props.language["ph-wallet-address"]}
-                            margin="normal"
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <IconButton aria-label="Open Contact List" onClick={this.openContacts.bind(this)}>
-                                            <AddressBookIcon />
-                                        </IconButton>
-                                    </InputAdornment>
-                                ),
-                            }}
-                        />
-                    </Grid>
-                    <Grid container direction="row" alignItems="center" alignContent="flex-end">
-                        <Grid item xs>
+            <Grid className={this.props.classes.root}>
+                <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0 }} position="static">
+                    <Toolbar className={this.props.classes.header}>
+                        {/* <Link to={"/wallet/" + this.props.wallet.name}> */}
+                        <IconButton onClick={this.props.handleDialog}>
+                            <ArrowBackIcon />
+                        </IconButton>
+                        {/* </Link> */}
+                        <Typography variant="button" align="center">
+                            {this.props.language["send-hyc-title"]}
+                        </Typography>
+                        <IconButton aria-label="Qr" disabled={!this.state.qrScannerReady} onClick={this.openQrScanner.bind(this)}><QRScannerIcon /></IconButton>
+                    </Toolbar>
+                </AppBar>
+                <Grid justify="space-between" className={this.props.classes.root}>
+                    <Grid style={{ flexGrow: 1 }}>
+                        <Grid item xs={12}>
+                            <TextField
+                                fullWidth
+                                id="search-address"
+                                value={this.state.toAddress}
+                                onChange={this.handleChange("toAddress")}
+                                placeholder={this.props.language["ph-wallet-address"]}
+                                margin="normal"
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <IconButton aria-label="Open Contact List" onClick={this.openContacts.bind(this)}>
+                                                <AddressBookIcon />
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
                         </Grid>
-                        <Grid item xs>
-                            <Typography align="right" style={{ padding: "0 auto" }}>
-                                {this.props.language["send-hyc-how-it-works"]}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={2}>
-                            <ClickAwayListener onClickAway={this.handleTooltipClose}>
-                                <Tooltip
-                                    disableTouchListener
-                                    interactive
-                                    open={this.state.tooltipOpen}
-                                    onClose={this.handleTooltipClose}
-                                    placement="bottom-end"
-                                    title={this.props.language["send-hyc-answer-how-it-works"]}
-                                    style={{ fontSize: 12 }}
-                                >
-                                    <IconButton>
-                                        <TooltipIcon onClick={this.handleTooltipOpen} />
-                                    </IconButton>
-                                </Tooltip>
-                            </ClickAwayListener>
-                        </Grid>
-                    </Grid >
-                    <Card elevation={0}>
-                        <CardContent>
-                            <Grid container spacing={16}>
-                                <Grid item xs={12}>
-                                    <Card elevation={1}>
-                                        <CardContent>
-                                            <Typography variant="h6" align="left" gutterBottom>
-                                                {this.props.language["detail-your-balance"]}
-                                            </Typography>
-                                            <Typography variant="h4" align="left">
-                                                {this.state.totalHYC} HYC
-                                            </Typography>
-                                        </CardContent>
-                                    </Card>
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <TextField
-                                        value={this.state.amountSending}
-                                        type="number"
-                                        label={this.props.language["ph-amount"]}
-                                        placeholder="0"
-                                        variant="outlined"
-                                        onChange={this.handleChange("amountSending")}
-                                        style={{ width: "100%" }}
-                                        inputProps={{ style: { maxWidth: "100%", textAlign: "right" } }}
-                                        InputProps={{
-                                            startAdornment: (
-                                                <InputAdornment position="start">
-                                                    <Button size="small" onClick={this.handleMaxClick.bind(this)}>
-                                                        {this.props.language["btn-max"]}
-                                                    </Button>
-                                                </InputAdornment>
-                                            ),
-                                            endAdornment: (
-                                                <InputAdornment position="end">
-                                                    HYC
-                                                </InputAdornment>
-                                            ),
-                                        }}
-                                    />
-                                </Grid>
-                                <Grid item xs={12} sm={6} onClick={this.handleFeeTooltip}>
-                                    <TextField
-                                        error={this.state.feeTooltipOpen}
-                                        disabled={!this.state.canType}
-                                        value={this.state.miningFee}
-                                        onChange={this.handleChange("miningFee")}
-                                        type="number"
-                                        label={this.props.language["ph-fee"]}
-                                        placeholder="0"
-                                        helperText={this.state.feeTooltipOpen ? this.props.language["fee-helper-text"] : ""}
-                                        variant="outlined"
-                                        style={{ width: "100%" }}
-                                        inputProps={{ style: { maxWidth: "100%", textAlign: "right" } }}
-                                        InputProps={{
-                                            endAdornment: (
-                                                <InputAdornment position="end">
-                                                    HYC
-                                                </InputAdornment>
-                                            ),
-                                        }}
-                                    />
-                                </Grid>
+                        <Grid container direction="row" alignItems="center" alignContent="flex-end">
+                            <Grid item xs>
                             </Grid>
-                        </CardContent>
-                    </Card>
-                </Grid>
-                <Grid item xs={12} style={{ padding: 0 }}>
-                    <Button
-                        onClick={this.handleSubmit.bind(this)}
-                        variant="text"
-                        fullWidth
-                        size="large"
-                        style={{ backgroundColor: "#2195a0", color: "#fff" }}
-                    >
-                        {this.props.language["btn-send"]}
-                    </Button>
+                            <Grid item xs>
+                                <Typography align="right" style={{ padding: "0 auto" }}>
+                                    {this.props.language["send-hyc-how-it-works"]}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={2}>
+                                <ClickAwayListener onClickAway={this.handleTooltipClose}>
+                                    <Tooltip
+                                        disableTouchListener
+                                        interactive
+                                        open={this.state.tooltipOpen}
+                                        onClose={this.handleTooltipClose}
+                                        placement="bottom-end"
+                                        title={this.props.language["send-hyc-answer-how-it-works"]}
+                                        style={{ fontSize: 12 }}
+                                        >
+                                        <IconButton>
+                                            <TooltipIcon onClick={this.handleTooltipOpen}/>
+                                        </IconButton>
+                                    </Tooltip>
+                                </ClickAwayListener>
+                            </Grid>
+                        </Grid >
+                        <Card elevation={0}>
+                            <CardContent>
+                                <Grid container spacing={16}>
+                                    <Grid item xs={12}>
+                                        <Card elevation={1}>
+                                            <CardContent>
+                                                <Typography variant="h6" align="left" gutterBottom>
+                                                    {this.props.language["detail-your-balance"]}
+                                                </Typography>
+                                                <Typography variant="h4" align="left">
+                                                    {this.state.totalHYC} HYC
+                                                </Typography>
+                                            </CardContent>
+                                        </Card>
+                                    </Grid>
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            value={this.state.amountSending}
+                                            type="number"
+                                            label={this.props.language["ph-amount"]}
+                                            placeholder="0"
+                                            variant="outlined"
+                                            onChange={this.handleChange("amountSending")}
+                                            style={{ width: "100%" }}
+                                            inputProps={{ style: { maxWidth: "100%", textAlign: "right" } }}
+                                            InputProps={{
+                                                startAdornment: (
+                                                    <InputAdornment position="start">
+                                                        <Button size="small" onClick={this.handleMaxClick.bind(this)}>
+                                                            {this.props.language["btn-max"]}
+                                                        </Button>
+                                                    </InputAdornment>
+                                                ),
+                                                endAdornment: (
+                                                    <InputAdornment position="end">
+                                                        HYC
+                                                    </InputAdornment>
+                                                ),
+                                            }}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12} sm={6} onClick={this.handleFeeTooltip}>
+                                        <TextField
+                                            error={this.state.feeTooltipOpen}
+                                            disabled={!this.state.canType}
+                                            value={this.state.miningFee}
+                                            onChange={this.handleChange("miningFee")}
+                                            type="number"
+                                            label={this.props.language["ph-fee"]}
+                                            placeholder="0"
+                                            helperText={this.state.feeTooltipOpen ? this.props.language["fee-helper-text"] : ""}
+                                            variant="outlined"
+                                            style={{ width: "100%" }}
+                                            inputProps={{ style: { maxWidth: "100%", textAlign: "right" } }}
+                                            InputProps={{
+                                                endAdornment: (
+                                                    <InputAdornment position="end">
+                                                        HYC
+                                                    </InputAdornment>
+                                                ),
+                                            }}
+                                        />
+                                    </Grid>
+                                </Grid>
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                    <Grid item style={{ padding: 0 }}>
+                        <Grid item xs={12} style={{ paddingBottom: 2 }}>
+                            <TextField fullWidth
+                                id="password"
+                                value={this.state.password}
+                                onChange={this.handleChange("password")}
+                                placeholder={this.props.language["ph-wallet-password"]}
+                                inputProps={{ style: { textAlign: "center" } }}
+                                type="password"
+                            />
+                        </Grid>
+                        <Button
+                            onClick={this.handleSubmit.bind(this)}
+                            variant="text"
+                            fullWidth
+                            size="large"
+                            style={{ backgroundColor: "#2195a0", color: "#fff" }}
+                        >
+                            {this.props.language["btn-send"]}
+                        </Button>
+                    </Grid>
                 </Grid>
                 {this.state.isScanning ?
                     <AppBar id="qrCloseButton" style={{ background: "transparent", boxShadow: "none", top: 12 }} position="absolute">
@@ -313,12 +335,13 @@ class SendHyc extends React.Component<IProps, any> {
                                     <Typography gutterBottom align="center">
                                         {this.props.language["send-hyc-success"]}
                                     </Typography>
-                                    <Link to={"/wallet/" + this.props.wallet.name}>
+                                    {/* <Link to={"/wallet/" + this.props.wallet.name}> */}
                                         <Button
-                                            style={{ backgroundColor: "#172349", color: "#fff", width: "100%", padding: "16px 24px" }}>
+                                            style={{ backgroundColor: "#172349", color: "#fff", width: "100%", padding: "16px 24px" }}
+                                            onClick={this.props.handleDialog}>
                                             {this.props.language["btn-finish"]}
                                         </Button>
-                                    </Link>
+                                    {/* </Link> */}
                                 </Paper>
                                 :
                                 <Paper style={{ padding: 10 }}>
@@ -619,12 +642,14 @@ class SendHyc extends React.Component<IProps, any> {
 
     private openQrScanner() {
         this.setState({ isScanning: true, isScannedForContact: false })
+        document.getElementById("body").style.visibility = "hidden"
         document.getElementById("blockexplorer").style.visibility = "hidden"
         window.QRScanner.scan((err, text) => {
             if (err) {
                 console.error(err)
             }
 
+            document.getElementById("body").style.visibility = "visible"
             document.getElementById("blockexplorer").style.visibility = "visible"
 
             if (text.charAt(0) === "H") {
@@ -642,11 +667,13 @@ class SendHyc extends React.Component<IProps, any> {
 
     private openQrScannerContact() {
         this.setState({ dialogAddContact: false, dialogContacts: false, isScanning: true, isScannedForContact: true })
+        document.getElementById("body").style.visibility = "hidden"
         document.getElementById("blockexplorer").style.visibility = "hidden"
         window.QRScanner.scan((err, text) => {
             if (err) {
                 console.error(err)
             }
+            document.getElementById("body").style.visibility = "visible"
             document.getElementById("blockexplorer").style.visibility = "visible"
 
             if (text.charAt(0) === "H") {
@@ -671,6 +698,7 @@ class SendHyc extends React.Component<IProps, any> {
             this.setState({ isScanning: false })
         }
         document.getElementById("qrCloseButton").style.visibility = "hidden"
+        document.getElementById("body").style.visibility = "visible"
         document.getElementById("blockexplorer").style.visibility = "visible"
     }
 }

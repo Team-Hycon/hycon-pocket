@@ -28,7 +28,7 @@ import Onboarding from "./content/onboarding"
 import { IText } from "./locales/m_locales"
 
 // tslint:disable:no-var-requires
-const logo = require("./img/logo.png")
+// const logo = require("./img/logo.png")
 const storage = window.localStorage
 // tslint:disable:object-literal-sort-keys
 const styles = (theme: Theme) => createStyles({
@@ -150,7 +150,7 @@ class WalletList extends React.Component<IProps, any> {
     public render() {
         return (
             <Grid container className={this.props.classes.root}>
-                <Grid item xs={12}>
+                {/* <Grid item xs={12}>
                     <AppBar position="static" style={{ backgroundColor: "#172349" }}>
                         <Toolbar className={this.props.classes.header}>
                             <img style={{ maxHeight: 28 }} src={logo} />
@@ -175,7 +175,7 @@ class WalletList extends React.Component<IProps, any> {
                                     </TextField>
                                 </span>
                             </div>
-                        </Toolbar>
+                        </Toolbar> */}
 
                         {/* Below is only used for alpha / beta test deployments. */}
                         {/* <Grid item xs={12} style={{ padding: 5, backgroundColor: "red" }}>
@@ -184,8 +184,8 @@ class WalletList extends React.Component<IProps, any> {
                             </Typography>
                         </Grid> */}
 
-                    </AppBar>
-                </Grid>
+                    {/* </AppBar>
+                </Grid> */}
 
                 {/* Onboarding Slides or Wallet List */}
                 {this.state.openOnboarding === true ? this.renderOnboarding() : this.renderList()}

@@ -20,7 +20,6 @@ import { IText } from "./locales/m_locales"
 
 // tslint:disable:no-var-requires
 const gcLogoDark = require("./img/logo-full-dark.png")
-const gcLogoLight = require("./img/logo-full-white.png")
 
 // tslint:disable:object-literal-sort-keys
 const styles = createStyles({
@@ -40,6 +39,7 @@ interface IGiftcardProps {
     rest: IRest
     language: IText
     wallet: IHyconWallet
+    handleDialog: () => void
 }
 
 export class Giftcard extends React.Component<IGiftcardProps, any> {
@@ -56,9 +56,19 @@ export class Giftcard extends React.Component<IGiftcardProps, any> {
         }
     }
 
+    public componentDidMount() {
+        document.addEventListener("backbutton", (event) => {
+            event.preventDefault()
+            this.props.handleDialog()
+            window.location.hash = "#/"
+            return
+        }, false)
+    }
+
     public render() {
         if (this.state.redirect) {
-            return <Redirect to={"/wallet/" + this.props.wallet.name} />
+            this.props.handleDialog()
+            // return <Redirect to={"/wallet/" + this.props.wallet.name} />
         }
 
         let width = window.innerWidth * 0.9
@@ -71,9 +81,9 @@ export class Giftcard extends React.Component<IGiftcardProps, any> {
                     {this.state.pending ? <Grid item xs={12}><LinearProgress /></Grid> : null}
                     <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0 }} position="static">
                         <Toolbar style={styles.header}>
-                            <Link to={"/wallet/" + this.props.wallet.name}>
-                                <IconButton><ArrowBackIcon /></IconButton>
-                            </Link>
+                            {/* <Link to={"/wallet/" + this.props.wallet.name}> */}
+                            <IconButton onClick={this.props.handleDialog}><ArrowBackIcon /></IconButton>
+                            {/* </Link> */}
                                 <Typography variant="button" align="center">
                                     {this.props.language.grammar === "reverse"
                                         ? this.props.wallet.name + this.props.language["title-wallet"] + this.props.language["title-redeem-giftcard"]

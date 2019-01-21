@@ -52,6 +52,7 @@ const styles = (theme: Theme) => createStyles({
 
 interface ISettingsProps extends WithStyles<typeof styles> {
     language: IText
+    handleDialog: () => void
 }
 
 class Settings extends React.Component<ISettingsProps, any> {
@@ -67,14 +68,22 @@ class Settings extends React.Component<ISettingsProps, any> {
         }
     }
 
+    public componentDidMount() {
+        document.addEventListener("backbutton", (event) => {
+            event.preventDefault()
+            this.props.handleDialog()
+            window.location.hash = "#/"
+            return
+        }, false)
+    }
     public render() {
         return (
             <Grid className={this.props.classes.root}>
                 <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0 }} position="static">
                     <Toolbar className={this.props.classes.header}>
-                        <Link to="/">
-                            <IconButton><ArrowBackIcon /></IconButton>
-                        </Link>
+                        <IconButton onClick={this.props.handleDialog}>
+                            <ArrowBackIcon />
+                        </IconButton>
                         <Typography variant="button" align="center">
                             {this.props.language["settings-title"]}
                         </Typography>
