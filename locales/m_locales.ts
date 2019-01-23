@@ -46,6 +46,7 @@ export interface IText {
     "btn-show-me": string
     "btn-create-now": string
     "btn-create-later": string
+    "btn-redeem": string
 
     // PLACEHOLDER / LABEL
     "ph-contact-name": string
@@ -146,6 +147,18 @@ export interface IText {
     "activity-sent": string
     "activity-mining-reward": string
     "activity-miner-address": string
+    "tx-completed": string
+    "tx-pending": string
+    "tx-receive": string
+    "tx-send": string
+    "tx-giftcard": string
+    "redeem-giftcard": string
+
+    // GIFTCARD
+    "title-redeem-giftcard": string
+    "gc-number": string
+    "gc-pin": string
+    "gc-pin-placeholder": string
 
     // WALLET DETAIL - SEND HYCON
     "send-hyc-title": string
@@ -205,6 +218,13 @@ export interface IText {
     "alert-cannot-find-account": string
     "alert-error-show-mnemonic": string
     "alert-unknown-error-show-mnemonic": string
+    "alert-gc-enter-cardnumber": string
+    "alert-gc-enter-16-digit": string
+    "alert-gc-enter-pin": string
+    "alert-gc-internal-server-error": string
+    "alert-gc-redeemed": string
+    "alert-gc-invalid-info": string
+    "alert-gc-already-redeemed": string
 
     // SETTINGS
     "settings-title": string

@@ -42,7 +42,6 @@ import TooltipIcon from "@material-ui/icons/Help"
 import MoreIcon from "@material-ui/icons/MoreVert"
 import Visibility from "@material-ui/icons/Visibility"
 import VisibilityOff from "@material-ui/icons/VisibilityOff"
-import * as blake2b from "blake2b"
 import * as React from "react"
 import * as CopyToClipboard from "react-copy-to-clipboard"
 import { PullToRefresh } from "react-js-pull-to-refresh"
@@ -276,6 +275,9 @@ export class WalletView extends React.Component<IProps, any> {
         if (this.state.isDeleted === true) {
             return (<Redirect to="/" />)
         }
+        if (this.state.redirectGiftcard) {
+            return (<Redirect to="/giftcard" />)
+        }
         return (
             <Grid container style={styles.root}>
                 <PullToRefresh
@@ -397,7 +399,7 @@ export class WalletView extends React.Component<IProps, any> {
                                         {this.state.pendingAmount !== "0" ?
                                             <Grid item xs={12} sm={6}>
                                                 <Typography variant="h6" align="left" gutterBottom>
-                                                    {this.props.language["activity-pending"]}:
+                                                    {this.props.language["tx-pending"]}:
                                                 </Typography>
                                                 <Typography variant="h4" align="left">
                                                     {this.state.pendingAmount} HYC
@@ -456,7 +458,7 @@ export class WalletView extends React.Component<IProps, any> {
                                                                 disableTypography
                                                                 title={
                                                                     <Typography variant="body1" style={{ color: "white" }}>
-                                                                        {this.getTransactionStyle(n.from) + (this.testCompleted(index) ? ` HYC - ${this.props.language["activity-completed"]}` : ` HYC - ${this.props.language["activity-pending"]}`)}
+                                                                        {this.getTransactionStyle(n.from) + (this.testCompleted(index) ? ` HYC - ${this.props.language["tx-completed"]}` : ` HYC - ${this.props.language["tx-pending"]}`)}
                                                                     </Typography>
                                                                 }
                                                                 subheader={
@@ -466,54 +468,86 @@ export class WalletView extends React.Component<IProps, any> {
                                                                 }
                                                                 style={{ padding: "4px 16px", background: "linear-gradient(to right, #2195a0, #172349)" }}
                                                             /> :
-                                                            <CardHeader
-                                                                disableTypography
-                                                                title={
-                                                                    <Typography variant="body1" style={{ color: "white" }}>
-                                                                        {this.getTransactionStyle(n.from) + (this.testCompleted(index) ? ` HYC - ${this.props.language["activity-completed"]}` : ` HYC - ${this.props.language["activity-pending"]}`)}
-                                                                    </Typography>
-                                                                }
-                                                                subheader={
-                                                                    <Typography variant="body2" style={{ color: "white" }}>
-                                                                        {this.testCompleted(index) ? this.getDate(Number(n.receiveTime)) : ""}
-                                                                    </Typography>
-                                                                }
-                                                                style={{ padding: "4px 16px", background: "linear-gradient(to right, #172349, #2195a0)" }}
-                                                            />
+                                                            this.getTransactionStyle(n.from) === "RECEIVE" ?
+                                                                <CardHeader
+                                                                    disableTypography
+                                                                    title={
+                                                                        <Typography variant="body1" style={{ color: "white" }}>
+                                                                            {this.getTransactionStyle(n.from) + (this.testCompleted(index) ? ` HYC - ${this.props.language["tx-completed"]}` : ` HYC - ${this.props.language["tx-pending"]}`)}
+                                                                        </Typography>
+                                                                    }
+                                                                    subheader={
+                                                                        <Typography variant="body2" style={{ color: "white" }}>
+                                                                            {this.testCompleted(index) ? this.getDate(Number(n.receiveTime)) : ""}
+                                                                        </Typography>
+                                                                    }
+                                                                    style={{ padding: "4px 16px", background: "linear-gradient(to right, #172349, #2195a0)" }}
+                                                                /> :
+                                                                <CardHeader
+                                                                    disableTypography
+                                                                    title={
+                                                                        <Typography variant="body1" style={{ color: "white" }}>
+                                                                            {this.getTransactionStyle(n.from)}
+                                                                        </Typography>
+                                                                    }
+                                                                    subheader={
+                                                                        <Typography variant="body2" style={{ color: "white" }}>
+                                                                            {this.testCompleted(index) ? this.getDate(Number(n.receiveTime)) : ""}
+                                                                        </Typography>
+                                                                    }
+                                                                    style={{ padding: "4px 16px", background: "#22759c" }}
+                                                                />
+
                                                         }
                                                         <CardContent>
-                                                            <Grid container>
-                                                                <Grid item xs={12} sm={6} zeroMinWidth>
-                                                                    <Typography noWrap>
-                                                                        <span style={styles.txInfo}>{this.props.language["detail-amount"]}</span>
-                                                                        <b>{"  " + n.amount + " HYC"}</b>
-                                                                    </Typography>
+                                                            {this.getTransactionStyle(n.from) === "GIFTCARD" ?
+                                                                <Grid container>
+                                                                    <Grid item xs={12} sm={6} zeroMinWidth>
+                                                                        <Typography noWrap>
+                                                                            <span style={styles.txInfo}>{this.props.language["detail-amount"]}</span>
+                                                                            <b>{"  " + n.amount + " HYC"}</b>
+                                                                        </Typography>
+                                                                    </Grid>
+                                                                    <Grid item xs={12} zeroMinWidth>
+                                                                        <Typography noWrap>
+                                                                            <span style={styles.txInfo}>{this.props.language["detail-hash"]}</span>
+                                                                            {"  " + n.hash}
+                                                                        </Typography>
+                                                                    </Grid>
+                                                                </Grid> :
+                                                                <Grid container>
+                                                                    <Grid item xs={12} sm={6} zeroMinWidth>
+                                                                        <Typography noWrap>
+                                                                            <span style={styles.txInfo}>{this.props.language["detail-amount"]}</span>
+                                                                            <b>{"  " + n.amount + " HYC"}</b>
+                                                                        </Typography>
+                                                                    </Grid>
+                                                                    <Grid item xs={12} sm={6} zeroMinWidth>
+                                                                        <Typography noWrap>
+                                                                            <span style={styles.txInfo}>{this.props.language["detail-fee"]}</span>
+                                                                            {"  " + n.fee + " HYC"}
+                                                                        </Typography>
+                                                                    </Grid>
+                                                                    <Grid item xs={12} zeroMinWidth>
+                                                                        <Typography noWrap>
+                                                                            <span style={styles.txInfo}>{this.props.language["detail-from"]}</span>
+                                                                            {"  " + n.from}
+                                                                        </Typography>
+                                                                    </Grid>
+                                                                    <Grid item xs={12} zeroMinWidth>
+                                                                        <Typography noWrap>
+                                                                            <span style={styles.txInfo}>{this.props.language["detail-to"]}</span>
+                                                                            {"  " + n.to}
+                                                                        </Typography>
+                                                                    </Grid>
+                                                                    <Grid item xs={12} zeroMinWidth>
+                                                                        <Typography noWrap>
+                                                                            <span style={styles.txInfo}>{this.props.language["detail-hash"]}</span>
+                                                                            {"  " + n.hash}
+                                                                        </Typography>
+                                                                    </Grid>
                                                                 </Grid>
-                                                                <Grid item xs={12} sm={6} zeroMinWidth>
-                                                                    <Typography noWrap>
-                                                                        <span style={styles.txInfo}>{this.props.language["detail-fee"]}</span>
-                                                                        {"  " + n.fee + " HYC"}
-                                                                    </Typography>
-                                                                </Grid>
-                                                                <Grid item xs={12} zeroMinWidth>
-                                                                    <Typography noWrap>
-                                                                        <span style={styles.txInfo}>{this.props.language["detail-from"]}</span>
-                                                                        {"  " + n.from}
-                                                                    </Typography>
-                                                                </Grid>
-                                                                <Grid item xs={12} zeroMinWidth>
-                                                                    <Typography noWrap>
-                                                                        <span style={styles.txInfo}>{this.props.language["detail-to"]}</span>
-                                                                        {"  " + n.to}
-                                                                    </Typography>
-                                                                </Grid>
-                                                                <Grid item xs={12} zeroMinWidth>
-                                                                    <Typography noWrap>
-                                                                        <span style={styles.txInfo}>{this.props.language["detail-hash"]}</span>
-                                                                        {"  " + n.hash}
-                                                                    </Typography>
-                                                                </Grid>
-                                                            </Grid>
+                                                            }
                                                         </CardContent>
                                                     </Card>
                                                 </ListItem>
@@ -535,6 +569,7 @@ export class WalletView extends React.Component<IProps, any> {
 
                     <Menu id="more-menu" anchorEl={this.state.anchorEl} open={Boolean(this.state.anchorEl)} onClose={this.handleClose}>
                         <MenuItem onClick={this.showMnemonic.bind(this)}>{this.props.language["show-mnemonic"]}</MenuItem>
+                        <MenuItem onClick={this.redirectGiftcard}>{this.props.language["redeem-giftcard"]}</MenuItem>
                         <MenuItem onClick={this.handleDialogMore}>{this.props.language["wallet-settings"]}</MenuItem>
                     </Menu>
 
@@ -744,7 +779,6 @@ export class WalletView extends React.Component<IProps, any> {
                             <Button style={styles.btn} onClick={this.handleDialogMore}>{this.props.language["btn-close"]}</Button>
                         </DialogActions>
                     </Dialog>
-
                 </PullToRefresh>
                 <Grid container spacing={0} style={styles.swipeArea} onClick={this.toggleQRDrawer(true)}>
                     <Paper style={{ width: "100%" }}>
@@ -811,6 +845,10 @@ export class WalletView extends React.Component<IProps, any> {
         })
     }
 
+    private redirectGiftcard = () => {
+        this.setState({ redirectGiftcard: true })
+    }
+
     private handleDialogMore = () => {
         this.setState({ anchorEl: false, dialogMore: !this.state.dialogMore })
     }
@@ -856,7 +894,11 @@ export class WalletView extends React.Component<IProps, any> {
 
     private getTransactionStyle(add: string): string {
         if (add !== this.state.address) {
-            return "RECEIVE"
+            if (add === "H2BScrbeWW4JWXUyGEMAApRE8Y3SQHRYg") {
+                return "GIFTCARD"
+            } else {
+                return "RECEIVE"
+            }
         } else {
             return "SEND"
         }
@@ -864,12 +906,14 @@ export class WalletView extends React.Component<IProps, any> {
 
     private getDate(epoch: any): string {
         const d = new Date(epoch)
-
         let month = (d.getMonth() + 1).toString()
+        let day = d.getDate().toString()
         if (month.length === 1) {
             month = "0" + month
+        } else if (day.length === 1) {
+            day = "0" + day
         }
-        const str = d.getFullYear() + "/" + month + "/" + d.getDate() + " " + d.toLocaleTimeString()
+        const str = d.getFullYear() + "/" + month + "/" + day + " " + d.toLocaleTimeString()
         return str
     }
 

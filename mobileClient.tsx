@@ -6,6 +6,7 @@ import { Route, Switch } from "react-router-dom"
 import { IRest } from "../rest"
 import { AddWallet } from "./addWallet"
 import { Contacts } from "./contacts"
+import { Giftcard } from "./giftcard"
 import { getMobileLocale, IText } from "./locales/m_locales"
 import { SendHyc } from "./sendHyc"
 import { Settings } from "./settings"
@@ -120,11 +121,11 @@ export class MobileApp extends React.Component<IProps, IState & IProps> {
                     <Switch>
                         <Route exact path="/" component={() => <WalletList rest={this.state.rest} language={this.language} languageSelect={this.languageSelect} languageChange={this.getLanguage.bind(this)} setPaletteType={this.setPaletteType.bind(this)} />} />
                         <Route exact path="/wallet/:name" component={this.walletDetail} />
-                        {/* <Route exact path="/claim" component={() => <ClaimWallet rest={this.state.rest} language={this.language} wallet={this.state.wallet} />} /> */}
                         <Route exact path="/addwallet" component={() => <AddWallet rest={this.state.rest} language={this.language} />} />
                         <Route exact path="/sendcoins" component={() => <SendHyc rest={this.state.rest} language={this.language} wallet={this.state.wallet} />} />
                         <Route exact path="/contacts" component={() => <Contacts rest={this.state.rest} language={this.language} />} />
-                        <Route exact path="/settings" component={() => <Settings rest={this.state.rest} language={this.language} />} />
+                        <Route exact path="/giftcard" component={() => <Giftcard rest={this.state.rest} language={this.language} wallet={this.state.wallet} />} />
+                        <Route exact path="/settings" component={() => <Settings language={this.language} />} />
                     </Switch>
                 </div>
             </MuiThemeProvider>

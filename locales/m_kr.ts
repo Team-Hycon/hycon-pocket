@@ -36,6 +36,7 @@ export default {
     "btn-show-me": "조회하기",
     "btn-create-now": "지금 지갑 생성하기",
     "btn-create-later": "나중에 하기",
+    "btn-redeem": "등록",
 
     // PLACEHOLDER / LABEL
     "ph-contact-name": "연락처 이름",
@@ -136,6 +137,18 @@ export default {
     "activity-sent": "보냄",
     "activity-mining-reward": "채굴 보상",
     "activity-miner-address": "채굴자 주소",
+    "tx-completed": "완료",
+    "tx-pending": "전송중",
+    "tx-receive": "입금",
+    "tx-send": "출금",
+    "tx-giftcard": "기프트카드",
+    "redeem-giftcard": "기프트카드 등록",
+
+    // GIFTCARD
+    "title-redeem-giftcard": "에 기프트카드 등록",
+    "gc-number": "기프트카드 번호",
+    "gc-pin": "카드 PIN",
+    "gc-pin-placeholder": "카드 뒷면 8자리 PIN",
 
     // WALLET DETAIL - SEND HYCON
     "send-hyc-title": "HYCON 전송",
@@ -195,6 +208,13 @@ export default {
     "alert-cannot-find-account": "사용자의 계정을 찾을 수 없습니다.",
     "alert-error-show-mnemonic": "니모닉을 가져오는데 실패했습니다. 이전 버전의 하이콘 포켓으로 지갑을 만든 경우, 지갑을 삭제하고 복구한 뒤에 다시 시도해 주십시오.",
     "alert-unknown-error-show-mnemonic": "패스워드가 유효하지 않거나 니모닉을 가져올 수 없습니다. 계속해서 이 에러가 발생할 경우, '환경설정 > 문의하기'로 문의바랍니다.",
+    "alert-gc-enter-cardnumber": "카드번호를 입력해 주십시오.",
+    "alert-gc-enter-16-digit": "카드번호 16자리를 입력해 주십시오.",
+    "alert-gc-enter-pin": "PIN을 입력해 주십시오.",
+    "alert-gc-internal-server-error": "서버 문제로 기프트카드를 등록할 수 없습니다. \"환경설정 > 고객지원 > 문의하기\" 메뉴를 이용하여 문의바랍니다.",
+    "alert-gc-redeemed": "기프트카드가 등록되었습니다. 하이콘을 수령하기까지 시간이 소요될 수 있습니다.",
+    "alert-gc-invalid-info": "입력하신 정보의 기프트카드가 조회되지 않습니다. 카드번호와 PIN을 다시 확인해 주십시오.",
+    "alert-gc-already-redeemed": "입력하신 기프트카드는 이미 등록이 완료된 카드입니다.",
 
     // SETTINGS
     "settings-title": "환경설정",

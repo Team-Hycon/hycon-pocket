@@ -36,6 +36,7 @@ export default {
     "btn-show-me": "SHOW ME",
     "btn-create-now": "Create a wallet now",
     "btn-create-later": "I will create a wallet later",
+    "btn-redeem": "Redeem",
 
     // PLACEHOLDER / LABEL
     "ph-contact-name": "Contact Name",
@@ -136,6 +137,18 @@ export default {
     "activity-sent": "sent",
     "activity-mining-reward": "Mining Reward",
     "activity-miner-address": "Miner Address",
+    "tx-completed": "Completed",
+    "tx-pending": "Pending",
+    "tx-receive": "RECEIVE",
+    "tx-send": "SEND",
+    "tx-giftcard": "Giftcard",
+    "redeem-giftcard": "Redeem Giftcard",
+
+    // GIFTCARD
+    "title-redeem-giftcard": "Redeem Giftcard to ",
+    "gc-number": "Giftcard Number",
+    "gc-pin": "Card PIN",
+    "gc-pin-placeholder": "The 8-digit PIN on the back of the card",
 
     // WALLET DETAIL - SEND HYCON
     "send-hyc-title": "Send HYCON",
@@ -195,6 +208,13 @@ export default {
     "alert-cannot-find-account": "We could not find your account.",
     "alert-error-show-mnemonic": "Problem in getting your mnemonic. If you have created your wallet before the update please delete and recover it.",
     "alert-unknown-error-show-mnemonic": "Invalid password or mnemonic not saved. If you continue to receive this error, please contact us by 'Settings > Send Feedback'.",
+    "alert-gc-enter-cardnumber": "Please enter the card number",
+    "alert-gc-enter-16-digit": "Please enter the 16-digit card number",
+    "alert-gc-enter-pin": "Please enter the card PIN",
+    "alert-gc-internal-server-error": "Could not redeem the giftcard due to internal server error. Please contact us using by 'Settings > Send Feedback'.",
+    "alert-gc-redeemed": "Your giftcard is redeemed. It may take time to receive the Hycon.",
+    "alert-gc-invalid-info": "The giftcard information you entered is not displayed. Please check your card number and PIN again.",
+    "alert-gc-already-redeemed": "The giftcard you entered is already redeemed.",
 
     // SETTINGS
     "settings-title": "Settings",

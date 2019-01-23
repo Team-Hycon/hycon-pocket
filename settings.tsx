@@ -18,7 +18,6 @@ import ArrowBackIcon from "@material-ui/icons/ArrowBack"
 import InfoIcon from "@material-ui/icons/Info"
 import * as React from "react"
 import { Link } from "react-router-dom"
-import { IRest } from "../rest"
 import { ChangelogContent } from "./content/changelog"
 import { FeeSettings } from "./content/feeSettings"
 import { PrivacyPolicyContent } from "./content/privacyPolicy"
@@ -50,7 +49,6 @@ const styles = createStyles({
 })
 
 interface ISettingsProps {
-    rest: IRest
     language: IText
 }
 
