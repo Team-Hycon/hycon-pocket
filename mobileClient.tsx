@@ -8,10 +8,10 @@ import { AddWallet } from "./addWallet"
 import { Contacts } from "./contacts"
 import { Giftcard } from "./giftcard"
 import { getMobileLocale, IText } from "./locales/m_locales"
-import { SendHyc } from "./sendHyc"
-import { Settings } from "./settings"
+import SendHyc from "./sendHyc"
+import Settings from "./settings"
 import WalletList from "./walletList"
-import { WalletView } from "./walletView"
+import WalletView from "./walletView"
 // tslint:disable:no-var-requires
 const storage = window.localStorage
 

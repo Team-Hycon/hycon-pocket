@@ -12,6 +12,8 @@ import ListItem from "@material-ui/core/ListItem"
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction"
 import ListItemText from "@material-ui/core/ListItemText"
 import ListSubheader from "@material-ui/core/ListSubheader"
+import { Theme } from "@material-ui/core/styles/createMuiTheme"
+import withStyles, { WithStyles } from "@material-ui/core/styles/withStyles"
 import Toolbar from "@material-ui/core/Toolbar"
 import Typography from "@material-ui/core/Typography"
 import ArrowBackIcon from "@material-ui/icons/ArrowBack"
@@ -29,7 +31,7 @@ import { IText } from "./locales/m_locales"
 const VERSION = "1.1.2"
 const storage = window.localStorage
 
-const styles = createStyles({
+const styles = (theme: Theme) => createStyles({
     root: {
         flex: 1,
         display: "flex",
@@ -44,15 +46,15 @@ const styles = createStyles({
         margin: "auto 16px",
     },
     btn: {
-        color: "#172349",
+        color: theme.palette.type === "dark" ? "white" : "#172349",
     },
 })
 
-interface ISettingsProps {
+interface ISettingsProps extends WithStyles<typeof styles> {
     language: IText
 }
 
-export class Settings extends React.Component<ISettingsProps, any> {
+class Settings extends React.Component<ISettingsProps, any> {
     constructor(props: ISettingsProps) {
         super(props)
         this.state = {
@@ -67,9 +69,9 @@ export class Settings extends React.Component<ISettingsProps, any> {
 
     public render() {
         return (
-            <Grid style={styles.root}>
+            <Grid className={this.props.classes.root}>
                 <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0 }} position="static">
-                    <Toolbar style={styles.header}>
+                    <Toolbar className={this.props.classes.header}>
                         <Link to="/">
                             <IconButton><ArrowBackIcon /></IconButton>
                         </Link>
@@ -90,8 +92,8 @@ export class Settings extends React.Component<ISettingsProps, any> {
                 {/* General Settings */}
                 <List
                     subheader={
-                        <ListSubheader disableSticky color="primary" component="div" style={styles.header}>
-                            <span style={styles.listSubheader}>{this.props.language["settings-general"]}</span>
+                        <ListSubheader disableSticky color="primary" component="div" className={this.props.classes.header}>
+                            <span className={this.props.classes.listSubheader}>{this.props.language["settings-general"]}</span>
                         </ListSubheader>
                     }
                 >
@@ -106,8 +108,8 @@ export class Settings extends React.Component<ISettingsProps, any> {
                 {/* Support */}
                 <List
                     subheader={
-                        <ListSubheader disableSticky color="primary" component="div" style={styles.header}>
-                            <span style={styles.listSubheader}>{this.props.language["settings-support"]}</span>
+                        <ListSubheader disableSticky color="primary" component="div" className={this.props.classes.header}>
+                            <span className={this.props.classes.listSubheader}>{this.props.language["settings-support"]}</span>
                         </ListSubheader>
                     }
                 >
@@ -120,8 +122,8 @@ export class Settings extends React.Component<ISettingsProps, any> {
                 {/* About */}
                 <List
                     subheader={
-                        <ListSubheader disableSticky color="primary" component="div" style={styles.header}>
-                            <span style={styles.listSubheader}>{this.props.language["settings-about"]}</span>
+                        <ListSubheader disableSticky color="primary" component="div" className={this.props.classes.header}>
+                            <span className={this.props.classes.listSubheader}>{this.props.language["settings-about"]}</span>
                         </ListSubheader>
                     }
                 >
@@ -132,7 +134,7 @@ export class Settings extends React.Component<ISettingsProps, any> {
                         <DialogTitle><Typography variant="h6">{this.props.language["terms-of-use"]}</Typography></DialogTitle>
                         <TermsOfUseContent language={this.props.language} />
                         <DialogActions>
-                            <Button style={styles.btn} onClick={this.handleDialogTermsOfUse}>{this.props.language["btn-close"]}</Button>
+                            <Button className={this.props.classes.btn} onClick={this.handleDialogTermsOfUse}>{this.props.language["btn-close"]}</Button>
                         </DialogActions>
                     </Dialog>
                     <Divider />
@@ -144,7 +146,7 @@ export class Settings extends React.Component<ISettingsProps, any> {
                         <DialogTitle><Typography variant="h6">{this.props.language["privacy-policy"]}</Typography></DialogTitle>
                         <PrivacyPolicyContent language={this.props.language} />
                         <DialogActions>
-                            <Button style={styles.btn} onClick={this.handleDialogPrivacyPolicy}>{this.props.language["btn-close"]}</Button>
+                            <Button className={this.props.classes.btn} onClick={this.handleDialogPrivacyPolicy}>{this.props.language["btn-close"]}</Button>
                         </DialogActions>
                     </Dialog>
                     <Divider />
@@ -163,7 +165,7 @@ export class Settings extends React.Component<ISettingsProps, any> {
                         <DialogTitle><Typography variant="h6">{this.props.language["changelog-whats-new"]}</Typography></DialogTitle>
                         <ChangelogContent language={this.props.language} />
                         <DialogActions>
-                            <Button style={styles.btn} onClick={this.handleDialogChangelog}>{this.props.language["btn-close"]}</Button>
+                            <Button className={this.props.classes.btn} onClick={this.handleDialogChangelog}>{this.props.language["btn-close"]}</Button>
                         </DialogActions>
                     </Dialog>
                     <Divider />
@@ -208,3 +210,5 @@ export class Settings extends React.Component<ISettingsProps, any> {
         )
     }
 }
+
+export default withStyles(styles)(Settings)

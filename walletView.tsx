@@ -26,6 +26,8 @@ import Menu from "@material-ui/core/Menu"
 import MenuItem from "@material-ui/core/MenuItem"
 import Paper from "@material-ui/core/Paper"
 import Snackbar from "@material-ui/core/Snackbar"
+import { Theme } from "@material-ui/core/styles/createMuiTheme"
+import withStyles, { WithStyles } from "@material-ui/core/styles/withStyles"
 import TextField from "@material-ui/core/TextField"
 import Toolbar from "@material-ui/core/Toolbar"
 import Tooltip from "@material-ui/core/Tooltip"
@@ -54,7 +56,7 @@ import { IText } from "./locales/m_locales"
 import { IPrice } from "./mobileClient"
 
 // tslint:disable:object-literal-sort-keys
-const styles = createStyles({
+const styles = (theme: Theme) => createStyles({
     root: {
         flex: 1,
         display: "flex",
@@ -104,7 +106,10 @@ const styles = createStyles({
         marginRight: 5,
     },
     btn: {
-        color: "#172349",
+        color: theme.palette.type === "dark" ? "white" : "#172349",
+    },
+    dialogPaper: {
+        minHeight: 200,
     },
 })
 
@@ -114,7 +119,7 @@ const html2canvas = require("html2canvas")
 const pattern1 = /(^[0-9]*)([.]{0,1}[0-9]{0,9})$/
 const storage = window.localStorage
 
-interface IProps {
+interface IProps extends WithStyles<typeof styles> {
     rest: IRest
     language: IText
     price: IPrice
@@ -122,7 +127,7 @@ interface IProps {
     name: string
     paletteType: string
 }
-export class WalletView extends React.Component<IProps, any> {
+class WalletView extends React.Component<IProps, any> {
     public mounted: boolean = false
     private balanceIndex: number = 0
 
@@ -279,7 +284,7 @@ export class WalletView extends React.Component<IProps, any> {
             return (<Redirect to="/giftcard" />)
         }
         return (
-            <Grid container style={styles.root}>
+            <Grid container className={this.props.classes.root}>
                 <PullToRefresh
                     pullDownContent={<span />}
                     releaseContent={<span />}
@@ -293,7 +298,7 @@ export class WalletView extends React.Component<IProps, any> {
                         : ""}
                     <Grid item xs={12}>
                         <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0 }} position="static">
-                            <Toolbar style={styles.header}>
+                            <Toolbar className={this.props.classes.header}>
                                 <Link to="/">
                                     <IconButton><ArrowBackIcon /></IconButton>
                                 </Link>
@@ -358,22 +363,22 @@ export class WalletView extends React.Component<IProps, any> {
                                                             <Chip
                                                                 label="HYC"
                                                                 onClick={this.switchBalance.bind(this, 0)}
-                                                                style={this.balanceIndex === 0 ? styles.balanceSelectFocus : styles.balanceSelect}
+                                                                className={this.balanceIndex === 0 ? this.props.classes.balanceSelectFocus : this.props.classes.balanceSelect}
                                                             />
                                                             <Chip
                                                                 label={this.props.language.currency.toUpperCase()}
                                                                 onClick={this.switchBalance.bind(this, 1)}
-                                                                style={this.balanceIndex === 1 ? styles.balanceSelectFocus : styles.balanceSelect}
+                                                                className={this.balanceIndex === 1 ? this.props.classes.balanceSelectFocus : this.props.classes.balanceSelect}
                                                             />
                                                             <Chip
                                                                 label="Ethereum"
                                                                 onClick={this.switchBalance.bind(this, 2)}
-                                                                style={this.balanceIndex === 2 ? styles.balanceSelectFocus : styles.balanceSelect}
+                                                                className={this.balanceIndex === 2 ? this.props.classes.balanceSelectFocus : this.props.classes.balanceSelect}
                                                             />
                                                             <Chip
                                                                 label="Bitcoin"
                                                                 onClick={this.switchBalance.bind(this, 3)}
-                                                                style={this.balanceIndex === 3 ? styles.balanceSelectFocus : styles.balanceSelect}
+                                                                className={this.balanceIndex === 3 ? this.props.classes.balanceSelectFocus : this.props.classes.balanceSelect}
                                                             />
                                                         </Grid>
                                                         <Grid item>
@@ -504,13 +509,13 @@ export class WalletView extends React.Component<IProps, any> {
                                                                 <Grid container>
                                                                     <Grid item xs={12} sm={6} zeroMinWidth>
                                                                         <Typography noWrap>
-                                                                            <span style={styles.txInfo}>{this.props.language["detail-amount"]}</span>
+                                                                            <span className={this.props.classes.txInfo}>{this.props.language["detail-amount"]}</span>
                                                                             <b>{"  " + n.amount + " HYC"}</b>
                                                                         </Typography>
                                                                     </Grid>
                                                                     <Grid item xs={12} zeroMinWidth>
                                                                         <Typography noWrap>
-                                                                            <span style={styles.txInfo}>{this.props.language["detail-hash"]}</span>
+                                                                            <span className={this.props.classes.txInfo}>{this.props.language["detail-hash"]}</span>
                                                                             {"  " + n.hash}
                                                                         </Typography>
                                                                     </Grid>
@@ -518,31 +523,31 @@ export class WalletView extends React.Component<IProps, any> {
                                                                 <Grid container>
                                                                     <Grid item xs={12} sm={6} zeroMinWidth>
                                                                         <Typography noWrap>
-                                                                            <span style={styles.txInfo}>{this.props.language["detail-amount"]}</span>
+                                                                            <span className={this.props.classes.txInfo}>{this.props.language["detail-amount"]}</span>
                                                                             <b>{"  " + n.amount + " HYC"}</b>
                                                                         </Typography>
                                                                     </Grid>
                                                                     <Grid item xs={12} sm={6} zeroMinWidth>
                                                                         <Typography noWrap>
-                                                                            <span style={styles.txInfo}>{this.props.language["detail-fee"]}</span>
+                                                                            <span className={this.props.classes.txInfo}>{this.props.language["detail-fee"]}</span>
                                                                             {"  " + n.fee + " HYC"}
                                                                         </Typography>
                                                                     </Grid>
                                                                     <Grid item xs={12} zeroMinWidth>
                                                                         <Typography noWrap>
-                                                                            <span style={styles.txInfo}>{this.props.language["detail-from"]}</span>
+                                                                            <span className={this.props.classes.txInfo}>{this.props.language["detail-from"]}</span>
                                                                             {"  " + n.from}
                                                                         </Typography>
                                                                     </Grid>
                                                                     <Grid item xs={12} zeroMinWidth>
                                                                         <Typography noWrap>
-                                                                            <span style={styles.txInfo}>{this.props.language["detail-to"]}</span>
+                                                                            <span className={this.props.classes.txInfo}>{this.props.language["detail-to"]}</span>
                                                                             {"  " + n.to}
                                                                         </Typography>
                                                                     </Grid>
                                                                     <Grid item xs={12} zeroMinWidth>
                                                                         <Typography noWrap>
-                                                                            <span style={styles.txInfo}>{this.props.language["detail-hash"]}</span>
+                                                                            <span className={this.props.classes.txInfo}>{this.props.language["detail-hash"]}</span>
                                                                             {"  " + n.hash}
                                                                         </Typography>
                                                                     </Grid>
@@ -696,7 +701,9 @@ export class WalletView extends React.Component<IProps, any> {
                         open={this.state.openMnemonic}
                         onClose={this.closeMnemonic}
                         aria-labelledby="alert-dialog-title"
-                        aria-describedby="alert-dialog-description">
+                        aria-describedby="alert-dialog-description"
+                        classes={{ paper: this.props.classes.dialogPaper }}
+                    >
                         <DialogTitle id="alert-dialog-title">{this.props.language["display-mnemonic"]}</DialogTitle>
 
                         {this.state.hasMnemonic ?
@@ -747,7 +754,7 @@ export class WalletView extends React.Component<IProps, any> {
                         {this.state.hasMnemonic ?
                             <DialogActions>
                                 {!this.state.passwordValidated ?
-                                    <Button style={{ color: "#172349" }} onClick={this.closeMnemonic}>
+                                    <Button className={this.props.classes.btn} onClick={this.closeMnemonic}>
                                         {this.props.language["btn-close"]}
                                     </Button> : ""
                                 }
@@ -767,7 +774,7 @@ export class WalletView extends React.Component<IProps, any> {
 
                     </Dialog>
 
-                    <Dialog fullScreen open={this.state.dialogMore} onClose={this.handleDialogMore}>
+                    <Dialog fullScreen open={this.state.dialogMore} onClose={this.handleDialogMore} classes={{ paper: this.props.classes.dialogPaper }}>
                         <DialogTitle><Typography variant="h6">{this.state.name + this.props.language["title-wallet"] + " " + this.props.language["settings-title"]}</Typography></DialogTitle>
                         <DialogContent style={{ padding: 0 }}>
                             <List>
@@ -776,11 +783,11 @@ export class WalletView extends React.Component<IProps, any> {
                             </List>
                         </DialogContent>
                         <DialogActions>
-                            <Button style={styles.btn} onClick={this.handleDialogMore}>{this.props.language["btn-close"]}</Button>
+                            <Button className={this.props.classes.btn} onClick={this.handleDialogMore}>{this.props.language["btn-close"]}</Button>
                         </DialogActions>
                     </Dialog>
                 </PullToRefresh>
-                <Grid container spacing={0} style={styles.swipeArea} onClick={this.toggleQRDrawer(true)}>
+                <Grid container spacing={0} className={this.props.classes.swipeArea} onClick={this.toggleQRDrawer(true)}>
                     <Paper style={{ width: "100%" }}>
                         <Grid item xs={12} justify="center" style={{ textAlign: "center", marginTop: "5px" }}>
                             <BlurOn style={{ color: this.props.paletteType === "light" ? "black" : "white" }}/>
@@ -956,3 +963,5 @@ export class WalletView extends React.Component<IProps, any> {
         this.setState({ askDelete: true })
     }
 }
+
+export default withStyles(styles)(WalletView)

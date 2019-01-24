@@ -18,6 +18,10 @@ import { IHyconWallet } from "../rest"
 import { IGiftcard } from "../rest"
 import { IText } from "./locales/m_locales"
 
+// tslint:disable:no-var-requires
+const gcLogoDark = require("./img/logo-full-dark.png")
+const gcLogoLight = require("./img/logo-full-white.png")
+
 // tslint:disable:object-literal-sort-keys
 const styles = createStyles({
     root: {
@@ -57,6 +61,10 @@ export class Giftcard extends React.Component<IGiftcardProps, any> {
             return <Redirect to={"/wallet/" + this.props.wallet.name} />
         }
 
+        let width = window.innerWidth * 0.9
+        if (width > 400) { width = 400 }
+        const height = width / 1.5858
+
         return (
             <Grid container justify="space-between" style={styles.root}>
                 <Grid item>
@@ -78,38 +86,47 @@ export class Giftcard extends React.Component<IGiftcardProps, any> {
                 </Grid>
 
                 <Grid item alignContent="center">
-                    <Card elevation={0} square>
-                        <CardContent>
-                            <Grid container spacing={16}>
-                                <Grid item xs={12}>
+                    <Card elevation={2} style={{ height, width, margin: "0 auto", borderRadius: 8, backgroundColor: "#eceff1" }}>
+                        <CardContent style={{ paddingBottom: 16, height: "100%" }}>
+                            <Grid container direction="column" justify="space-between" spacing={16} style={{ height: "100%" }}>
+                                <Grid item>
+                                    <Typography align="left" style={{ color: "black" }}>HYCON GIFT CARD</Typography>
+                                </Grid>
+                                <Grid item style={{ textAlign: "center" }}>
+                                    <img style={{ margin: "0 auto", maxHeight: 80 }} src={gcLogoDark} />
+                                </Grid>
+                                <Grid item>
                                     <TextField
                                         type="number"
                                         id="cardNumber"
                                         label={this.props.language["gc-number"]}
                                         placeholder="0000 - 0000 - 0000 - 0000"
-                                        variant="outlined"
                                         fullWidth
                                         value={this.state.cardNumber}
                                         onChange={this.handleInputChange("cardNumber")}
-                                        InputLabelProps={{ shrink: true }}
-                                    />
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <TextField
-                                        id="cardPIN"
-                                        label={this.props.language["gc-pin"]}
-                                        placeholder={this.props.language["gc-pin-placeholder"]}
-                                        variant="outlined"
-                                        fullWidth
-                                        value={this.state.cardPIN}
-                                        onChange={this.handleInputChange("cardPIN")}
-                                        inputProps={{ maxLength: 8 }}
-                                        InputLabelProps={{ shrink: true }}
+                                        InputLabelProps={{ shrink: true, style: { color: "black" } }}
+                                        inputProps={{ style: { textAlign: "center", color: "black" } }}
                                     />
                                 </Grid>
                             </Grid>
                         </CardContent>
                     </Card>
+
+                    <Grid item xs={12}>
+                        <Grid item style={{ margin: "5% 20%" }}>
+                            <TextField
+                                id="cardPIN"
+                                label={this.props.language["gc-pin"]}
+                                placeholder={this.props.language["gc-pin-placeholder"]}
+                                variant="outlined"
+                                fullWidth
+                                value={this.state.cardPIN}
+                                onChange={this.handleInputChange("cardPIN")}
+                                InputLabelProps={{ shrink: true }}
+                                inputProps={{ maxLength: 8, style: { textAlign: "center" } }}
+                            />
+                        </Grid>
+                    </Grid>
                 </Grid>
 
                 <Grid item alignContent="center">

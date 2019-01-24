@@ -5,6 +5,8 @@ import Card from "@material-ui/core/Card"
 import CardContent from "@material-ui/core/CardContent"
 import ClickAwayListener from "@material-ui/core/ClickAwayListener"
 import Dialog from "@material-ui/core/Dialog"
+import DialogActions from "@material-ui/core/DialogActions"
+import DialogContent from "@material-ui/core/DialogContent"
 import DialogTitle from "@material-ui/core/DialogTitle"
 import Divider from "@material-ui/core/Divider"
 import Grid from "@material-ui/core/Grid"
@@ -16,6 +18,8 @@ import ListItem from "@material-ui/core/ListItem"
 import ListItemText from "@material-ui/core/ListItemText"
 import ListSubheader from "@material-ui/core/ListSubheader"
 import Paper from "@material-ui/core/Paper"
+import { Theme } from "@material-ui/core/styles/createMuiTheme"
+import withStyles, { WithStyles } from "@material-ui/core/styles/withStyles"
 import TextField from "@material-ui/core/TextField"
 import Toolbar from "@material-ui/core/Toolbar"
 import Tooltip from "@material-ui/core/Tooltip"
@@ -39,7 +43,7 @@ const patternHycon = /(^[0-9]*)([.]{0,1}[0-9]{0,9})$/
 const scale = 9 * Math.log(10) / 100
 
 // tslint:disable:object-literal-sort-keys
-const styles = createStyles({
+const styles = (theme: Theme) => createStyles({
     root: {
         flex: 1,
         display: "flex",
@@ -58,15 +62,18 @@ const styles = createStyles({
         marginLeft: -12,
         marginRight: 20,
     },
+    dialogPaper: {
+        minHeight: 150,
+    },
 })
 
-interface IProps {
+interface IProps extends WithStyles<typeof styles> {
     rest: IRest
     language: IText
     wallet: any
 }
 
-export class SendHyc extends React.Component<IProps, any> {
+class SendHyc extends React.Component<IProps, any> {
 
     public static getDerivedStateFromProps(nextProps: IProps, previousState: any): any & IProps {
         return Object.assign(nextProps, {})
@@ -136,11 +143,11 @@ export class SendHyc extends React.Component<IProps, any> {
 
     public render() {
         return (
-            <Grid container justify="space-between" style={styles.root}>
+            <Grid container justify="space-between" className={this.props.classes.root}>
                 <Grid item xs={12}>
                     <Grid item xs={12}>
                         <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0 }} position="static">
-                            <Toolbar style={styles.header}>
+                            <Toolbar className={this.props.classes.header}>
                                 <Link to={"/wallet/" + this.props.wallet.name}>
                                     <IconButton><ArrowBackIcon /></IconButton>
                                 </Link>
@@ -264,16 +271,6 @@ export class SendHyc extends React.Component<IProps, any> {
                     </Card>
                 </Grid>
                 <Grid item xs={12} style={{ padding: 0 }}>
-                    <Grid item xs={12} style={{ paddingBottom: 2 }}>
-                        <TextField fullWidth
-                            id="password"
-                            value={this.state.password}
-                            onChange={this.handleChange("password")}
-                            placeholder={this.props.language["ph-wallet-password"]}
-                            inputProps={{ style: { textAlign: "center" } }}
-                            type="password"
-                        />
-                    </Grid>
                     <Button
                         onClick={this.handleSubmit.bind(this)}
                         variant="text"
@@ -299,7 +296,11 @@ export class SendHyc extends React.Component<IProps, any> {
                     ""
                 }
 
-                <Dialog aria-labelledby="simple_dialog_title" open={this.state.dialogStatus}>
+                <Dialog
+                    aria-labelledby="simple_dialog_title"
+                    open={this.state.dialogStatus}
+                    // classes={{ paper: this.props.classes.dialogPaper }}
+                >
                     <DialogTitle>{this.props.language["send-hyc-tx-status"]}</DialogTitle>
                     <div>
                         {
@@ -335,11 +336,12 @@ export class SendHyc extends React.Component<IProps, any> {
                     aria-labelledby="contact-list"
                     open={this.state.dialogContacts}
                     onClose={this.closeContacts.bind(this)}
+                    // classes={{ paper: this.props.classes.dialogPaper }}
                 >
-                    <div style={{ margin: "0 7px 0 7px", textAlign: "center" }}>
+                    <DialogContent>
                         <List
                             subheader={
-                                <ListSubheader style={{ backgroundColor: "white", fontSize: 10 }}>
+                                <ListSubheader style={{ fontSize: 12 }}>
                                     {this.state.contactsList.length === 0
                                         ? this.props.language["send-hyc-add-contact"]
                                         : this.props.language["send-hyc-select-address"]}
@@ -364,18 +366,17 @@ export class SendHyc extends React.Component<IProps, any> {
                                 {this.props.language["btn-add"]}
                             </Button>
                         </List>
-                    </div>
+                    </DialogContent>
                 </Dialog>
 
                 <Dialog
                     aria-labelledby="contact-add"
                     open={this.state.dialogAddContact}
                     onClose={this.closeAddContact.bind(this)}
+                    // classes={{ paper: this.props.classes.dialogPaper }}
                 >
-                    <div style={{ margin: "7px", textAlign: "center" }}>
-                        <Typography style={{ fontSize: 10, margin: "5px" }}>
-                            {this.props.language["send-hyc-add-contact-hint"]}
-                        </Typography>
+                    <DialogTitle id="alert-contact-add">{this.props.language["send-hyc-add-contact-hint"]}</DialogTitle>
+                    <DialogContent>
                         <Input
                             fullWidth
                             id="contact-name"
@@ -395,46 +396,44 @@ export class SendHyc extends React.Component<IProps, any> {
                                 </InputAdornment>
                             }
                         />
+                    </DialogContent>
+                    <DialogActions>
                         <Button
                             onClick={this.addContact.bind(this)}
                             style={{ backgroundColor: "#172349", color: "#fff", width: "100%", marginTop: "20px" }}>
                             {this.props.language["btn-add"]}
                         </Button>
-                    </div>
+                    </DialogActions>
                 </Dialog >
 
                 <Dialog
                     aria-labelledby="password-popup"
                     open={this.state.askForPassword}
                     onClose={this.closeAskForPassword.bind(this)}
+                    classes={{ paper: this.props.classes.dialogPaper }}
                 >
-                    <div style={{ margin: "7px", textAlign: "center" }}>
-
-                        {this.state.wrongPassword ?
-                            <Typography style={{ fontSize: 10, margin: "5px" }}>
-                                Invalid password, please try again to make the transaction
-                            </Typography> :
-                            <Typography style={{ fontSize: 10, margin: "5px" }}>
-                                We need a password to make the transaction
-                            </Typography>
-                        }
-
-                        <Input
+                    <DialogTitle id="alert-dialog-title">Please enter your password</DialogTitle>
+                    <DialogContent>
+                        <TextField
                             fullWidth
                             id="password"
                             type="password"
+                            error={this.state.wrongPassword}
                             value={this.state.password}
                             style={{ fontSize: "1em" }}
                             onChange={this.handleChange("password")}
                             placeholder={this.props.language["ph-wallet-password"]}
+                            helperText={this.state.wrongPassword ? "Invalid password, please try again." : null }
                         />
+                    </DialogContent>
+                    <DialogActions>
                         <Button
                             onClick={this.validPassword.bind(this)}
                             style={{ backgroundColor: "#172349", color: "#fff", width: "100%", marginTop: "20px" }}>
                             {this.props.language["btn-continue"]}
                         </Button>
-                    </div>
-                </Dialog >
+                    </DialogActions>
+                </Dialog>
             </Grid >
         )
     }
@@ -665,3 +664,5 @@ export class SendHyc extends React.Component<IProps, any> {
         document.getElementById("blockexplorer").style.visibility = "visible"
     }
 }
+
+export default withStyles(styles)(SendHyc)
