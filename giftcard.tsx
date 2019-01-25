@@ -135,7 +135,7 @@ export class Giftcard extends React.Component<IGiftcardProps, any> {
                         disabled={this.state.pending}
                         onClick={this.registerGiftcard.bind(this)}
                         style={{ backgroundColor: "#172349", color: "#fff", padding: "16px 24px" }}>
-                        등록
+                        {this.props.language["btn-redeem"]}
                     </Button>
                 </Grid>
             </Grid>

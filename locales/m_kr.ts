@@ -201,7 +201,7 @@ export default {
     "alert-cannot-send-yourself": "자기 자신에게는 HYCON을 전송할 수 없습니다.",
     "alert-enter-to": "수신인의 지갑 주소를 입력해 주십시오.",
     "alert-invalid-email": "올바른 이메일을 입력해 주십시오.",
-    "alert-invalid-password": "패스워드가 유효하지 않습니다.",
+    "alert-invalid-password": "패스워드가 유효하지 않습니다. 다시 입력해 주십시오.",
     "alert-enter-password": "패스워드를 입력해 주십시오.",
     "alert-claim-fail": "클레임 에러",
     "alert-invalid-2fa": "유효하지 않은 2FA 입니다.",

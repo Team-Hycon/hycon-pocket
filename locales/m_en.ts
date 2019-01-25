@@ -201,7 +201,7 @@ export default {
     "alert-cannot-send-yourself": "You cannot send HYCON to yourself",
     "alert-enter-to": "Enter a to address",
     "alert-invalid-email": "Please enter a valid email",
-    "alert-invalid-password": "Invalid password",
+    "alert-invalid-password": "Invalid password. Please try again.",
     "alert-enter-password": "Please enter your password",
     "alert-claim-fail": "Claiming error",
     "alert-invalid-2fa": "Invalid 2FA",

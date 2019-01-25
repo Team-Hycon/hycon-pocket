@@ -412,7 +412,7 @@ class SendHyc extends React.Component<IProps, any> {
                     onClose={this.closeAskForPassword.bind(this)}
                     classes={{ paper: this.props.classes.dialogPaper }}
                 >
-                    <DialogTitle id="alert-dialog-title">Please enter your password</DialogTitle>
+                    <DialogTitle id="alert-dialog-title">{this.props.language["alert-enter-password"]}</DialogTitle>
                     <DialogContent>
                         <TextField
                             fullWidth
@@ -423,7 +423,7 @@ class SendHyc extends React.Component<IProps, any> {
                             style={{ fontSize: "1em" }}
                             onChange={this.handleChange("password")}
                             placeholder={this.props.language["ph-wallet-password"]}
-                            helperText={this.state.wrongPassword ? "Invalid password, please try again." : null }
+                            helperText={this.state.wrongPassword ? this.props.language["alert-invalid-password"] : null }
                         />
                     </DialogContent>
                     <DialogActions>
@@ -561,7 +561,7 @@ class SendHyc extends React.Component<IProps, any> {
                 } else {
                     if (data.case === 1) {
                         // this.setState({ sendingStatus: data.res, dialogStatus: true, error: this.props.language["alert-invalid-password"] })
-                        console.log("askforPassword : " + this.state.askForPassword)
+                        // console.log("askforPassword : " + this.state.askForPassword)
                         if (this.state.askForPassword) {
                             this.setState({ wrongPassword: true })
                         } else {
