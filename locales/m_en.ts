@@ -306,4 +306,8 @@ export default {
     "changelog-112-content11": "- Added 'Hide Balance' to 'Settings'",
     "changelog-112-content12": "- Added Light/Dark Theme options",
     "changelog-112-content13": "- Updated Onboarding Slides",
+    "changelog-120-content1": "- Add 'Rate Us' Feature",
+    "changelog-120-content2": "- 'Input password' as pop-up (UI/UX)",
+    "changelog-120-content3": "- Add gift card functionality",
+    "changelog-120-content4": "- Minor UI/UX Improvements",
 }

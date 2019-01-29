@@ -28,7 +28,7 @@ import { IText } from "./locales/m_locales"
 
 // tslint:disable:object-literal-sort-keys
 // CHECK VERSION EVERYTIME BEFORE RELEASING
-const VERSION = "1.1.2"
+const VERSION = "1.2.0"
 const storage = window.localStorage
 
 const styles = (theme: Theme) => createStyles({

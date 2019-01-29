@@ -316,4 +316,8 @@ export interface IText {
     "changelog-112-content11": string
     "changelog-112-content12": string
     "changelog-112-content13": string
+    "changelog-120-content1": string
+    "changelog-120-content2": string
+    "changelog-120-content3": string
+    "changelog-120-content4": string
 }

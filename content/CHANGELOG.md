@@ -1,6 +1,12 @@
 HYCON POCKET CHANGELOG
 ======
 
+## Version 1.2.0
+- Add 'Rate Us' Feature
+- 'Input password' as pop-up (UI/UX)
+- Add gift card functionality
+- Minor UI/UX Improvements
+
 ## Version 1.1.2
 - Unify App Version Number
 - Modify Layout of Wallet Activity View
@@ -13,7 +19,6 @@ HYCON POCKET CHANGELOG
 - Add ‘Set Default Fee’ to “Settings”
 - Add ‘Hide Balance’ to “Settings”
 - Update ‘Terms and Conditions’ and ‘Privacy Policy’
-- Add ‘Gift Card’ Feature in “More
 
 
 ## Version 1.0.2 (1.1.1)

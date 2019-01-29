@@ -306,4 +306,8 @@ export default {
     "changelog-112-content11": "- '잔액 숨기기' 기능 추가",
     "changelog-112-content12": "- 라이트/다크 테마 추가",
     "changelog-112-content13": "- 온보딩 업데이트",
+    "changelog-120-content1": "- 앱 추천하기 기능 추가",
+    "changelog-120-content2": "- 하이콘 전송 패스워드 입력 UI/UX 수정",
+    "changelog-120-content3": "- 하이콘 기프트카드 등록 기능 추가",
+    "changelog-120-content4": "- UI/UX 개선",
 }
