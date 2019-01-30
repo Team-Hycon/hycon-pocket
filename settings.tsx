@@ -98,7 +98,7 @@ class Settings extends React.Component<ISettingsProps, any> {
                     }
                 >
                     <ListItem button onClick={this.showBalance} key="item-show-balance">
-                        <ListItemText primary={this.state.showBalance ? this.props.language["hide-balance"] : this.props.language["show-balance"]}/>
+                        <ListItemText primary={this.state.showBalance ? this.props.language["hide-balance"] : this.props.language["show-balance"]} />
                     </ListItem>
                     <Divider />
                     <FeeSettings language={this.props.language} name={""} />
@@ -114,7 +114,7 @@ class Settings extends React.Component<ISettingsProps, any> {
                     }
                 >
                     <ListItem button onClick={this.handleSendFeedback} key="item-inquiry">
-                        <ListItemText primary={this.props.language["settings-feedback"]}/>
+                        <ListItemText primary={this.props.language["settings-feedback"]} />
                     </ListItem>
                     <Divider />
                 </List><br />
@@ -156,7 +156,7 @@ class Settings extends React.Component<ISettingsProps, any> {
                         {storage.getItem("seenChangelog") !== VERSION ?
                             <ListItemSecondaryAction>
                                 <IconButton disableRipple onClick={this.handleDialogChangelog} aria-label="Info">
-                                    <InfoIcon style={{ color: "#2195a0" }}/>
+                                    <InfoIcon style={{ color: "#2195a0" }} />
                                 </IconButton>
                             </ListItemSecondaryAction> : ""
                         }
@@ -199,7 +199,7 @@ class Settings extends React.Component<ISettingsProps, any> {
 
     private handleSendFeedback = () => {
         window.plugins.socialsharing.shareViaEmail(
-            "\n\n\n\n\n\n" + window.navigator.appVersion ,
+            "\n\n\n\n\n\n" + window.navigator.appVersion,
             this.props.language["settings-feedback"],
             ["support@hycon.io"],
             null,

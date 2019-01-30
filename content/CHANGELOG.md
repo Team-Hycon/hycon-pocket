@@ -1,5 +1,12 @@
 HYCON POCKET CHANGELOG
 ======
+## Version 1.2.0
+- Add 'Rate Us' Feature
+- 'Input password' as pop-up (UI/UX)
+- Add gift card functionality
+- Add gift card interface via "More"
+- Localization updates
+- Minor UI/UX Improvements
 
 ## Version 1.2.0
 - Add 'Rate Us' Feature

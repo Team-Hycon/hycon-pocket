@@ -79,17 +79,17 @@ class SendHyc extends React.Component<IProps, any> {
         return Object.assign(nextProps, {})
     }
     public mounted: boolean = false
+    storage = window.localStorage;
 
     constructor(props: IProps) {
         super(props)
-        const storage = window.localStorage
-        const wallets = JSON.parse(storage.getItem("/wallets"))
+        const wallets = JSON.parse(this.storage.getItem("/wallets"))
         const globalFee = wallets[""].miningFee
         const fee = wallets[this.props.wallet.name].miningFee
         let add = ""
         let am = 0
-        if (storage.getItem("hpay") !== "" && storage.getItem("hpay") != null) {
-            const hpay = storage.getItem("hpay")
+        if (this.storage.getItem("hpay") !== "" && this.storage.getItem("hpay") != null) {
+            const hpay = this.storage.getItem("hpay")
             add = hpay.split("+")[0]
             am = parseInt(hpay.split("+")[1])
         }
@@ -195,9 +195,9 @@ class SendHyc extends React.Component<IProps, any> {
                                     placement="bottom-end"
                                     title={this.props.language["send-hyc-answer-how-it-works"]}
                                     style={{ fontSize: 12 }}
-                                    >
+                                >
                                     <IconButton>
-                                        <TooltipIcon onClick={this.handleTooltipOpen}/>
+                                        <TooltipIcon onClick={this.handleTooltipOpen} />
                                     </IconButton>
                                 </Tooltip>
                             </ClickAwayListener>
@@ -299,13 +299,15 @@ class SendHyc extends React.Component<IProps, any> {
                 <Dialog
                     aria-labelledby="simple_dialog_title"
                     open={this.state.dialogStatus}
-                    // classes={{ paper: this.props.classes.dialogPaper }}
+                // classes={{ paper: this.props.classes.dialogPaper }}
                 >
                     <DialogTitle>{this.props.language["send-hyc-tx-status"]}</DialogTitle>
                     <div>
                         {
                             this.state.sendingStatus === true ?
+
                                 <Paper style={{ padding: 10 }}>
+                                    {this.storage.getItem("firstTransaction") != "1" ? this.storeFirstTransaction() : <p></p>}
                                     <Typography gutterBottom align="center">
                                         {this.props.language["send-hyc-success"]}
                                     </Typography>
@@ -336,7 +338,7 @@ class SendHyc extends React.Component<IProps, any> {
                     aria-labelledby="contact-list"
                     open={this.state.dialogContacts}
                     onClose={this.closeContacts.bind(this)}
-                    // classes={{ paper: this.props.classes.dialogPaper }}
+                // classes={{ paper: this.props.classes.dialogPaper }}
                 >
                     <DialogContent>
                         <List
@@ -373,7 +375,7 @@ class SendHyc extends React.Component<IProps, any> {
                     aria-labelledby="contact-add"
                     open={this.state.dialogAddContact}
                     onClose={this.closeAddContact.bind(this)}
-                    // classes={{ paper: this.props.classes.dialogPaper }}
+                // classes={{ paper: this.props.classes.dialogPaper }}
                 >
                     <DialogTitle id="alert-contact-add">{this.props.language["send-hyc-add-contact-hint"]}</DialogTitle>
                     <DialogContent>
@@ -423,7 +425,7 @@ class SendHyc extends React.Component<IProps, any> {
                             style={{ fontSize: "1em" }}
                             onChange={this.handleChange("password")}
                             placeholder={this.props.language["ph-wallet-password"]}
-                            helperText={this.state.wrongPassword ? this.props.language["alert-invalid-password"] : null }
+                            helperText={this.state.wrongPassword ? this.props.language["alert-invalid-password"] : null}
                         />
                     </DialogContent>
                     <DialogActions>
@@ -436,6 +438,11 @@ class SendHyc extends React.Component<IProps, any> {
                 </Dialog>
             </Grid >
         )
+    }
+
+    private storeFirstTransaction() {
+        this.storage.setItem("firstTransaction", "1")
+        AppRate.promptForRating(true);
     }
 
     private handleFeeTooltip = () => {
@@ -557,6 +564,7 @@ class SendHyc extends React.Component<IProps, any> {
             .then((data) => {
                 console.log(data)
                 if (data.res === true) {
+
                     this.setState({ askForPassword: false, wrongPassword: false, sendingStatus: data.res, dialogStatus: true })
                 } else {
                     if (data.case === 1) {
