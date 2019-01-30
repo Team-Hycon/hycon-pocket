@@ -76,6 +76,19 @@ export default {
     "onboarding-step5-checkbox2": "이 앱을 다른 기기로 옮기거나 삭제하면 하이콘 지갑은 니모닉 문구로만 복구될 수 있음을 이해했습니다.",
     "onboarding-step5-checkbox3": "이용 약관을 읽었고 그 내용을 이해했으며, 약관에 동의합니다.",
 
+    // REVIEW POPUP
+    "review-prompt-message": "하이콘 포켓 사용에 만족하신다면 피드백을 보내주세요!",
+    "review-prompt-title": "하이콘 포켓에 대한 의견 부탁드립니다.",
+    "review-cancel-button": "괜찮아요",
+    "review-feedback-prompt-message": "선호하시는 피드백 제공 방식을 선택해 주세요.",
+    "review-feedback-prompt-title": "피드백 주시겠어요?",
+    "review-later-button": "나중에 할게요",
+    "review-message": "1분만 투자해 주시면 앱 홍보에 많은 도움이 됩니다. 감사합니다!",
+    "review-no-button": "아니요",
+    "review-rate-button": "지금 평가하기",
+    "review-title": "하이콘 포켓에 대한 의견 주시겠어요?",
+    "review-yes-button": "네!",
+
     // HOME
     "wallet-list": "지갑 목록",
     "home-guide-add-wallet": "지갑 추가하기",
@@ -226,7 +239,7 @@ export default {
     "settings-support": "고객지원",
     "settings-app-version": "앱 버전",
     "settings-copyright": "저작권",
-    "settings-copyright-hycon": "2018 HYCON, All Rights Reserved",
+    "settings-copyright-hycon": "2019 HYCON, All Rights Reserved",
     "settings-feedback": "피드백 보내기",
 
     // FEE SETTINGS

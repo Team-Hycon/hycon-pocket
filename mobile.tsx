@@ -2,10 +2,14 @@ import * as React from "react"
 import * as ReactDOM from "react-dom"
 import { HashRouter } from "react-router-dom"
 import { RestChrome } from "../restChrome"
+import { getMobileLocale, IText } from "./locales/m_locales"
 import { MobileApp } from "./mobileClient"
+
+declare let window: any
 
 document.addEventListener("deviceready", () => {
     const rest = new RestChrome()
+    const language = getMobileLocale(navigator.language)
 
     ReactDOM.hydrate(
         <HashRouter>
@@ -20,49 +24,45 @@ document.addEventListener("deviceready", () => {
         return
     }, false)
 
-    AppRate.preferences = {
-        displayAppName: 'Hycon Pocket',
-        usesUntilPrompt: 5,
-        promptAgainForEachNewVersion: true,
-        inAppReview: true,
-        useLanguage: "en",
-        simpleMode: true,
-        storeAppURL: {
-            ios: '1439548798',
-            android: 'market://details?id=io.hycon.litewallet',
-            windows: 'ms-windows-store://pdp/?ProductId=<the apps Store ID>',
-            blackberry: 'appworld://content/[App Id]/',
-            windows8: 'ms-windows-store:Review?name=<the Package Family Name of the application>'
+    window.AppRate.preferences = {
+        callbacks: {
+            onRateDialogShow(callback) {
+                console.log("onRateDialogShow")
+            },
+            onButtonClicked(buttonIndex) {
+                console.log("onButtonClicked -> " + buttonIndex)
+            },
+            done() {
+                console.log("feedback done")
+            },
         },
         customLocale: {
-            title: "Let us know how we are doing with %@?",
-            message: "It won’t take more than a minute and helps to promote our app. Thanks for your support!",
-            cancelButtonLabel: "No, Thanks",
-            laterButtonLabel: "Remind Me Later",
-            rateButtonLabel: "Rate It Now",
-            yesButtonLabel: "Yes!",
-            noButtonLabel: "Not really",
-            appRatePromptTitle: 'Let us know how we are doing with %@',
-            appRatePromptMessage: 'If you like using this wallet please give us your feedback',
-            feedbackPromptTitle: 'Mind giving us some feedback?',
-            feedbackPromptMessage: 'Choose the option you prefer for giving us a feedback',
+            appRatePromptMessage: language["review-prompt-message"],
+            appRatePromptTitle: language["review-prompt-title"],
+            cancelButtonLabel: language["review-cancel-button"],
+            feedbackPromptMessage: language["review-feedback-prompt-message"],
+            feedbackPromptTitle: language["review-feedback-prompt-title"],
+            laterButtonLabel: language["review-later-button"],
+            message: language["review-message"],
+            noButtonLabel: language["review-no-button"],
+            rateButtonLabel: language["review-rate-button"],
+            title: language["review-title"],
+            yesButtonLabel: language["review-yes-button"],
         },
-        callbacks: {
-            handleNegativeFeedback: function () {
-                window.open('mailto:feedback@example.com', '_system');
-            },
-            onRateDialogShow: function (callback) {
-                callback(1) // cause immediate click on 'Rate Now' button
-            },
-            onButtonClicked: function (buttonIndex) {
-                console.log("onButtonClicked -> " + buttonIndex);
-            },
-            done: function () {
-                console.log("feedback done");
-            }
-        }
-    };
-    AppRate.promptForRating(false);
-
+        displayAppName: "Hycon Pocket",
+        inAppReview: true,
+        promptAgainForEachNewVersion: true,
+        simpleMode: true,
+        storeAppURL: {
+            android: "market://details?id=io.hycon.litewallet",
+            blackberry: "appworld://content/[App Id]/",
+            ios: "1439548798",
+            windows: "ms-windows-store://pdp/?ProductId=<the apps Store ID>",
+            windows8: "ms-windows-store:Review?name=<the Package Family Name of the application>",
+        },
+        useLanguage: "en",
+        usesUntilPrompt: 5,
+    }
+    window.AppRate.promptForRating(false)
 
 }, false)

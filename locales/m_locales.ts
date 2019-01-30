@@ -86,6 +86,19 @@ export interface IText {
     "onboarding-step5-checkbox2": string
     "onboarding-step5-checkbox3": string
 
+    // REVIEW POPUP
+    "review-prompt-message": string,
+    "review-prompt-title": string,
+    "review-cancel-button": string,
+    "review-feedback-prompt-message": string,
+    "review-feedback-prompt-title": string,
+    "review-later-button": string,
+    "review-message": string,
+    "review-no-button": string,
+    "review-rate-button": string,
+    "review-title": string,
+    "review-yes-button": string,
+
     // HOME
     "wallet-list": string
     "home-guide-add-wallet": string

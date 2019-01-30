@@ -35,9 +35,10 @@ import { Link } from "react-router-dom"
 import { IRest } from "../rest"
 import { IText } from "./locales/m_locales"
 
-// tslint:disable-next-line:no-var-requires
-const Long = require("long")
+declare let window: any
 
+// tslint:disable:no-var-requires
+const Long = require("long")
 const patternAddress = /^H[A-Za-z0-9+]{20,}$/
 const patternHycon = /(^[0-9]*)([.]{0,1}[0-9]{0,9})$/
 const scale = 9 * Math.log(10) / 100
@@ -79,7 +80,7 @@ class SendHyc extends React.Component<IProps, any> {
         return Object.assign(nextProps, {})
     }
     public mounted: boolean = false
-    storage = window.localStorage;
+    public storage = window.localStorage
 
     constructor(props: IProps) {
         super(props)
@@ -91,6 +92,7 @@ class SendHyc extends React.Component<IProps, any> {
         if (this.storage.getItem("hpay") !== "" && this.storage.getItem("hpay") != null) {
             const hpay = this.storage.getItem("hpay")
             add = hpay.split("+")[0]
+            // tslint:disable-next-line:radix
             am = parseInt(hpay.split("+")[1])
         }
 
@@ -307,7 +309,7 @@ class SendHyc extends React.Component<IProps, any> {
                             this.state.sendingStatus === true ?
 
                                 <Paper style={{ padding: 10 }}>
-                                    {this.storage.getItem("firstTransaction") != "1" ? this.storeFirstTransaction() : <p></p>}
+                                    {this.storage.getItem("firstTransaction") !== "1" ? this.storeFirstTransaction() : <p></p>}
                                     <Typography gutterBottom align="center">
                                         {this.props.language["send-hyc-success"]}
                                     </Typography>
@@ -442,7 +444,7 @@ class SendHyc extends React.Component<IProps, any> {
 
     private storeFirstTransaction() {
         this.storage.setItem("firstTransaction", "1")
-        AppRate.promptForRating(true);
+        window.AppRate.promptForRating(true)
     }
 
     private handleFeeTooltip = () => {

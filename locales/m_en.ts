@@ -76,6 +76,19 @@ export default {
     "onboarding-step5-checkbox2": "I understand that if this app is moved to another device or deleted, my Hycon can only be recovered with the mnemonic phrase.",
     "onboarding-step5-checkbox3": "I have read, understood, and agree to the ",
 
+    // REVIEW POPUP
+    "review-prompt-message": "If you like using Hycon Pocket, please give us your feedback!",
+    "review-prompt-title": "Let us know how we are doing.",
+    "review-cancel-button": "No, Thanks",
+    "review-feedback-prompt-message": "Choose the option you prefer for giving us feedback",
+    "review-feedback-prompt-title": "Mind giving us some feedback?",
+    "review-later-button": "Remind Me Later",
+    "review-message": "It won't take more than a minute and helps to promote our app. Thanks for your support!",
+    "review-no-button": "Not Really",
+    "review-rate-button": "Rate It Now",
+    "review-title": "Let us know how we are doing with %@?",
+    "review-yes-button": "Yes!",
+
     // HOME
     "wallet-list": "Wallet List",
     "home-guide-add-wallet": "Add a wallet",
@@ -226,7 +239,7 @@ export default {
     "settings-support": "Support",
     "settings-app-version": "App Version",
     "settings-copyright": "Copyright",
-    "settings-copyright-hycon": "2018 HYCON, All Rights Reserved",
+    "settings-copyright-hycon": "2019 HYCON, All Rights Reserved",
     "settings-feedback": "Send Feedback",
 
     // FEE SETTINGS
