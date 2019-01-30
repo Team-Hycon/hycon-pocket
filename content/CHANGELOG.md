@@ -8,11 +8,6 @@ HYCON POCKET CHANGELOG
 - Localization updates
 - Minor UI/UX Improvements
 
-## Version 1.2.0
-- Add 'Rate Us' Feature
-- 'Input password' as pop-up (UI/UX)
-- Add gift card functionality
-- Minor UI/UX Improvements
 
 ## Version 1.1.2
 - Unify App Version Number
