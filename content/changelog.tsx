@@ -23,7 +23,7 @@ export class ChangelogContent extends React.Component<IProps, any> {
                     {this.props.language["changelog-120-content4"]}<br />
                 </Typography>
                 <br />
-                <Typography variant="overline" style={{ fontWeight: 600 }} gutterBottom>{this.props.language["changelog-111"]}</Typography>
+                <Typography variant="overline" style={{ fontWeight: 600 }} gutterBottom>{this.props.language["changelog-112"]}</Typography>
                 <Typography style={{ textAlign: "justify" }} variant="caption" gutterBottom>
                     {this.props.language["changelog-112-content1"]}<br />
                     {this.props.language["changelog-112-content2"]}<br />
