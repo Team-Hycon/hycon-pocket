@@ -235,9 +235,16 @@ class WalletView extends React.Component<IProps, any> {
         if (this.state.notFound) {
             return <div>{this.props.language["detail-no-data"]}</div>
         }
-        if (!this.state.notFound && this.state.wallet === undefined) {
-            return <div>Not found + Wallet Undefined</div>
+        if (this.state.wallet.address === "") {
+            return (
+                <Grid container className={this.props.classes.root} style={{ justifyContent: "space-around"}}>
+                    <Grid item xs={12}>
+                        <Typography align="center">Add Your First Wallet</Typography>
+                    </Grid>
+                </Grid>
+            )
         }
+
         return (
             <Grid container className={this.props.classes.root}>
                 <PullToRefresh

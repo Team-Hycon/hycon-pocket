@@ -36,11 +36,11 @@ import { Route, Switch } from "react-router-dom"
 import { IHyconWallet, IResponseError, IRest } from "../rest"
 import { AddWallet } from "./addWallet"
 import { Contacts } from "./contacts"
+import Onboarding from "./content/onboarding"
 import { Giftcard } from "./giftcard"
 import { getMobileLocale, IText } from "./locales/m_locales"
 import SendHyc from "./sendHyc"
 import Settings from "./settings"
-import WalletList from "./walletList"
 import WalletView from "./walletView"
 
 declare var navigator: any
@@ -116,6 +116,7 @@ interface IState {
     name?: string
     openMenu: boolean
     openWalletList: boolean
+    openOnboarding: boolean
     paletteType: string
     selectedWalletIndex: number
     selectedWalletName: string
@@ -150,6 +151,7 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
             name: "",
             openDialog: false,
             openMenu: false,
+            openOnboarding: storage.getItem("onboarding") === null ? true : false,
             openWalletList: false,
             paletteType: storage.getItem("paletteType") === null ? "light" : storage.getItem("paletteType"),
             redirect: false,
@@ -208,10 +210,6 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
         })
     }
     public renderWallets() {
-        // console.log("rednerWallets")
-        // console.log(this.state.wallets)
-        // console.log(this.state.selectedWalletIndex)
-        // console.log(this.state.selectedWalletName)
         return (
             <div>
                 <Hidden xsDown implementation="js">
@@ -256,10 +254,6 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                                         button
                                         key={`${n.name}`}
                                         onClick={this.handleWalletSelect(n.name)}
-                                    // onTouchStart={this.handleButtonPress.bind(this, n.address)}
-                                    // onTouchEnd={this.handleButtonRelease.bind(this)}
-                                    // onMouseDown={this.handleButtonPress.bind(this, n.address)}
-                                    // onMouseUp={this.handleButtonRelease.bind(this)}
                                     >
                                         <Avatar className={this.props.classes.avatarSmall}>{n.address.substring(0, 4)}</Avatar>
                                         <ListItemText
@@ -357,9 +351,12 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                     <CssBaseline />
                     <AppBar position="absolute" elevation={0} className={this.props.classes.appBar}>
                         <Toolbar style={{ display: "flex", justifyContent: "space-between" }}>
-                            <IconButton aria-label="open menu" className={this.props.classes.menuButton} onClick={this.toggleMenu(true)}>
-                                <MenuIcon />
-                            </IconButton>
+                            {this.state.openOnboarding ?
+                                <div style={{ width: 48, height: 48 }} /> :
+                                <IconButton aria-label="open menu" className={this.props.classes.menuButton} onClick={this.toggleMenu(true)}>
+                                    <MenuIcon />
+                                </IconButton>
+                            }
                             <div style={{ display: "flex", alignItems: "center" }}>
                                 <span style={{ paddingRight: theme.spacing.unit }}>
                                     <img style={{ maxHeight: window.matchMedia("(max-width: 600px)").matches ? 28 : 38 }} src={this.state.paletteType === "light" ? logoColor : logoWhite} />
@@ -408,18 +405,27 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                         </Hidden>
                     </nav>
                     <main className={this.props.classes.content}>
-                        <WalletView
-                            rest={this.state.rest}
-                            language={this.language}
-                            wallet={this.state.wallet}
-                            price={this.price}
-                            name={this.state.name}
-                            paletteType={this.state.paletteType}
-                            handleDialog={this.handleDialog.bind(this)}
-                            setWallets={this.setWallets.bind(this)}
-                            handleWalletSelect={this.handleWalletSelect.bind(this)}
-                            updateSelected={this.updateSelected.bind(this)}
-                        />
+                        {this.state.openOnboarding ?
+                            <Onboarding
+                                rest={this.props.rest}
+                                language={this.language}
+                                closeOnboarding={this.closeOnboarding.bind(this)}
+                                setWallets={this.setWallets.bind(this)}
+                                handleWalletSelect={this.handleWalletSelect.bind(this)} /> :
+                            <WalletView
+                                rest={this.state.rest}
+                                language={this.language}
+                                wallet={this.state.wallet}
+                                price={this.price}
+                                name={this.state.name}
+                                paletteType={this.state.paletteType}
+                                handleDialog={this.handleDialog.bind(this)}
+                                setWallets={this.setWallets.bind(this)}
+                                handleWalletSelect={this.handleWalletSelect.bind(this)}
+                                updateSelected={this.updateSelected.bind(this)}
+                            />
+                        }
+
                         <Dialog fullScreen open={this.state.openDialog} onClose={this.handleDialog} scroll={"paper"}>
                             <Switch>
                                 <Route exact path="/addwallet" component={() => <AddWallet rest={this.state.rest} language={this.language} handleDialog={this.handleDialog.bind(this)} setWallets={this.setWallets.bind(this)} handleWalletSelect={this.handleWalletSelect.bind(this)} />} />
@@ -433,6 +439,11 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                 </div>
             </MuiThemeProvider>
         )
+    }
+
+    private closeOnboarding() {
+        this.setState({ openOnboarding: false })
+        this.forceUpdate()
     }
 
     private handleDialog = () => {
@@ -484,15 +495,6 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                 this.handleWalletSelect(this.state.name)
             }
         })
-    }
-
-    private getLanguage(code: string) {
-        this.language = getMobileLocale(code)
-        this.languageSelect = code
-        this.state.rest.getPrice(this.language.currency).then((price: number) => {
-            this.price.fiat = price
-        })
-        this.forceUpdate()
     }
 
     private setLanguage(event: any) {

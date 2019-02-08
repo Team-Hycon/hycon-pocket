@@ -327,7 +327,7 @@ export class AddWallet extends React.Component<IProps, any> {
                         <Toolbar style={styles.header}>
                             {
                                 this.state.step === 0 ?
-                                    <IconButton onClick={this.finishAddWallet.bind(this)}>
+                                    <IconButton onClick={this.props.handleDialog}>
                                         <ArrowBackIcon />
                                     </IconButton>
                                     :

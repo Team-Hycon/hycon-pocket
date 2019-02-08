@@ -40,6 +40,8 @@ interface IProps extends WithStyles<typeof styles> {
     rest: IRest,
     language: IText,
     closeOnboarding: () => void,
+    handleWalletSelect: () => void,
+    setWallets: (fromDelete?: boolean) => void,
 }
 
 export class Onboarding extends React.Component<IProps, any> {
@@ -60,7 +62,6 @@ export class Onboarding extends React.Component<IProps, any> {
             if (data.walletList.length > 0) {
                 this.setState({ activeStep: this.state.activeStep + 1, hasWallet: true })
             }
-            console.log(data.walletList)
         })
     }
 
@@ -71,7 +72,7 @@ export class Onboarding extends React.Component<IProps, any> {
                 slide: (
                     <Grid container alignItems="center" style={{ margin: "0 20%" }}>
                         <Grid item xs={12}>
-                            <Typography variant="caption" align="center" style={{ color: "#0095a2" }}>{this.props.language["onboarding-step1-text1"]}</Typography>
+                            <Typography variant="caption" align="center" style={{ color: "white" }}>{this.props.language["onboarding-step1-text1"]}</Typography>
                             <Grid item style={{ marginTop: "15%", textAlign: "center" }}><img style={{ maxHeight: 70 }} src={logoBallW} /></Grid>
                             <Typography variant="subtitle2" align="center" style={{ color: "white" }}>{this.props.language["onboarding-step1-text2"]}</Typography>
                         </Grid>
@@ -90,7 +91,7 @@ export class Onboarding extends React.Component<IProps, any> {
                     <Grid container alignItems="center" style={{ margin: "0 20%" }}>
                         <Grid item xs={12}>
                             <Typography variant="subtitle1" align="center" style={{ color: "white" }}>{this.props.language["onboarding-step2-text1"]}</Typography>
-                            <Typography variant="caption" align="center" style={{ color: "#0095a2" }}>{this.props.language["onboarding-step2-text2"]}</Typography>
+                            <Typography variant="caption" align="center" style={{ color: "#172349" }}>{this.props.language["onboarding-step2-text2"]}</Typography>
                         </Grid>
                         <Grid item xs={12}>
                             <Grid item style={{ textAlign: "center" }}>
@@ -111,7 +112,7 @@ export class Onboarding extends React.Component<IProps, any> {
                     <Grid container alignItems="center" style={{ margin: "0 20%" }}>
                         <Grid item xs={12}>
                             <Typography variant="subtitle1" align="center" style={{ color: "white" }}>{this.props.language["onboarding-step3-text1"]}</Typography>
-                            <Typography variant="caption" align="center" style={{ color: "#0095a2" }}>{this.props.language["onboarding-step3-text2"]}</Typography>
+                            <Typography variant="caption" align="center" style={{ color: "#172349" }}>{this.props.language["onboarding-step3-text2"]}</Typography>
                         </Grid>
                         <Grid item xs={12}>
                             <Grid item style={{ textAlign: "center" }}>
@@ -132,7 +133,7 @@ export class Onboarding extends React.Component<IProps, any> {
                     <Grid container alignItems="center" style={{ margin: "0 20%" }}>
                         <Grid item xs={12}>
                             <Typography variant="subtitle1" align="center" style={{ color: "white" }}>{this.props.language["onboarding-step4-text1"]}</Typography>
-                            <Typography variant="caption" align="center" style={{ color: "#0095a2" }}>{this.props.language["onboarding-step4-text2"]}</Typography>
+                            <Typography variant="caption" align="center" style={{ color: "#172349" }}>{this.props.language["onboarding-step4-text2"]}</Typography>
                         </Grid>
                         <Grid item xs={12}>
                             <Grid item style={{ textAlign: "center" }}>
@@ -152,7 +153,7 @@ export class Onboarding extends React.Component<IProps, any> {
                             </Grid>
                         }
                         <Dialog fullScreen open={this.state.openCreateWalletDialog} scroll={this.state.scroll}>
-                            <AddWallet rest={this.props.rest} language={this.props.language} />
+                            <AddWallet rest={this.props.rest} language={this.props.language} handleDialog={this.handleAddWalletDialog} setWallets={this.props.setWallets.bind(this)} handleWalletSelect={this.props.handleWalletSelect.bind(this)}/>
                         </Dialog>
                     </Grid >
                 ),
@@ -162,7 +163,7 @@ export class Onboarding extends React.Component<IProps, any> {
                     <Grid container alignItems="center">
                         <Grid item xs={12} style={{ margin: "0 20%" }}>
                             <Typography variant="subtitle1" align="center" style={{ color: "white" }}>{this.props.language["onboarding-step5-text1"]}</Typography>
-                            <Typography variant="caption" align="center" style={{ color: "#0095a2" }}>{this.props.language["onboarding-step5-text2"]}</Typography>
+                            <Typography variant="caption" align="center" style={{ color: "#172349" }}>{this.props.language["onboarding-step5-text2"]}</Typography>
                         </Grid>
                         <Grid item xs={12}>
                             <List>
@@ -228,7 +229,7 @@ export class Onboarding extends React.Component<IProps, any> {
                     axis={"x"}
                     index={this.state.activeStep}
                     onChangeIndex={this.handleStepChange}
-                    style={{ flex: 1, display: "flex", flexDirection: "column", background: "-webkit-linear-gradient(top, #172349 0%,#0095a1 100%)" }}
+                    style={{ flex: 1, display: "flex", flexDirection: "column", background: "-webkit-linear-gradient(top, #0095a1 0%,#172349 100%)" }}
                     containerStyle={{ flex: 1, display: "flex" }}
                 >
                     {onboardingSlides.map((step, index) => (
@@ -263,6 +264,7 @@ export class Onboarding extends React.Component<IProps, any> {
     }
 
     private handleAddWalletDialog = () => {
+        if (this.state.openCreateWalletDialog) { this.handleNext() }
         this.setState({ openCreateWalletDialog: !this.state.openCreateWalletDialog })
     }
 
@@ -276,13 +278,11 @@ export class Onboarding extends React.Component<IProps, any> {
             activeStep: prevState.activeStep + 1,
         }))
         tempStorage.setItem("activeStep", this.state.activeStep.toString())
-        console.log(this.state.activeStep)
     }
 
     private handleStepChange = (activeStep) => {
         this.setState({ activeStep })
         tempStorage.setItem("activeStep", this.state.activeStep.toString())
-        console.log(this.state.activeStep)
     }
 }
 
