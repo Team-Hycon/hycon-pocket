@@ -426,7 +426,7 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                             />
                         }
 
-                        <Dialog fullScreen open={this.state.openDialog} onClose={this.handleDialog} scroll={"paper"}>
+                        <Dialog fullScreen style={{ marginLeft: window.matchMedia("(max-width: 600px)").matches ? 0 : permanentDrawerWidth }} open={this.state.openDialog} onClose={this.handleDialog} scroll={"paper"}>
                             <Switch>
                                 <Route exact path="/addwallet" component={() => <AddWallet rest={this.state.rest} language={this.language} handleDialog={this.handleDialog.bind(this)} setWallets={this.setWallets.bind(this)} handleWalletSelect={this.handleWalletSelect.bind(this)} />} />
                                 <Route exact path="/sendcoins" component={() => <SendHyc rest={this.state.rest} language={this.language} wallet={this.state.wallet} handleDialog={this.handleDialog.bind(this)} />} />

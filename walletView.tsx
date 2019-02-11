@@ -123,6 +123,7 @@ const styles = (theme: Theme) => createStyles({
 const QRCode = require("qrcode.react")
 const html2canvas = require("html2canvas")
 const pattern1 = /(^[0-9]*)([.]{0,1}[0-9]{0,9})$/
+const wallet = require("./img/wallet.png")
 const storage = window.localStorage
 
 interface IProps extends WithStyles<typeof styles> {
@@ -196,6 +197,8 @@ class WalletView extends React.Component<IProps, any> {
             event.preventDefault()
             if (this.state.qrDrawer || this.state.reqDrawer || this.state.askDelete || this.state.openMnemonic || this.state.dialogMore || Boolean(this.state.anchorEl)) {
                 this.setState({ qrDrawer: false, reqDrawer: false, askDelete: false, openMnemonic: false, dialogMore: false, anchorEl: null })
+            } else {
+                this.forceUpdate()
             }
             return
         }, false)
@@ -239,7 +242,13 @@ class WalletView extends React.Component<IProps, any> {
             return (
                 <Grid container className={this.props.classes.root} style={{ justifyContent: "space-around"}}>
                     <Grid item xs={12}>
-                        <Typography align="center">Add Your First Wallet</Typography>
+                        <Link to="/addwallet" onClick={this.props.handleDialog} style={{ textDecoration: "none" }}>
+                            <div style={{ textAlign: "center" }}>
+                                <img style={{ maxHeight: 160 }} src={wallet} />
+                                <Typography variant="h6" align="center" style={{ marginTop: 10, fontWeight: 600 }}>Add your first wallet</Typography>
+                                <Typography variant="caption" align="center">Tap here to get started</Typography>
+                            </div>
+                        </Link>
                     </Grid>
                 </Grid>
             )

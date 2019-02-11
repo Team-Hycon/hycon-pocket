@@ -30,6 +30,8 @@ import { IHyconWallet, IRest } from "../rest"
 import { IText } from "./locales/m_locales"
 
 const patternAddress = /^H[A-Za-z0-9+]{20,}$/
+// tslint:disable-next-line:no-var-requires
+const addressBook = require("./img/address-book.png")
 
 // tslint:disable:object-literal-sort-keys
 const styles = createStyles({
@@ -42,6 +44,7 @@ const styles = createStyles({
         display: "flex",
         justifyContent: "space-between",
         padding: 0,
+        minHeight: 48,
     },
 })
 
@@ -106,35 +109,46 @@ export class Contacts extends React.Component<IProps, any> {
     public renderListContacts() {
         return (
             <List
+                style={{ display: "flex", flexDirection: "column", flexGrow: this.state.contacts.length === 0 ? 1 : 0 }}
                 subheader={
                     <ListSubheader disableSticky component="div" style={styles.header}>
-                        <span style={{ margin: "auto 0 auto 20px" }}>{this.props.language["contacts-list"]} ({this.state.contacts !== null ? this.state.contacts.length : 0})</span>
+                        <span style={{ margin: "auto 0 auto 12px" }}>{this.props.language["contacts-list"]} ({this.state.contacts !== null ? this.state.contacts.length : 0})</span>
                         <div>
-                            <span><IconButton aria-label="Add" onClick={this.openAddContact.bind(this)}><AddIcon style={{ fontSize: 18 }} /></IconButton></span>
+                            <span><IconButton aria-label="Add" onClick={this.openAddContact.bind(this)}><AddIcon/></IconButton></span>
                         </div>
                     </ListSubheader>
                 }>
-                {this.state.contacts.map((value: any) => (
-                    <Grid item xs={12}>
-                        <ListItem
-                            button
-                            key={value.address}
-                            onTouchStart={this.handleButtonPress.bind(this)}
-                            onTouchEnd={this.handleButtonRelease.bind(this)}
-                            onMouseDown={this.handleButtonPress.bind(this)}
-                            onMouseUp={this.handleButtonRelease.bind(this)}
-                        >
-                            <ListItemText primary={value.alias} secondary={value.address} />
-                            {!this.state.isRemoving
-                                ? <CopyToClipboard text={value.address}>
-                                    <IconButton onClick={this.handleClick}><CopyIcon style={{ fontSize: 18 }} /></IconButton>
-                                </CopyToClipboard>
-                                : <ListItemSecondaryAction>
-                                    <Checkbox onChange={this.handleToggle(value)} checked={this.state.checked.indexOf(value) !== -1} />
-                                </ListItemSecondaryAction>}
-                        </ListItem>
-                        <Divider />
-                    </Grid>))
+                {this.state.contacts.length === 0 ?
+                    <Grid container style={{ flexDirection: "column", flexGrow: 1, justifyContent: "space-around" }}>
+                        <div style={{ textAlign: "center" }}>
+                            <img style={{ maxHeight: 160 }} src={addressBook} />
+                            <Typography variant="h6" align="center" style={{ marginTop: 10, fontWeight: 600 }}>No wallet addresses stored</Typography>
+                            <Typography variant="caption" align="center">Tap the '+' button to add an address</Typography>
+                        </div>
+                    </Grid> :
+                    this.state.contacts.map((value: any) => (
+                        <Grid item xs={12}>
+                            <ListItem
+                                button
+                                key={value.address}
+                                onTouchStart={this.handleButtonPress.bind(this)}
+                                onTouchEnd={this.handleButtonRelease.bind(this)}
+                                onMouseDown={this.handleButtonPress.bind(this)}
+                                onMouseUp={this.handleButtonRelease.bind(this)}
+                            >
+                                <ListItemText primary={value.alias} secondary={value.address} />
+                                <ListItemSecondaryAction>
+                                    {!this.state.isRemoving ?
+                                        <CopyToClipboard text={value.address}>
+                                            <IconButton onClick={this.handleClick}><CopyIcon/></IconButton>
+                                        </CopyToClipboard>
+                                        : <Checkbox onChange={this.handleToggle(value)} checked={this.state.checked.indexOf(value) !== -1} />
+                                    }
+                                </ListItemSecondaryAction>
+                            </ListItem>
+                            <Divider />
+                        </Grid>
+                    ))
                 }
 
                 <Dialog
@@ -181,12 +195,12 @@ export class Contacts extends React.Component<IProps, any> {
             <div style={styles.root}>
                 <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0 }} position="static">
                     <Toolbar style={styles.header}>
-                        <IconButton onClick={this.props.handleDialog}><ArrowBackIcon /></IconButton>
+                        <IconButton style={{ width: 48, height: 48 }} onClick={this.props.handleDialog}><ArrowBackIcon /></IconButton>
                         <Typography variant="button" align="center">
                             {this.props.language["contacts-title"]}
                         </Typography>
                         {this.state.isRemoving
-                            ? <IconButton onClick={this.deleteContacts.bind(this)}>{this.state.checked.length === 1 ? <CloseIcon /> : <DeleteIcon />}</IconButton>
+                            ? <IconButton style={{ width: 48, height: 48 }} onClick={this.deleteContacts.bind(this)}>{this.state.checked.length === 1 ? <CloseIcon /> : <DeleteIcon />}</IconButton>
                             : <div style={{ width: 48, height: 48 }} />
                         }
                     </Toolbar>
