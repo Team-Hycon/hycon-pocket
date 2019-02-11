@@ -209,13 +209,20 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
             this.price.btc = price
         })
     }
-    public renderWallets() {
+    public renderWallets(theme: Theme) {
         return (
             <div>
-                <Hidden xsDown implementation="js">
-                    <div className={this.props.classes.toolbar} />
-                </Hidden>
                 <List>
+                    <Hidden xsDown implementation="js">
+                        <ListItem>
+                            <div style={{ display: "flex", alignItems: "center" }}>
+                                <span style={{ paddingRight: theme.spacing.unit }}>
+                                    <img style={{ maxHeight: 38 }} src={this.state.paletteType === "light" ? logoColor : logoWhite} />
+                                </span>
+                                <span><Typography variant="h5" style={{ fontWeight: 400, paddingBottom: "3%", fontFamily: "Source Sans Pro" }}>Pocket</Typography></span>
+                            </div>
+                        </ListItem>
+                    </Hidden>
                     {this.state.wallets.length === 0 ?
                         <ListItem button component={({ innerRef, ...props }) => <li><Link to="/addwallet" {...props} style={{ float: "none" }} onClick={this.handleDialog} /></li>}>
                             <Avatar className={this.props.classes.avatar}><AddIcon /></Avatar>
@@ -351,19 +358,19 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                     <CssBaseline />
                     <AppBar position="absolute" elevation={0} className={this.props.classes.appBar}>
                         <Toolbar style={{ display: "flex", justifyContent: "space-between" }}>
-                            {this.state.openOnboarding ?
-                                <div style={{ width: 48, height: 48 }} /> :
-                                <IconButton aria-label="open menu" className={this.props.classes.menuButton} onClick={this.toggleMenu(true)}>
-                                    <MenuIcon />
-                                </IconButton>
-                            }
-                            <div style={{ display: "flex", alignItems: "center" }}>
-                                <span style={{ paddingRight: theme.spacing.unit }}>
-                                    <img style={{ maxHeight: window.matchMedia("(max-width: 600px)").matches ? 28 : 38 }} src={this.state.paletteType === "light" ? logoColor : logoWhite} />
-                                </span>
-                                <span><Typography variant="h5" style={{ fontWeight: 400, paddingBottom: "3%", fontFamily: "Source Sans Pro" }}>Pocket</Typography></span>
-                            </div>
                             <Hidden smUp implementation="js">
+                                {this.state.openOnboarding ?
+                                    <div style={{ width: 48, height: 48 }} /> :
+                                    <IconButton aria-label="open menu" className={this.props.classes.menuButton} onClick={this.toggleMenu(true)}>
+                                        <MenuIcon />
+                                    </IconButton>
+                                }
+                                <div style={{ display: "flex", alignItems: "center" }}>
+                                    <span style={{ paddingRight: theme.spacing.unit }}>
+                                        <img style={{ maxHeight: 28 }} src={this.state.paletteType === "light" ? logoColor : logoWhite} />
+                                    </span>
+                                    <span><Typography variant="h5" style={{ fontWeight: 400, paddingBottom: "3%", fontFamily: "Source Sans Pro" }}>Pocket</Typography></span>
+                                </div>
                                 <TextField
                                     select
                                     id="language_select"
@@ -389,7 +396,7 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                                     keepMounted: true,
                                 }}
                             >
-                                {this.renderWallets()}
+                                {this.renderWallets(theme)}
                             </SwipeableDrawer>
                         </Hidden>
                         <Hidden xsDown implementation="js">
@@ -400,7 +407,7 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                                 variant="permanent"
                                 open
                             >
-                                {this.renderWallets()}
+                                {this.renderWallets(theme)}
                             </Drawer>
                         </Hidden>
                     </nav>
