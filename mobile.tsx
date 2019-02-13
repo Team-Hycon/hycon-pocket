@@ -6,24 +6,18 @@ import { getMobileLocale, IText } from "./locales/m_locales"
 import MobileApp from "./mobileClient"
 
 declare let window: any
+declare let navigator: any
 
 document.addEventListener("deviceready", () => {
     const rest = new RestChrome()
     const language = getMobileLocale(navigator.language)
 
-    ReactDOM.hydrate(
+    ReactDOM.render(
         <HashRouter>
             <MobileApp rest={rest} />
         </HashRouter>,
         document.getElementById("blockexplorer"),
     )
-
-    // document.addEventListener("backbutton", (event) => {
-    //     event.preventDefault()
-    //     // this.forceUpdate()
-    //     // history.back()
-    //     return
-    // }, false)
 
     window.AppRate.preferences = {
         callbacks: {

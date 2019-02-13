@@ -1,7 +1,7 @@
 import { createStyles } from "@material-ui/core"
 import AppBar from "@material-ui/core/AppBar"
 import Button from "@material-ui/core/Button"
-import Dialog from "@material-ui/core/Dialog"
+import Dialog, { DialogProps } from "@material-ui/core/Dialog"
 import DialogActions from "@material-ui/core/DialogActions"
 import DialogTitle from "@material-ui/core/DialogTitle"
 import Divider from "@material-ui/core/Divider"
@@ -19,17 +19,18 @@ import Typography from "@material-ui/core/Typography"
 import ArrowBackIcon from "@material-ui/icons/ArrowBack"
 import InfoIcon from "@material-ui/icons/Info"
 import * as React from "react"
-import { Link } from "react-router-dom"
 import { ChangelogContent } from "./content/changelog"
 import { FeeSettings } from "./content/feeSettings"
+import { FingerprintContent } from "./content/fingerprint"
 import { PrivacyPolicyContent } from "./content/privacyPolicy"
 import { TermsOfUseContent } from "./content/termsOfUse"
 import { IText } from "./locales/m_locales"
 
 // tslint:disable:object-literal-sort-keys
 // CHECK VERSION EVERYTIME BEFORE RELEASING
-const VERSION = "1.2.0"
+const VERSION = "2.0.0"
 const storage = window.localStorage
+declare let window: any
 
 const styles = (theme: Theme) => createStyles({
     root: {
@@ -61,10 +62,12 @@ class Settings extends React.Component<ISettingsProps, any> {
         this.state = {
             globalFee: JSON.parse(storage.getItem("globalFee")) ? (JSON.parse(storage.getItem("globalFee")).active === "true") : false,
             miningFee: JSON.parse(storage.getItem("globalFee")) ? JSON.parse(storage.getItem("globalFee")).value : "1",
+            dialogFingerprint: false,
             dialogTermsOfUse: false,
             dialogPrivacyPolicy: false,
             dialogWhatsNew: false,
             showBalance: storage.getItem("showBalance") === null ? true : (storage.getItem("showBalance") === "true"),
+            fingerprintEnabled: storage.getItem("fingerprint") === null ? false : (storage.getItem("fingerprint") === "true"),
         }
     }
 
@@ -111,6 +114,28 @@ class Settings extends React.Component<ISettingsProps, any> {
                     </ListItem>
                     <Divider />
                     <FeeSettings language={this.props.language} name={""} />
+                    <Divider />
+                </List><br />
+
+                {/* Security */}
+                <List
+                    subheader={
+                        <ListSubheader disableSticky color="primary" component="div" className={this.props.classes.header}>
+                            <span className={this.props.classes.listSubheader}>Security</span>
+                        </ListSubheader>
+                    }
+                >
+                    <ListItem button onClick={this.handleDialogFingerprint} key="item-fingerprint">
+                        <ListItemText primary="Require fingerprint on app launch" secondary={this.state.fingerprintEnabled ? "Enabled" : "Disabled" }/>
+                    </ListItem>
+                    <Dialog fullScreen open={this.state.dialogFingerprint} onClose={this.handleDialogFingerprint} scroll={this.state.scroll}>
+                        <DialogTitle><Typography variant="h6">Fingerprint on app launch</Typography></DialogTitle>
+                        <FingerprintContent language={this.props.language} />
+                        <DialogActions>
+                            <Button className={this.props.classes.btn} onClick={this.handleDialogFingerprint}>{this.props.language["btn-close"]}</Button>
+                            <Button className={this.props.classes.btn} onClick={this.handleFingerprintSettings}>{this.state.fingerprintEnabled ? "Disable" : "Enable"}</Button>
+                        </DialogActions>
+                    </Dialog>
                     <Divider />
                 </List><br />
 
@@ -193,6 +218,28 @@ class Settings extends React.Component<ISettingsProps, any> {
         storage.setItem("showBalance", (!this.state.showBalance).toString())
     }
 
+    private handleFingerprintSettings = () => {
+        if (this.state.fingerprintEnabled) {
+            this.setState({ fingerprintEnabled: false, dialogFingerprint: false })
+            storage.setItem("fingerprint", "false")
+        } else {
+            window.Fingerprint.isAvailable((sucess) => {
+                window.Fingerprint.show({
+                    clientId: "Hycon Pocket",
+                    clientSecret: "2.0.0",
+                }, () => {
+                    storage.setItem("fingerprint", "true")
+                    this.setState({ fingerprintEnabled : true, dialogFingerprint: false })
+                }, (err) => {
+                    storage.setItem("fingerprint", "false")
+                    this.setState({ fingerprintEnabled: false, dialogFingerprint: false })
+                })
+            })
+        }
+    }
+    private handleDialogFingerprint = () => {
+        this.setState({ dialogFingerprint: !this.state.dialogFingerprint })
+    }
     private handleDialogTermsOfUse = () => {
         this.setState({ dialogTermsOfUse: !this.state.dialogTermsOfUse })
     }

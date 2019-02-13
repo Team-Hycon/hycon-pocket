@@ -25,7 +25,6 @@ import TooltipIcon from "@material-ui/icons/Help"
 import Visibility from "@material-ui/icons/Visibility"
 import VisibilityOff from "@material-ui/icons/VisibilityOff"
 import * as React from "react"
-import { Link } from "react-router-dom"
 import { encodingMnemonic } from "../desktop/stringUtil"
 import { IHyconWallet, IResponseError, IRest } from "../rest"
 import { IText } from "./locales/m_locales"
@@ -92,8 +91,12 @@ export class AddWallet extends React.Component<IProps, any> {
     public componentDidMount() {
         document.addEventListener("backbutton", (event) => {
             event.preventDefault()
-            this.props.handleDialog()
-            window.location.hash = "#/"
+            if (this.state.step !== 0) {
+                this.decrementStep()
+            } else {
+                this.props.handleDialog()
+                window.location.hash = "#/"
+            }
             return
         }, false)
     }
@@ -264,20 +267,14 @@ export class AddWallet extends React.Component<IProps, any> {
         return (
             <Grid container spacing={16}>
                 <Grid item xs={12}>
-                    {
-                        this.state.step === 3 ?
-                            <Typography variant="body1" align="left" gutterBottom>
-                                {this.props.language["create-retype-mnemonic"]}
-                            </Typography> :
-                            <Typography variant="body1" align="left" gutterBottom>
-                                {this.props.language["recover-type-mnemonic"]}
-                            </Typography>
-                    }
+                    <Typography variant="body1" align="left" gutterBottom>
+                        {this.props.language["recover-type-mnemonic"]}
+                    </Typography>
                 </Grid>
                 <Grid item xs={12}>
                     <TextField
                         id="reconfirm-mnemonic"
-                        label={this.state.step === 3 ? this.props.language["ph-confirm-mnemonic"] : this.props.language["ph-enter-mnemonic"]}
+                        label={this.props.language["ph-enter-mnemonic"]}
                         variant="outlined"
                         fullWidth
                         multiline
@@ -311,11 +308,6 @@ export class AddWallet extends React.Component<IProps, any> {
                 component = this.renderChoice()
                 break
             case 2:
-                break
-            case 3:
-                component = this.renderConfirm()
-                break
-            case 4:
                 component = this.renderConfirm()
                 break
         }
@@ -351,7 +343,7 @@ export class AddWallet extends React.Component<IProps, any> {
                 <Grid alignContent="center">
                     {this.state.step === 1 ?
                         <p></p> :
-                        this.state.step < 3 ?
+                        this.state.step < 2 ?
                             <Button
                                 onClick={this.incrementStep.bind(this)}
                                 style={{ backgroundColor: "#172349", color: "#fff", width: "100%", padding: "16px 24px" }}>
@@ -419,21 +411,7 @@ export class AddWallet extends React.Component<IProps, any> {
                 generatedMnemonic: "",
                 confirmMnemonic: "",
                 reconfirmMnemonic: "",
-                redirectOnRecoverSuccess: false,
-            })
-        } else if (this.state.step === 3) {
-            this.setState({
-                step: 2,
-                confirmMnemonic: "",
-                reconfirmMnemonic: "",
-                redirectOnRecoverSuccess: false,
-            })
-        } else if (this.state.step === 4) {
-            this.setState({
-                step: 1,
-                generatedMnemonic: "",
-                confirmMnemonic: "",
-                reconfirmMnemonic: "",
+                redirectOnCreateSuccess: false,
                 redirectOnRecoverSuccess: false,
             })
         }
@@ -450,7 +428,7 @@ export class AddWallet extends React.Component<IProps, any> {
     }
 
     private recoverWallet() {
-        this.setState({ step: 4 })
+        this.setState({ step: 2 })
     }
 
     private hideAlertDialog = () => {
@@ -487,7 +465,7 @@ export class AddWallet extends React.Component<IProps, any> {
     private generateWallet(data: string) {
         this.setState({ isCreating: true, isMnemonic: true })
         let encodedMnemonic = ""
-        if (this.state.step === 4) {
+        if (this.state.step === 2) {
             encodedMnemonic = encodingMnemonic(this.state.reconfirmMnemonic)
         } else if (data !== "") {
             encodedMnemonic = encodingMnemonic(data)
@@ -512,7 +490,7 @@ export class AddWallet extends React.Component<IProps, any> {
             this.props.rest.getWalletDetail(this.state.walletName).then((wdata: IHyconWallet | IResponseError) => {
                 if (wdata != null && wdata !== undefined) {
                     console.log(wdata)
-                    if (this.state.step === 4) {
+                    if (this.state.step === 2) {
                         this.setState({ isCreating: false, redirectOnRecoverSuccess: true, generatedMnemonic: encodedMnemonic })
                     } else {
                         this.setState({ isCreating: false, redirectOnCreateSuccess: true, generatedMnemonic: encodedMnemonic })
@@ -528,7 +506,7 @@ export class AddWallet extends React.Component<IProps, any> {
                     alert(this.props.language["alert-wallet-address-duplicate"])
                     break
                 default:
-                    alert(this.props.language["alert-recover-fail"])
+                    alert(this.props.language["alert-recover-fail"] + ": " + e)
             }
         })
     }

@@ -36,6 +36,7 @@ import { Route, Switch } from "react-router-dom"
 import { IHyconWallet, IResponseError, IRest } from "../rest"
 import { AddWallet } from "./addWallet"
 import { Contacts } from "./contacts"
+import { FingerprintContent } from "./content/fingerprint"
 import Onboarding from "./content/onboarding"
 import { Giftcard } from "./giftcard"
 import { getMobileLocale, IText } from "./locales/m_locales"
@@ -113,6 +114,7 @@ interface IProps extends WithStyles<typeof styles> {
     rest: IRest
 }
 interface IState {
+    fingerprintAuth: boolean,
     name?: string
     openMenu: boolean
     openWalletList: boolean
@@ -148,6 +150,7 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
         this.state = {
             classes: this.props.classes,
             confirmAppExit: false,
+            fingerprintAuth: false,
             name: "",
             openDialog: false,
             openMenu: false,
@@ -161,13 +164,26 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
             wallet: { name: "", passphrase: "", password: "", hint: "", mnemonic: "", address: "", balance: "0", txs: [], pendings: [], language: "", pendingAmount: "0" },
             wallets: [],
         }
+        if (storage.getItem("fingerprint") === "true") {
+            window.Fingerprint.show({
+                clientId: "Hycon Pocket",
+                clientSecret: "2.0.0",
+            }, () => {this.setState({ fingerprintAuth: true })}, () => { navigator.app.exitApp() })
+        } else {
+            console.log("fingerprintAuth constructor: " + this.state.fingerprintAuth)
+            console.log(storage.getItem("fingerprint"))
+            // this.setState({ fingerprintAuth: true })
+        }
+        console.log("constructor")
+        console.log(this.state.fingerprintAuth)
+        console.log(storage.getItem("fingerprint"))
     }
 
     public componentDidMount() {
+        console.log("componentDidMount")
+        // console.log(this.state.wallet)
         document.addEventListener("backbutton", (event) => {
             event.preventDefault()
-            console.log("mobileClient backbutton trigger")
-            console.log(this.state.confirmAppExit)
             if (window.location.hash === "#/") {
                 console.log(this.state.confirmAppExit)
                 { this.state.confirmAppExit ? navigator.app.exitApp() : this.setState({ confirmAppExit: true }) }
@@ -199,6 +215,8 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
     }
 
     public componentDidUpdate() {
+        console.log("componentDidUpdate")
+        // console.log(this.state.wallet)
         this.state.rest.getPrice(this.language.currency).then((price: number) => {
             this.price.fiat = price
         })
@@ -209,7 +227,13 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
             this.price.btc = price
         })
     }
+
+    public shouldComponentUpdate(nextProps, nextState: IState) {
+        return true
+    }
     public renderWallets(theme: Theme) {
+        console.log("renderWallets")
+        // console.log(this.state.wallet)
         return (
             <div>
                 <List>
@@ -351,100 +375,110 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
         }
 
         console.log(window.location)
+        // // console.log(this.state.wallet)
+        // return (
+        //     if (this.state.fingerprintAuth) {
+        //         <div style={{ height: "100%", backgroundColor: "blue" }}>
+        //             No authentication
+        //         </div>
+        //     }
+        // )
 
         return (
-            <MuiThemeProvider theme={theme}>
-                <div style={{ backgroundColor: this.state.paletteType === "light" ? "white" : "#303030", display: "flex", flexDirection: "column", flexGrow: 1 }}>
-                    <CssBaseline />
-                    <AppBar position="absolute" elevation={0} className={this.props.classes.appBar}>
-                        <Toolbar style={{ display: "flex", justifyContent: "space-between" }}>
+            (this.state.fingerprintAuth || storage.getItem("fingerprint") === "false") ?
+                <MuiThemeProvider theme={theme}>
+                    <div style={{ backgroundColor: this.state.paletteType === "light" ? "white" : "#303030", display: "flex", flexDirection: "column", flexGrow: 1 }}>
+                        <CssBaseline />
+                        <AppBar position="absolute" elevation={0} className={this.props.classes.appBar}>
+                            <Toolbar style={{ display: "flex", justifyContent: "space-between" }}>
+                                <Hidden smUp implementation="js">
+                                    {this.state.openOnboarding ?
+                                        <div style={{ width: 48, height: 48 }} /> :
+                                        <IconButton aria-label="open menu" className={this.props.classes.menuButton} onClick={this.toggleMenu(true)}>
+                                            <MenuIcon />
+                                        </IconButton>
+                                    }
+                                    <div style={{ display: "flex", alignItems: "center" }}>
+                                        <span style={{ paddingRight: theme.spacing.unit }}>
+                                            <img style={{ maxHeight: 28 }} src={this.state.paletteType === "light" ? logoColor : logoWhite} />
+                                        </span>
+                                        <span><Typography variant="h5" style={{ fontWeight: 400, paddingBottom: "3%", fontFamily: "Source Sans Pro" }}>Pocket</Typography></span>
+                                    </div>
+                                    <TextField
+                                        select
+                                        id="language_select"
+                                        type="text"
+                                        value={this.languageSelect}
+                                        onChange={this.setLanguage.bind(this)}
+                                    >
+                                        <MenuItem key="en" value="en">{this.language["lang-en"]}</MenuItem>
+                                        <MenuItem key="ko" value="ko">{this.language["lang-ko"]}</MenuItem>
+                                    </TextField>
+                                </Hidden>
+                            </Toolbar>
+                        </AppBar>
+                        <nav className={this.props.classes.drawer}>
                             <Hidden smUp implementation="js">
-                                {this.state.openOnboarding ?
-                                    <div style={{ width: 48, height: 48 }} /> :
-                                    <IconButton aria-label="open menu" className={this.props.classes.menuButton} onClick={this.toggleMenu(true)}>
-                                        <MenuIcon />
-                                    </IconButton>
-                                }
-                                <div style={{ display: "flex", alignItems: "center" }}>
-                                    <span style={{ paddingRight: theme.spacing.unit }}>
-                                        <img style={{ maxHeight: 28 }} src={this.state.paletteType === "light" ? logoColor : logoWhite} />
-                                    </span>
-                                    <span><Typography variant="h5" style={{ fontWeight: 400, paddingBottom: "3%", fontFamily: "Source Sans Pro" }}>Pocket</Typography></span>
-                                </div>
-                                <TextField
-                                    select
-                                    id="language_select"
-                                    type="text"
-                                    value={this.languageSelect}
-                                    onChange={this.setLanguage.bind(this)}
+                                <SwipeableDrawer
+                                    variant="temporary"
+                                    open={this.state.openMenu}
+                                    onOpen={this.toggleMenu(true)}
+                                    onClose={this.toggleMenu(false)}
+                                    PaperProps={{ style: { width: temporaryDrawerWidth } }}
+                                    ModalProps={{
+                                        keepMounted: true,
+                                    }}
                                 >
-                                    <MenuItem key="en" value="en">{this.language["lang-en"]}</MenuItem>
-                                    <MenuItem key="ko" value="ko">{this.language["lang-ko"]}</MenuItem>
-                                </TextField>
+                                    {this.renderWallets(theme)}
+                                </SwipeableDrawer>
                             </Hidden>
-                        </Toolbar>
-                    </AppBar>
-                    <nav className={this.props.classes.drawer}>
-                        <Hidden smUp implementation="js">
-                            <SwipeableDrawer
-                                variant="temporary"
-                                open={this.state.openMenu}
-                                onOpen={this.toggleMenu(true)}
-                                onClose={this.toggleMenu(false)}
-                                PaperProps={{ style: { width: temporaryDrawerWidth } }}
-                                ModalProps={{
-                                    keepMounted: true,
-                                }}
-                            >
-                                {this.renderWallets(theme)}
-                            </SwipeableDrawer>
-                        </Hidden>
-                        <Hidden xsDown implementation="js">
-                            <Drawer
-                                classes={{
-                                    paper: this.props.classes.permanentDrawerPaper,
-                                }}
-                                variant="permanent"
-                                open
-                            >
-                                {this.renderWallets(theme)}
-                            </Drawer>
-                        </Hidden>
-                    </nav>
-                    <main className={this.props.classes.content}>
-                        {this.state.openOnboarding ?
-                            <Onboarding
-                                rest={this.props.rest}
-                                language={this.language}
-                                closeOnboarding={this.closeOnboarding.bind(this)}
-                                setWallets={this.setWallets.bind(this)}
-                                handleWalletSelect={this.handleWalletSelect.bind(this)} /> :
-                            <WalletView
-                                rest={this.state.rest}
-                                language={this.language}
-                                wallet={this.state.wallet}
-                                price={this.price}
-                                name={this.state.name}
-                                paletteType={this.state.paletteType}
-                                handleDialog={this.handleDialog.bind(this)}
-                                setWallets={this.setWallets.bind(this)}
-                                handleWalletSelect={this.handleWalletSelect.bind(this)}
-                                updateSelected={this.updateSelected.bind(this)}
-                            />
-                        }
+                            <Hidden xsDown implementation="js">
+                                <Drawer
+                                    classes={{
+                                        paper: this.props.classes.permanentDrawerPaper,
+                                    }}
+                                    variant="permanent"
+                                    open
+                                >
+                                    {this.renderWallets(theme)}
+                                </Drawer>
+                            </Hidden>
+                        </nav>
+                        <main className={this.props.classes.content}>
+                            {this.state.openOnboarding ?
+                                <Onboarding
+                                    rest={this.props.rest}
+                                    language={this.language}
+                                    closeOnboarding={this.closeOnboarding.bind(this)}
+                                    setWallets={this.setWallets.bind(this)}
+                                    handleWalletSelect={this.handleWalletSelect.bind(this)} /> :
+                                <WalletView
+                                    rest={this.state.rest}
+                                    language={this.language}
+                                    wallet={this.state.wallet}
+                                    price={this.price}
+                                    name={this.state.name}
+                                    paletteType={this.state.paletteType}
+                                    handleDialog={this.handleDialog.bind(this)}
+                                    setWallets={this.setWallets.bind(this)}
+                                    handleWalletSelect={this.handleWalletSelect.bind(this)}
+                                    updateSelected={this.updateSelected.bind(this)}
+                                />
+                            }
 
-                        <Dialog fullScreen style={{ marginLeft: window.matchMedia("(max-width: 600px)").matches ? 0 : permanentDrawerWidth }} open={this.state.openDialog} onClose={this.handleDialog} scroll={"paper"}>
-                            <Switch>
-                                <Route exact path="/addwallet" component={() => <AddWallet rest={this.state.rest} language={this.language} handleDialog={this.handleDialog.bind(this)} setWallets={this.setWallets.bind(this)} handleWalletSelect={this.handleWalletSelect.bind(this)} />} />
-                                <Route exact path="/sendcoins" component={() => <SendHyc rest={this.state.rest} language={this.language} wallet={this.state.wallet} handleDialog={this.handleDialog.bind(this)} />} />
-                                <Route exact path="/contacts" component={() => <Contacts rest={this.state.rest} language={this.language} handleDialog={this.handleDialog.bind(this)} />} />
-                                <Route exact path="/giftcard" component={() => <Giftcard rest={this.state.rest} language={this.language} wallet={this.state.wallet} handleDialog={this.handleDialog.bind(this)} />} />
-                                <Route exact path="/settings" component={() => <Settings language={this.language} handleDialog={this.handleDialog.bind(this)} />} />
-                            </Switch>
-                        </Dialog>
-                    </main>
-                </div>
-            </MuiThemeProvider>
+                            <Dialog fullScreen style={{ marginLeft: window.matchMedia("(max-width: 600px)").matches ? 0 : permanentDrawerWidth }} open={this.state.openDialog} onClose={this.handleDialog} scroll={"paper"}>
+                                <Switch>
+                                    <Route exact path="/addwallet" component={() => <AddWallet rest={this.state.rest} language={this.language} handleDialog={this.handleDialog.bind(this)} setWallets={this.setWallets.bind(this)} handleWalletSelect={this.handleWalletSelect.bind(this)} />} />
+                                    <Route exact path="/sendcoins" component={() => <SendHyc rest={this.state.rest} language={this.language} wallet={this.state.wallet} handleDialog={this.handleDialog.bind(this)} />} />
+                                    <Route exact path="/contacts" component={() => <Contacts rest={this.state.rest} language={this.language} handleDialog={this.handleDialog.bind(this)} />} />
+                                    <Route exact path="/giftcard" component={() => <Giftcard rest={this.state.rest} language={this.language} wallet={this.state.wallet} handleDialog={this.handleDialog.bind(this)} />} />
+                                    <Route exact path="/settings" component={() => <Settings language={this.language} handleDialog={this.handleDialog.bind(this)} />} />
+                                </Switch>
+                            </Dialog>
+                        </main>
+                    </div>
+                </MuiThemeProvider> :
+                <div>No auth</div>
         )
     }
 
