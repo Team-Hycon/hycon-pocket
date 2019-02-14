@@ -17,7 +17,6 @@ import SwipeableViews from "react-swipeable-views"
 import { IRest } from "../../rest"
 import { AddWallet } from "../addWallet"
 import { IText } from "../locales/m_locales"
-import withRoot from "../styles/withRoot"
 import { TermsOfUseContent } from "./termsOfUse"
 
 // tslint:disable:no-var-requires
@@ -286,4 +285,4 @@ export class Onboarding extends React.Component<IProps, any> {
     }
 }
 
-export default withRoot(withStyles(styles)(Onboarding), "light")
+export default withStyles(styles)(Onboarding)

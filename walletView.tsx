@@ -138,7 +138,7 @@ interface IProps extends WithStyles<typeof styles> {
     handleWalletSelect: (name: string) => void
     updateSelected: (name: string) => void
 }
-class WalletView extends React.Component<IProps, any> {
+class WalletView extends React.PureComponent<IProps, any> {
     private balanceIndex: number = 0
 
     constructor(props: IProps) {
@@ -189,10 +189,13 @@ class WalletView extends React.Component<IProps, any> {
             passwordValidated: false,
             passwordInvalid: false,
             hasMnemonic: false,
+            update: false,
         }
+        // console.log("constructor walletView")
     }
 
     public componentDidMount() {
+        // console.log("componentDidMount walletView")
         document.addEventListener("backbutton", (event) => {
             event.preventDefault()
             if (this.state.qrDrawer || this.state.reqDrawer || this.state.askDelete || this.state.openMnemonic || this.state.dialogMore || Boolean(this.state.anchorEl)) {
@@ -202,9 +205,7 @@ class WalletView extends React.Component<IProps, any> {
             }
             return
         }, false)
-    }
 
-    public componentDidUpdate() {
         const hycBalanceNum = Number(this.state.wallet.balance)
         this.state.balance.fiat = (this.state.price.fiat * hycBalanceNum)
         this.state.balance.btc = (this.state.price.btc * hycBalanceNum).toFixed(9)
@@ -212,6 +213,9 @@ class WalletView extends React.Component<IProps, any> {
     }
 
     public componentWillReceiveProps(nextProps: any) {
+        // console.log("componentWillReceiveProps walletView")
+        // console.log("nextProps " + nextProps.name)
+        // console.log("currStateName " + this.state.name)
         this.setState({ name: nextProps.name, wallet: nextProps.wallet })
         if (nextProps.wallet.name !== this.state.name) {
             this.props.updateSelected(this.state.name)
@@ -220,6 +224,7 @@ class WalletView extends React.Component<IProps, any> {
     }
 
     public handleDelete = () => {
+        // console.log("handleDelete walletView")
         this.state.rest.deleteWallet(this.state.name).then((res) => {
             if (res) {
                 this.setState({
@@ -235,6 +240,7 @@ class WalletView extends React.Component<IProps, any> {
     }
 
     public render() {
+        // console.log("render walletView")
         if (this.state.notFound) {
             return <div>{this.props.language["detail-no-data"]}</div>
         }

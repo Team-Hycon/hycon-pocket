@@ -5,6 +5,7 @@ import CssBaseline from "@material-ui/core/CssBaseline"
 import Dialog from "@material-ui/core/Dialog"
 import Divider from "@material-ui/core/Divider"
 import Drawer from "@material-ui/core/Drawer"
+import Grid from "@material-ui/core/Grid"
 import Hidden from "@material-ui/core/Hidden"
 import IconButton from "@material-ui/core/IconButton"
 import LinearProgress from "@material-ui/core/LinearProgress"
@@ -36,7 +37,6 @@ import { Route, Switch } from "react-router-dom"
 import { IHyconWallet, IResponseError, IRest } from "../rest"
 import { AddWallet } from "./addWallet"
 import { Contacts } from "./contacts"
-import { FingerprintContent } from "./content/fingerprint"
 import Onboarding from "./content/onboarding"
 import { Giftcard } from "./giftcard"
 import { getMobileLocale, IText } from "./locales/m_locales"
@@ -49,6 +49,7 @@ declare var window: any
 // tslint:disable:no-var-requires
 const logoWhite = require("./img/logo-w.png")
 const logoColor = require("./img/logo-c.png")
+const lock = require("./img/onboarding-lock.png")
 const permanentDrawerWidth = 300
 let temporaryDrawerWidth = window.innerWidth * 0.8
 const storage = window.localStorage
@@ -80,13 +81,13 @@ const styles = (theme: Theme) => createStyles({
             marginLeft: permanentDrawerWidth,
         },
     },
-drawer: {
+    drawer: {
         [theme.breakpoints.up("sm")]: {
             flexShrink: 0,
             width: permanentDrawerWidth,
         },
     },
-expand: {
+    expand: {
         transform: "rotate(0deg)",
         transition: theme.transitions.create("transform", {
             duration: theme.transitions.duration.shortest,
@@ -95,19 +96,26 @@ expand: {
             marginRight: -8,
         },
     },
-expandOpen: {
+    expandOpen: {
         transform: "rotate(180deg)",
     },
-menuButton: {
+    menuButton: {
         marginRight: 20,
         [theme.breakpoints.up("sm")]: {
             display: "none",
         },
     },
-permanentDrawerPaper: {
+    permanentDrawerPaper: {
         width: permanentDrawerWidth,
     },
-toolbar: theme.mixins.toolbar,
+    root: {
+        background: "-webkit-linear-gradient(top, #0095a1 0%,#172349 100%)",
+        display: "flex",
+        flex: 1,
+        flexDirection: "column",
+        overflowY: "scroll",
+    },
+    toolbar: theme.mixins.toolbar,
 })
 
 interface IProps extends WithStyles<typeof styles> {
@@ -168,28 +176,20 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
             window.Fingerprint.show({
                 clientId: "Hycon Pocket",
                 clientSecret: "2.0.0",
-            }, () => {this.setState({ fingerprintAuth: true })}, () => { navigator.app.exitApp() })
-        } else {
-            console.log("fingerprintAuth constructor: " + this.state.fingerprintAuth)
-            console.log(storage.getItem("fingerprint"))
-            // this.setState({ fingerprintAuth: true })
+            }, () => { this.setState({ fingerprintAuth: true }) }, () => { setTimeout(() => { navigator.app.exitApp() }, 1500) })
         }
-        console.log("constructor")
-        console.log(this.state.fingerprintAuth)
-        console.log(storage.getItem("fingerprint"))
+        // console.log("constructor")
     }
 
     public componentDidMount() {
-        console.log("componentDidMount")
-        // console.log(this.state.wallet)
+        // console.log("componentDidMount")
         document.addEventListener("backbutton", (event) => {
             event.preventDefault()
             if (window.location.hash === "#/") {
-                console.log(this.state.confirmAppExit)
                 { this.state.confirmAppExit ? navigator.app.exitApp() : this.setState({ confirmAppExit: true }) }
                 window.plugins.toast.showShortBottom("Press back again to exit")
             }
-            window.setTimeout(() => { this.setState({ confirmAppExit: false }); console.log("timeout: " + this.state.confirmAppExit)}, 1000)
+            window.setTimeout(() => { this.setState({ confirmAppExit: false })}, 1000)
             return
         }, false)
 
@@ -202,38 +202,26 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                     wallets: data.walletList,
                 })
 
-                this.props.rest.getWalletDetail(walletName).then((wallet: IHyconWallet & IResponseError) => {
-                    if (wallet.address) {
-                        this.setState({ wallet })
-                    } else {
-                        // if wallet not found, select a new wallet
-                        this.handleWalletSelect(walletName)
-                    }
-                })
+                this.updateSelected(walletName)
             }
         })
-    }
 
-    public componentDidUpdate() {
-        console.log("componentDidUpdate")
-        // console.log(this.state.wallet)
-        this.state.rest.getPrice(this.language.currency).then((price: number) => {
+        this.props.rest.getPrice(this.language.currency).then((price: number) => {
             this.price.fiat = price
         })
-        this.state.rest.getPrice("eth").then((price: number) => {
+        this.props.rest.getPrice("eth").then((price: number) => {
             this.price.eth = price
         })
-        this.state.rest.getPrice("btc").then((price: number) => {
+        this.props.rest.getPrice("btc").then((price: number) => {
             this.price.btc = price
         })
     }
 
-    public shouldComponentUpdate(nextProps, nextState: IState) {
-        return true
-    }
+    // public componentDidUpdate() {
+    // }
+
     public renderWallets(theme: Theme) {
-        console.log("renderWallets")
-        // console.log(this.state.wallet)
+        // console.log("renderWallets")
         return (
             <div>
                 <List>
@@ -374,23 +362,14 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
             return <div>Loading</div>
         }
 
-        console.log(window.location)
-        // // console.log(this.state.wallet)
-        // return (
-        //     if (this.state.fingerprintAuth) {
-        //         <div style={{ height: "100%", backgroundColor: "blue" }}>
-        //             No authentication
-        //         </div>
-        //     }
-        // )
-
+        // console.log("render " + window.location.hash)
         return (
-            (this.state.fingerprintAuth || storage.getItem("fingerprint") === "false") ?
+            (this.state.fingerprintAuth || storage.getItem("fingerprint") === "false") || storage.getItem("fingerprint") === null ?
                 <MuiThemeProvider theme={theme}>
                     <div style={{ backgroundColor: this.state.paletteType === "light" ? "white" : "#303030", display: "flex", flexDirection: "column", flexGrow: 1 }}>
                         <CssBaseline />
                         <AppBar position="absolute" elevation={0} className={this.props.classes.appBar}>
-                            <Toolbar style={{ display: "flex", justifyContent: "space-between" }}>
+                            <Toolbar style={{ display: "flex", justifyContent: "space-between", paddingLeft: 8 }}>
                                 <Hidden smUp implementation="js">
                                     {this.state.openOnboarding ?
                                         <div style={{ width: 48, height: 48 }} /> :
@@ -478,7 +457,15 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                         </main>
                     </div>
                 </MuiThemeProvider> :
-                <div>No auth</div>
+                <Grid container className={this.props.classes.root} style={{ justifyContent: "space-around" }}>
+                    <Grid item xs={12}>
+                        <div style={{ textAlign: "center" }}>
+                            <img style={{ maxHeight: 160 }} src={lock} />
+                            <Typography variant="h6" align="center" style={{ marginTop: 10, fontWeight: 600, color: "white" }}>Fingerprint on launch enabled</Typography>
+                            <Typography variant="caption" align="center" style={{ color: "white" }}>Please relaunch the app to attempt authentication</Typography>
+                        </div>
+                    </Grid>
+                </Grid>
         )
     }
 
@@ -527,12 +514,12 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
     }
     private updateSelected(name: string) {
         this.props.rest.getWalletDetail(this.state.name).then((data: IHyconWallet & IResponseError) => {
-            console.log("updateSelected")
-            console.log(data)
             if (data.address) {
+                // console.log("wallet state set")
                 this.setState({ wallet: data })
             } else {
                 // if wallet not found, select a new wallet
+                // console.log("wallet not found, selecting again")
                 this.handleWalletSelect(this.state.name)
             }
         })
@@ -552,7 +539,6 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
             this.setState({ selectedWalletIndex: this.state.selectedWalletIndex - 1 === -1 ? 0 : this.state.selectedWalletIndex - 1 })
         }
         this.props.rest.getWalletList().then((data: any) => {
-            console.log("setWallets getWalletList()")
             if (data.walletList.length === 0) {
                 this.setState({
                     name: "",
@@ -561,7 +547,6 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                     wallets: [],
                 })
             } else {
-                console.log(data)
                 this.setState({ name: data.walletList[this.state.selectedWalletIndex].name, wallets: data.walletList })
             }
         })
