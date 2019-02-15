@@ -39,6 +39,7 @@ interface IGiftcardProps {
     rest: IRest
     language: IText
     wallet: IHyconWallet
+    oneHanded: boolean
     handleDialog: () => void
 }
 
@@ -65,30 +66,47 @@ export class Giftcard extends React.Component<IGiftcardProps, any> {
         }, false)
     }
 
+    public componentWillUnmount() {
+        document.removeEventListener("backbutton", (event) => {
+            event.preventDefault()
+            this.props.handleDialog()
+            window.location.hash = "#/"
+            return
+        }, false)
+    }
+
     public render() {
         if (this.state.redirect) {
             this.props.handleDialog()
-            // return <Redirect to={"/wallet/" + this.props.wallet.name} />
         }
 
         let width = window.innerWidth * 0.9
         if (width > 400) { width = 400 }
         const height = width / 1.5858
 
+        let title = ""
+        if (this.props.oneHanded) {
+            if (this.props.language.grammar === "reverse") {
+                title = this.props.language["title-redeem-giftcard"].substring(3)
+            } else {
+                title = this.props.language["title-redeem-giftcard"].substring(0, 16)
+            }
+        } else if (this.props.language.grammar === "reverse") {
+            title = this.props.wallet.name + this.props.language["title-wallet"] + this.props.language["title-redeem-giftcard"]
+        } else {
+            title = this.props.language["title-redeem-giftcard"] + this.props.wallet.name + this.props.language["title-wallet"]
+        }
+
         return (
             <Grid container justify="space-between" style={styles.root}>
                 <Grid item>
                     {this.state.pending ? <Grid item xs={12}><LinearProgress /></Grid> : null}
-                    <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0 }} position="static">
+                    <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0, margin: this.props.oneHanded ? "15vh 0" : 0 }} position="static">
                         <Toolbar style={styles.header}>
-                            {/* <Link to={"/wallet/" + this.props.wallet.name}> */}
                             <IconButton onClick={this.props.handleDialog}><ArrowBackIcon /></IconButton>
-                            {/* </Link> */}
-                                <Typography variant="button" align="center">
-                                    {this.props.language.grammar === "reverse"
-                                        ? this.props.wallet.name + this.props.language["title-wallet"] + this.props.language["title-redeem-giftcard"]
-                                        : this.props.language["title-redeem-giftcard"] + this.props.wallet.name + this.props.language["title-wallet"]}
-                                </Typography>
+                            <Typography variant={this.props.oneHanded ? "h2" : "button"} align="center">
+                                {title}
+                            </Typography>
                             <div style={{ width: 48, height: 48 }} />
                         </Toolbar>
                     </AppBar>

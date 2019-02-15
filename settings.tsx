@@ -26,17 +26,14 @@ import { PrivacyPolicyContent } from "./content/privacyPolicy"
 import { TermsOfUseContent } from "./content/termsOfUse"
 import { IText } from "./locales/m_locales"
 
-// tslint:disable:object-literal-sort-keys
 // CHECK VERSION EVERYTIME BEFORE RELEASING
 const VERSION = "2.0.0"
 const storage = window.localStorage
 declare let window: any
 
 const styles = (theme: Theme) => createStyles({
-    root: {
-        flex: 1,
-        display: "flex",
-        flexDirection: "column",
+    btn: {
+        color: theme.palette.type === "dark" ? "white" : "#172349",
     },
     header: {
         display: "flex",
@@ -46,28 +43,34 @@ const styles = (theme: Theme) => createStyles({
     listSubheader: {
         margin: "auto 16px",
     },
-    btn: {
-        color: theme.palette.type === "dark" ? "white" : "#172349",
+    root: {
+        display: "flex",
+        flex: 1,
+        flexDirection: "column",
     },
 })
 
 interface ISettingsProps extends WithStyles<typeof styles> {
     language: IText
     handleDialog: () => void
+    handleOneHanded: () => void
+    oneHanded: boolean
 }
 
 class Settings extends React.Component<ISettingsProps, any> {
+    public  scrollTop = 0
+
     constructor(props: ISettingsProps) {
         super(props)
         this.state = {
+            dialogFingerprint: false,
+            dialogPrivacyPolicy: false,
+            dialogTermsOfUse: false,
+            dialogWhatsNew: false,
+            fingerprintEnabled: storage.getItem("fingerprint") === null ? false : (storage.getItem("fingerprint") === "true"),
             globalFee: JSON.parse(storage.getItem("globalFee")) ? (JSON.parse(storage.getItem("globalFee")).active === "true") : false,
             miningFee: JSON.parse(storage.getItem("globalFee")) ? JSON.parse(storage.getItem("globalFee")).value : "1",
-            dialogFingerprint: false,
-            dialogTermsOfUse: false,
-            dialogPrivacyPolicy: false,
-            dialogWhatsNew: false,
             showBalance: storage.getItem("showBalance") === null ? true : (storage.getItem("showBalance") === "true"),
-            fingerprintEnabled: storage.getItem("fingerprint") === null ? false : (storage.getItem("fingerprint") === "true"),
         }
     }
 
@@ -79,15 +82,25 @@ class Settings extends React.Component<ISettingsProps, any> {
             return
         }, false)
     }
+
+    public componentWillUnmount() {
+        document.removeEventListener("backbutton", (event) => {
+            event.preventDefault()
+            this.props.handleDialog()
+            window.location.hash = "#/"
+            return
+        }, false)
+    }
+
     public render() {
         return (
             <Grid className={this.props.classes.root}>
-                <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0 }} position="static">
+                <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0, margin: this.props.oneHanded ? "15vh 0" : 0 }} position="static">
                     <Toolbar className={this.props.classes.header}>
                         <IconButton onClick={this.props.handleDialog}>
                             <ArrowBackIcon />
                         </IconButton>
-                        <Typography variant="button" align="center">
+                        <Typography variant={this.props.oneHanded ? "h2" : "button"} align="center">
                             {this.props.language["settings-title"]}
                         </Typography>
                         <div style={{ width: 48, height: 48 }} />
@@ -101,6 +114,7 @@ class Settings extends React.Component<ISettingsProps, any> {
     public renderListSettings() {
         return (
             <Grid>
+
                 {/* General Settings */}
                 <List
                     subheader={
@@ -111,6 +125,10 @@ class Settings extends React.Component<ISettingsProps, any> {
                 >
                     <ListItem button onClick={this.showBalance} key="item-show-balance">
                         <ListItemText primary={this.state.showBalance ? this.props.language["hide-balance"] : this.props.language["show-balance"]} />
+                    </ListItem>
+                    <Divider />
+                    <ListItem button onClick={this.props.handleOneHanded} key="item-one-handed">
+                        <ListItemText primary={this.props.oneHanded ? "Turn off one-handed mode" : "Turn on one-handed mode"} />
                     </ListItem>
                     <Divider />
                     <FeeSettings language={this.props.language} name={""} />

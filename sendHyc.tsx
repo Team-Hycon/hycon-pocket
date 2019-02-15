@@ -73,6 +73,7 @@ interface IProps extends WithStyles<typeof styles> {
     rest: IRest
     language: IText
     wallet: any
+    oneHanded: boolean
     handleDialog: () => void
 }
 
@@ -149,6 +150,15 @@ class SendHyc extends React.Component<IProps, any> {
         this.getContacts()
     }
 
+    public componentWillUnmount() {
+        document.removeEventListener("backbutton", (event) => {
+            event.preventDefault()
+            this.props.handleDialog()
+            window.location.hash = "#/"
+            return
+        }, false)
+    }
+
     public shouldComponentUpdate(nextProps: IProps, nextState: any): boolean {
         return true
     }
@@ -156,14 +166,12 @@ class SendHyc extends React.Component<IProps, any> {
     public render() {
         return (
             <Grid className={this.props.classes.root}>
-                <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0 }} position="static">
+                <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0, margin: this.props.oneHanded ? "15vh 0" : 0 }} position="static">
                     <Toolbar className={this.props.classes.header}>
-                        {/* <Link to={"/wallet/" + this.props.wallet.name}> */}
                         <IconButton onClick={this.props.handleDialog}>
                             <ArrowBackIcon />
                         </IconButton>
-                        {/* </Link> */}
-                        <Typography variant="button" align="center">
+                        <Typography variant={this.props.oneHanded ? "h2" : "button" } align="center">
                             {this.props.language["send-hyc-title"]}
                         </Typography>
                         <IconButton aria-label="Qr" disabled={!this.state.qrScannerReady} onClick={this.openQrScanner.bind(this)}><QRScannerIcon /></IconButton>

@@ -51,6 +51,7 @@ const styles = createStyles({
 interface IProps {
     rest: IRest
     language: IText
+    oneHanded: boolean
     handleDialog: () => void
 }
 
@@ -94,6 +95,20 @@ export class Contacts extends React.Component<IProps, any> {
 
     public componentDidMount() {
         document.addEventListener("backbutton", (event) => {
+            event.preventDefault()
+            if (this.state.dialogAddContact || this.state.isScanning) {
+                this.setState({ dialogAddContact: false, isScanning: false })
+                window.location.hash = "#/contacts"
+            } else {
+                this.props.handleDialog()
+                window.location.hash = "#/"
+            }
+            return
+        }, false)
+    }
+
+    public componentWillUnmount() {
+        document.removeEventListener("backbutton", (event) => {
             event.preventDefault()
             if (this.state.dialogAddContact || this.state.isScanning) {
                 this.setState({ dialogAddContact: false, isScanning: false })
@@ -193,10 +208,10 @@ export class Contacts extends React.Component<IProps, any> {
     public render() {
         return (
             <div style={styles.root}>
-                <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0 }} position="static">
+                <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0, margin: this.props.oneHanded ? "15vh 0" : 0 }} position="static">
                     <Toolbar style={styles.header}>
                         <IconButton style={{ width: 48, height: 48 }} onClick={this.props.handleDialog}><ArrowBackIcon /></IconButton>
-                        <Typography variant="button" align="center">
+                        <Typography variant={this.props.oneHanded ? "h2" : "button"} align="center">
                             {this.props.language["contacts-title"]}
                         </Typography>
                         {this.state.isRemoving
@@ -205,7 +220,6 @@ export class Contacts extends React.Component<IProps, any> {
                         }
                     </Toolbar>
                 </AppBar>
-                <Divider />
                 {this.state.isScanning ?
                     <AppBar id="qrCloseButton" style={{ background: "transparent", boxShadow: "none", top: 12 }} position="absolute">
                         <Toolbar style={{ display: "flex", justifyContent: "flex-end" }}>

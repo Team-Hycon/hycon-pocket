@@ -99,7 +99,7 @@ export default {
     "contacts-list": "연락처 목록",
 
     // CREATE / RECOVER WALLET
-    "common-title": "지갑 생성 / 복구",
+    "common-title": "지갑 추가하기",
     "common-advanced-options-hint1": "니모닉과 함께 지갑 복구에 사용되는 문구로, 더 안전하게 지갑을 관리하기 위한 옵션입니다.",
     "common-advanced-options-hint2": "BIP39 암호문구를 잃어버리면 이 옵션을 적용했던 지갑을 절대로 복구할 수 없으니 분실하지 않도록 주의하십시오.",
     "common-select-create-or-recover": "새로운 지갑을 생성하겠습니까? 아니면 기존의 지갑을 복구하겠습니까?",

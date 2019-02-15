@@ -122,8 +122,9 @@ interface IProps extends WithStyles<typeof styles> {
     rest: IRest
 }
 interface IState {
-    fingerprintAuth: boolean,
+    fingerprintAuth: boolean
     name?: string
+    oneHanded: boolean
     openMenu: boolean
     openWalletList: boolean
     openOnboarding: boolean
@@ -160,6 +161,7 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
             confirmAppExit: false,
             fingerprintAuth: false,
             name: "",
+            oneHanded: storage.getItem("oneHanded") === null ? false : storage.getItem("oneHanded"),
             openDialog: false,
             openMenu: false,
             openOnboarding: storage.getItem("onboarding") === null ? true : false,
@@ -217,13 +219,25 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
         })
     }
 
+    public componentWillUnmount() {
+        document.removeEventListener("backbutton", (event) => {
+            event.preventDefault()
+            if (window.location.hash === "#/") {
+                { this.state.confirmAppExit ? navigator.app.exitApp() : this.setState({ confirmAppExit: true }) }
+                window.plugins.toast.showShortBottom("Press back again to exit")
+            }
+            window.setTimeout(() => { this.setState({ confirmAppExit: false }) }, 1000)
+            return
+        }, false)
+    }
+
     // public componentDidUpdate() {
     // }
 
     public renderWallets(theme: Theme) {
         // console.log("renderWallets")
         return (
-            <div>
+            <Grid container direction={this.state.oneHanded ? "column-reverse" : "column" } justify="flex-start" style={{ height: "100%" }}>
                 <List>
                     <Hidden xsDown implementation="js">
                         <ListItem>
@@ -336,7 +350,7 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                         </Hidden>
                     </ListItem>
                 </List>
-            </div>
+            </Grid>
         )
     }
 
@@ -437,6 +451,7 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                                     wallet={this.state.wallet}
                                     price={this.price}
                                     name={this.state.name}
+                                    oneHanded={this.state.oneHanded}
                                     paletteType={this.state.paletteType}
                                     handleDialog={this.handleDialog.bind(this)}
                                     setWallets={this.setWallets.bind(this)}
@@ -445,13 +460,13 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                                 />
                             }
 
-                            <Dialog fullScreen style={{ marginLeft: window.matchMedia("(max-width: 600px)").matches ? 0 : permanentDrawerWidth }} open={this.state.openDialog} onClose={this.handleDialog} scroll={"paper"}>
+                            <Dialog id="content-dialog" fullScreen style={{ marginLeft: window.matchMedia("(max-width: 600px)").matches ? 0 : permanentDrawerWidth }} open={this.state.openDialog} onClose={this.handleDialog} scroll={"paper"}>
                                 <Switch>
-                                    <Route exact path="/addwallet" component={() => <AddWallet rest={this.state.rest} language={this.language} handleDialog={this.handleDialog.bind(this)} setWallets={this.setWallets.bind(this)} handleWalletSelect={this.handleWalletSelect.bind(this)} />} />
-                                    <Route exact path="/sendcoins" component={() => <SendHyc rest={this.state.rest} language={this.language} wallet={this.state.wallet} handleDialog={this.handleDialog.bind(this)} />} />
-                                    <Route exact path="/contacts" component={() => <Contacts rest={this.state.rest} language={this.language} handleDialog={this.handleDialog.bind(this)} />} />
-                                    <Route exact path="/giftcard" component={() => <Giftcard rest={this.state.rest} language={this.language} wallet={this.state.wallet} handleDialog={this.handleDialog.bind(this)} />} />
-                                    <Route exact path="/settings" component={() => <Settings language={this.language} handleDialog={this.handleDialog.bind(this)} />} />
+                                    <Route exact path="/addwallet" component={() => <AddWallet rest={this.state.rest} language={this.language} oneHanded={this.state.oneHanded} handleDialog={this.handleDialog.bind(this)} setWallets={this.setWallets.bind(this)} handleWalletSelect={this.handleWalletSelect.bind(this)} />} />
+                                    <Route exact path="/sendcoins" component={() => <SendHyc rest={this.state.rest} language={this.language} wallet={this.state.wallet} oneHanded={this.state.oneHanded} handleDialog={this.handleDialog.bind(this)} />} />
+                                    <Route exact path="/contacts" component={() => <Contacts rest={this.state.rest} language={this.language} oneHanded={this.state.oneHanded} handleDialog={this.handleDialog.bind(this)} />} />
+                                    <Route exact path="/giftcard" component={() => <Giftcard rest={this.state.rest} language={this.language} wallet={this.state.wallet} oneHanded={this.state.oneHanded} handleDialog={this.handleDialog.bind(this)} />} />
+                                    <Route exact path="/settings" component={() => <Settings language={this.language} handleDialog={this.handleDialog.bind(this)} oneHanded={this.state.oneHanded} handleOneHanded={this.handleOneHanded.bind(this)}  />} />
                                 </Switch>
                             </Dialog>
                         </main>
@@ -467,6 +482,11 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                     </Grid>
                 </Grid>
         )
+    }
+
+    private handleOneHanded = () => {
+        this.setState({ oneHanded: !this.state.oneHanded })
+        storage.setItem("oneHanded", (!this.state.oneHanded).toString())
     }
 
     private closeOnboarding() {

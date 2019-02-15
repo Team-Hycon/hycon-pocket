@@ -53,6 +53,7 @@ const styles = createStyles({
 interface IProps {
     rest: IRest
     language: IText
+    oneHanded?: boolean
     handleDialog?: () => void
     handleWalletSelect?: () => void
     setWallets?: (fromDelete?: boolean) => void
@@ -90,6 +91,19 @@ export class AddWallet extends React.Component<IProps, any> {
 
     public componentDidMount() {
         document.addEventListener("backbutton", (event) => {
+            event.preventDefault()
+            if (this.state.step !== 0) {
+                this.decrementStep()
+            } else {
+                this.props.handleDialog()
+                window.location.hash = "#/"
+            }
+            return
+        }, false)
+    }
+
+    public componentWillUnmount() {
+        document.removeEventListener("backbutton", (event) => {
             event.preventDefault()
             if (this.state.step !== 0) {
                 this.decrementStep()
@@ -315,7 +329,7 @@ export class AddWallet extends React.Component<IProps, any> {
             <Grid justify="space-between" style={styles.root}>
                 <Grid>
                     {!this.state.isCreating ? undefined : <LinearProgress />}
-                    <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0 }} position="static">
+                    <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0, margin: this.props.oneHanded ? "15vh 0" : 0 }} position="static">
                         <Toolbar style={styles.header}>
                             {
                                 this.state.step === 0 ?
@@ -325,13 +339,12 @@ export class AddWallet extends React.Component<IProps, any> {
                                     :
                                     <IconButton onClick={this.decrementStep.bind(this)}><ArrowBackIcon /></IconButton>
                             }
-                            <Typography variant="button" align="center">
+                            <Typography variant={this.props.oneHanded ? "h2" : "button"} align="center">
                                 {this.props.language["common-title"]}
                             </Typography>
                             <div style={{ width: 48, height: 48 }} />
                         </Toolbar>
                     </AppBar>
-                    <Divider />
                 </Grid>
                 <Grid alignContent="center">
                     <Card elevation={0} square>
@@ -339,29 +352,46 @@ export class AddWallet extends React.Component<IProps, any> {
                             {component}
                         </CardContent>
                     </Card>
-                </Grid>
-                <Grid alignContent="center">
-                    {this.state.step === 1 ?
-                        <p></p> :
-                        this.state.step < 2 ?
-                            <Button
-                                onClick={this.incrementStep.bind(this)}
-                                style={{ backgroundColor: "#172349", color: "#fff", width: "100%", padding: "16px 24px" }}>
-                                {this.props.language["btn-continue"]}
-                            </Button> :
-                            <Button
-                                onClick={this.generateWallet.bind(this)}
-                                style={{ backgroundColor: "#172349", color: "#fff", width: "100%", padding: "16px 24px" }}>
-                                {this.props.language["btn-finish"]}
-                            </Button>
+                    { this.props.oneHanded ?
+                        this.state.step === 1 ? <p></p> :
+                            this.state.step < 2 ?
+                                <Button
+                                    onClick={this.incrementStep.bind(this)}
+                                    style={{ backgroundColor: "#172349", color: "#fff", width: "100%", padding: "16px 24px" }}>
+                                    {this.props.language["btn-continue"]}
+                                </Button> :
+                                <Button
+                                    onClick={this.generateWallet.bind(this)}
+                                    style={{ backgroundColor: "#172349", color: "#fff", width: "100%", padding: "16px 24px" }}>
+                                    {this.props.language["btn-finish"]}
+                                </Button> :
+                        null
                     }
                 </Grid>
+                {this.props.oneHanded ? null :
+                    <Grid alignContent="center">
+                        {this.state.step === 1 ?
+                            <p></p> :
+                            this.state.step < 2 ?
+                                <Button
+                                    onClick={this.incrementStep.bind(this)}
+                                    style={{ backgroundColor: "#172349", color: "#fff", width: "100%", padding: "16px 24px" }}>
+                                    {this.props.language["btn-continue"]}
+                                </Button> :
+                                <Button
+                                    onClick={this.generateWallet.bind(this)}
+                                    style={{ backgroundColor: "#172349", color: "#fff", width: "100%", padding: "16px 24px" }}>
+                                    {this.props.language["btn-finish"]}
+                                </Button>
+                        }
+                    </Grid>
+                }
             </Grid>
         )
     }
 
     private incrementStep() {
-        if (this.state.step === 0) {
+        if  (this.state.step === 0) {
             this.props.rest.checkDupleName(this.state.walletName).then((rep) => {
                 if (rep) {
                     alert(this.props.language["alert-wallet-name-duplicate"])
@@ -387,16 +417,16 @@ export class AddWallet extends React.Component<IProps, any> {
                 return
             })
         } else if (this.state.step === 2) {
-            if (this.state.generatedMnemonic !== encodingMnemonic(this.state.confirmMnemonic)) {
+            if  (this.state.generatedMnemonic !== encodingMnemonic(this.state.confirmMnemonic)) {
                 alert(this.props.language["alert-mnemonic-not-match"])
                 return
             }
-            this.setState({ step: 3 })
+            this.setState({ step:  3 })
         }
     }
 
     private decrementStep() {
-        if (this.state.step === 1) {
+        if  (this.state.step === 1) {
             this.setState({
                 step: 0,
                 walletName: "",
@@ -480,7 +510,7 @@ export class AddWallet extends React.Component<IProps, any> {
         }
 
         this.props.rest.recoverWallet({
-            language: this.state.mnemonicLanguage,
+            language:  this.state.mnemonicLanguage,
             mnemonic: encodedMnemonic,
             name: this.state.walletName,
             passphrase: this.state.passphrase,
@@ -498,7 +528,7 @@ export class AddWallet extends React.Component<IProps, any> {
                 }
             })
         }).catch((e: string) => {
-            switch (e.toString()) {
+            switch  (e.toString()) {
                 case "Error: mnemonic":
                     alert(this.props.language["alert-mnemonic-lang-not-match"])
                     break

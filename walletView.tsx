@@ -133,6 +133,7 @@ interface IProps extends WithStyles<typeof styles> {
     wallet: IHyconWallet
     name: string
     paletteType: string
+    oneHanded: boolean
     setWallets: (fromDelete?: boolean) => void
     handleDialog: () => void
     handleWalletSelect: (name: string) => void
@@ -212,6 +213,17 @@ class WalletView extends React.PureComponent<IProps, any> {
         this.state.balance.eth = (this.state.price.eth * hycBalanceNum).toFixed(9)
     }
 
+    public componentWillUnmount() {
+        document.removeEventListener("backbutton", (event) => {
+            event.preventDefault()
+            if (this.state.qrDrawer || this.state.reqDrawer || this.state.askDelete || this.state.openMnemonic || this.state.dialogMore || Boolean(this.state.anchorEl)) {
+                this.setState({ qrDrawer: false, reqDrawer: false, askDelete: false, openMnemonic: false, dialogMore: false, anchorEl: null })
+            } else {
+                this.forceUpdate()
+            }
+            return
+        }, false)
+    }
     public componentWillReceiveProps(nextProps: any) {
         // console.log("componentWillReceiveProps walletView")
         // console.log("nextProps " + nextProps.name)
@@ -704,10 +716,10 @@ class WalletView extends React.PureComponent<IProps, any> {
 
                     <Dialog fullScreen open={this.state.dialogMore} onClose={this.handleDialogMore} classes={{ paper: this.props.classes.dialogPaper }}>
                         <DialogTitle><Typography variant="h6">{this.state.name + this.props.language["title-wallet"] + " " + this.props.language["settings-title"]}</Typography></DialogTitle>
-                        <DialogContent style={{ padding: 0 }}>
+                        <DialogContent style={{ padding: 0, display: "flex", flexDirection: this.props.oneHanded ? "column-reverse" : "column" }}>
                             <List>
                                 <FeeSettings language={this.props.language} name={this.props.name}/>
-                                <Divider />
+                                { this.props.oneHanded ? null : <Divider/> }
                             </List>
                         </DialogContent>
                         <DialogActions>

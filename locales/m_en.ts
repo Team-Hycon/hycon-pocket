@@ -99,7 +99,7 @@ export default {
     "contacts-list": "Contacts List",
 
     // CREATE / RECOVER WALLET
-    "common-title": "Create / Recover Wallet",
+    "common-title": "Add Wallet",
     "common-advanced-options-hint1": "Used with your Mnemonic Phrase to recover your Hycon Wallet to manage your wallet more securely.",
     "common-advanced-options-hint2": "Do not lose BIP39 Passphrase. You will not be able to recover your wallet without it.",
     "common-select-create-or-recover": "Do you want to create a new wallet or recover an old one?",
