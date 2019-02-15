@@ -135,7 +135,7 @@ interface IProps extends WithStyles<typeof styles> {
     paletteType: string
     oneHanded: boolean
     setWallets: (fromDelete?: boolean) => void
-    handleDialog: () => void
+    handleDialog: (open: boolean) => void
     handleWalletSelect: (name: string) => void
     updateSelected: (name: string) => void
 }
@@ -260,7 +260,7 @@ class WalletView extends React.PureComponent<IProps, any> {
             return (
                 <Grid container className={this.props.classes.root} style={{ justifyContent: "space-around"}}>
                     <Grid item xs={12}>
-                        <Link to="/addwallet" onClick={this.props.handleDialog} style={{ textDecoration: "none" }}>
+                        <Link to="/addwallet" onClick={() => this.props.handleDialog(true)} style={{ textDecoration: "none" }}>
                             <div style={{ textAlign: "center" }}>
                                 <img style={{ maxHeight: 160 }} src={wallet} />
                                 <Typography variant="h6" align="center" style={{ marginTop: 10, fontWeight: 600 }}>Add your first wallet</Typography>
@@ -839,7 +839,7 @@ class WalletView extends React.PureComponent<IProps, any> {
     }
 
     private redirectGiftcard = () => {
-        this.props.handleDialog()
+        this.props.handleDialog(true)
     }
 
     private handleDialogMore = () => {

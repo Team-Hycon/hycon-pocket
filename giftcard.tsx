@@ -40,7 +40,7 @@ interface IGiftcardProps {
     language: IText
     wallet: IHyconWallet
     oneHanded: boolean
-    handleDialog: () => void
+    handleDialog: (open: boolean) => void
 }
 
 export class Giftcard extends React.Component<IGiftcardProps, any> {
@@ -60,7 +60,7 @@ export class Giftcard extends React.Component<IGiftcardProps, any> {
     public componentDidMount() {
         document.addEventListener("backbutton", (event) => {
             event.preventDefault()
-            this.props.handleDialog()
+            this.props.handleDialog(false)
             window.location.hash = "#/"
             return
         }, false)
@@ -69,7 +69,7 @@ export class Giftcard extends React.Component<IGiftcardProps, any> {
     public componentWillUnmount() {
         document.removeEventListener("backbutton", (event) => {
             event.preventDefault()
-            this.props.handleDialog()
+            this.props.handleDialog(false)
             window.location.hash = "#/"
             return
         }, false)
@@ -77,7 +77,7 @@ export class Giftcard extends React.Component<IGiftcardProps, any> {
 
     public render() {
         if (this.state.redirect) {
-            this.props.handleDialog()
+            this.props.handleDialog(false)
         }
 
         let width = window.innerWidth * 0.9
@@ -103,7 +103,7 @@ export class Giftcard extends React.Component<IGiftcardProps, any> {
                     {this.state.pending ? <Grid item xs={12}><LinearProgress /></Grid> : null}
                     <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0, margin: this.props.oneHanded ? "15vh 0" : 0 }} position="static">
                         <Toolbar style={styles.header}>
-                            <IconButton onClick={this.props.handleDialog}><ArrowBackIcon /></IconButton>
+                            <IconButton onClick={() => this.props.handleDialog(false)}><ArrowBackIcon /></IconButton>
                             <Typography variant={this.props.oneHanded ? "h2" : "button"} align="center">
                                 {title}
                             </Typography>

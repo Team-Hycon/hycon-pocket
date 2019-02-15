@@ -54,7 +54,7 @@ interface IProps {
     rest: IRest
     language: IText
     oneHanded?: boolean
-    handleDialog?: () => void
+    handleDialog: (open: boolean) => void
     handleWalletSelect?: () => void
     setWallets?: (fromDelete?: boolean) => void
 }
@@ -95,7 +95,7 @@ export class AddWallet extends React.Component<IProps, any> {
             if (this.state.step !== 0) {
                 this.decrementStep()
             } else {
-                this.props.handleDialog()
+                this.props.handleDialog(false)
                 window.location.hash = "#/"
             }
             return
@@ -108,7 +108,7 @@ export class AddWallet extends React.Component<IProps, any> {
             if (this.state.step !== 0) {
                 this.decrementStep()
             } else {
-                this.props.handleDialog()
+                this.props.handleDialog(false)
                 window.location.hash = "#/"
             }
             return
@@ -333,7 +333,7 @@ export class AddWallet extends React.Component<IProps, any> {
                         <Toolbar style={styles.header}>
                             {
                                 this.state.step === 0 ?
-                                    <IconButton onClick={this.props.handleDialog}>
+                                    <IconButton onClick={() => this.props.handleDialog(false)}>
                                         <ArrowBackIcon />
                                     </IconButton>
                                     :
@@ -450,7 +450,7 @@ export class AddWallet extends React.Component<IProps, any> {
     private finishAddWallet() {
         this.props.setWallets()
         this.props.handleWalletSelect()
-        this.props.handleDialog()
+        this.props.handleDialog(false)
     }
 
     private newWallet() {
@@ -519,7 +519,6 @@ export class AddWallet extends React.Component<IProps, any> {
 
             this.props.rest.getWalletDetail(this.state.walletName).then((wdata: IHyconWallet | IResponseError) => {
                 if (wdata != null && wdata !== undefined) {
-                    console.log(wdata)
                     if (this.state.step === 2) {
                         this.setState({ isCreating: false, redirectOnRecoverSuccess: true, generatedMnemonic: encodedMnemonic })
                     } else {
@@ -539,5 +538,9 @@ export class AddWallet extends React.Component<IProps, any> {
                     alert(this.props.language["alert-recover-fail"] + ": " + e)
             }
         })
+
+        const walletSet = JSON.parse(window.localStorage.getItem("/wallets"))
+        walletSet[this.state.walletName] = { miningFee: "" }
+        window.localStorage.setItem("/wallets", JSON.stringify(walletSet))
     }
 }

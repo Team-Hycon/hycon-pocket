@@ -186,7 +186,7 @@ export class Onboarding extends React.Component<IProps, any> {
                                     <Checkbox disableRipple checked={this.state.termsOfUse} onChange={this.handleCheckbox("termsOfUse")} value="termsOfUse" style={{ color: "white" }} />
                                     <ListItemText disableTypography
                                         primary={<Typography variant="caption" style={{ color: "white" }}>
-                                            {this.props.language["onboarding-step5-checkbox3"]} <a onClick={this.handleDialog} style={{ color: "#0095a2", textDecoration: "underline" }}>{this.props.language["terms-of-use"]}</a>
+                                            {this.props.language["onboarding-step5-checkbox3"]} <a onClick={() => this.handleDialog} style={{ color: "#0095a2", textDecoration: "underline" }}>{this.props.language["terms-of-use"]}</a>
                                         </Typography>}
                                     />
                                 </ListItem>
@@ -237,11 +237,11 @@ export class Onboarding extends React.Component<IProps, any> {
                         </Grid>
                     ))}
                 </SwipeableViews>
-                <Dialog open={this.state.openDialog} onClose={this.handleDialog} scroll={this.state.scroll}>
+                <Dialog open={this.state.openDialog} onClose={() => this.handleDialog} scroll={this.state.scroll}>
                     <DialogTitle id="terms-of-use-title"><Typography variant="h6">{this.props.language["terms-of-use"]}</Typography></DialogTitle>
                     <TermsOfUseContent language={this.props.language} />
                     <DialogActions>
-                        <Button style={{ color: "#172349" }} onClick={this.handleDialog}>{this.props.language["btn-close"]}</Button>
+                        <Button style={{ color: "#172349" }} onClick={() => this.handleDialog}>{this.props.language["btn-close"]}</Button>
                     </DialogActions>
                 </Dialog>
             </Grid>
@@ -258,7 +258,7 @@ export class Onboarding extends React.Component<IProps, any> {
         }
     }
 
-    private handleDialog = () => {
+    private handleDialog = (open?: boolean) => {
         this.setState({ openDialog: !this.state.openDialog })
     }
 

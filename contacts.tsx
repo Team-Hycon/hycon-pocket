@@ -52,7 +52,7 @@ interface IProps {
     rest: IRest
     language: IText
     oneHanded: boolean
-    handleDialog: () => void
+    handleDialog: (open: boolean) => void
 }
 
 interface IState {
@@ -100,7 +100,7 @@ export class Contacts extends React.Component<IProps, any> {
                 this.setState({ dialogAddContact: false, isScanning: false })
                 window.location.hash = "#/contacts"
             } else {
-                this.props.handleDialog()
+                this.props.handleDialog(false)
                 window.location.hash = "#/"
             }
             return
@@ -114,7 +114,7 @@ export class Contacts extends React.Component<IProps, any> {
                 this.setState({ dialogAddContact: false, isScanning: false })
                 window.location.hash = "#/contacts"
             } else {
-                this.props.handleDialog()
+                this.props.handleDialog(false)
                 window.location.hash = "#/"
             }
             return
@@ -210,7 +210,7 @@ export class Contacts extends React.Component<IProps, any> {
             <div style={styles.root}>
                 <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0, margin: this.props.oneHanded ? "15vh 0" : 0 }} position="static">
                     <Toolbar style={styles.header}>
-                        <IconButton style={{ width: 48, height: 48 }} onClick={this.props.handleDialog}><ArrowBackIcon /></IconButton>
+                        <IconButton style={{ width: 48, height: 48 }} onClick={() => this.props.handleDialog(false)}><ArrowBackIcon /></IconButton>
                         <Typography variant={this.props.oneHanded ? "h2" : "button"} align="center">
                             {this.props.language["contacts-title"]}
                         </Typography>

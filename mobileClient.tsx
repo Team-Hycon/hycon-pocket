@@ -250,7 +250,7 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                         </ListItem>
                     </Hidden>
                     {this.state.wallets.length === 0 ?
-                        <ListItem button component={({ innerRef, ...props }) => <li><Link to="/addwallet" {...props} style={{ float: "none" }} onClick={this.handleDialog} /></li>}>
+                        <ListItem button component={({ innerRef, ...props }) => <li><Link to="/addwallet" {...props} style={{ float: "none" }} onClick={() => this.handleDialog(true)} /></li>}>
                             <Avatar className={this.props.classes.avatar}><AddIcon /></Avatar>
                             <ListItemText primary={"Add a wallet"} />
                         </ListItem> :
@@ -304,7 +304,7 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                                         />
                                     </ListItem>
                                 ))}
-                                <ListItem button component={({ innerRef, ...props }) => <Link to="/addwallet" {...props} onClick={this.handleDialog} />} style={{ paddingTop: 20 }}>
+                                <ListItem button component={({ innerRef, ...props }) => <Link to="/addwallet" {...props} onClick={() => this.handleDialog(true)} />} style={{ paddingTop: 20 }}>
                                     <AddIcon className={this.props.classes.avatarSmall} style={{ color: this.state.paletteType === "light" ? "#616161" : "white" }} />
                                     <ListItemText primary="Add another wallet" />
                                 </ListItem>
@@ -312,7 +312,7 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                         </div>
                     }
                     <Divider style={{ margin: "20px 0px" }} />
-                    <ListItem button component={({ innerRef, ...props }) => <Link to="/contacts" {...props} onClick={this.handleDialog} />}>
+                    <ListItem button component={({ innerRef, ...props }) => <Link to="/contacts" {...props} onClick={() => this.handleDialog(true)} />}>
                         <ContactsIcon style={{ color: this.state.paletteType === "light" ? "#616161" : "white" }} />
                         <ListItemText primary="Contacts" />
                     </ListItem>
@@ -327,7 +327,7 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                             <ListItemText primary="Turn dark theme off" />
                         </ListItem>
                     }
-                    <ListItem button component={({ innerRef, ...props }) => <Link to="/settings" {...props} onClick={this.handleDialog} />}>
+                    <ListItem button component={({ innerRef, ...props }) => <Link to="/settings" {...props} onClick={() => this.handleDialog(true)} />}>
                         <SettingsIcon style={{ color: this.state.paletteType === "light" ? "#616161" : "white" }}/>
                         <ListItemText primary="Settings" />
                     </ListItem>
@@ -460,7 +460,7 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                                 />
                             }
 
-                            <Dialog id="content-dialog" fullScreen style={{ marginLeft: window.matchMedia("(max-width: 600px)").matches ? 0 : permanentDrawerWidth }} open={this.state.openDialog} onClose={this.handleDialog} scroll={"paper"}>
+                            <Dialog id="content-dialog" fullScreen style={{ marginLeft: window.matchMedia("(max-width: 600px)").matches ? 0 : permanentDrawerWidth }} open={this.state.openDialog} onClose={() => this.handleDialog(false)} scroll={"paper"}>
                                 <Switch>
                                     <Route exact path="/addwallet" component={() => <AddWallet rest={this.state.rest} language={this.language} oneHanded={this.state.oneHanded} handleDialog={this.handleDialog.bind(this)} setWallets={this.setWallets.bind(this)} handleWalletSelect={this.handleWalletSelect.bind(this)} />} />
                                     <Route exact path="/sendcoins" component={() => <SendHyc rest={this.state.rest} language={this.language} wallet={this.state.wallet} oneHanded={this.state.oneHanded} handleDialog={this.handleDialog.bind(this)} />} />
@@ -494,8 +494,8 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
         this.forceUpdate()
     }
 
-    private handleDialog = () => {
-        this.setState({ openDialog: !this.state.openDialog })
+    private handleDialog = (open: boolean) => {
+        this.setState({ openDialog: open })
         if (this.state.openDialog) {
             this.setState({ openWalletList: false, openMenu: false })
         }

@@ -52,7 +52,7 @@ const styles = (theme: Theme) => createStyles({
 
 interface ISettingsProps extends WithStyles<typeof styles> {
     language: IText
-    handleDialog: () => void
+    handleDialog: (open: boolean) => void
     handleOneHanded: () => void
     oneHanded: boolean
 }
@@ -77,7 +77,7 @@ class Settings extends React.Component<ISettingsProps, any> {
     public componentDidMount() {
         document.addEventListener("backbutton", (event) => {
             event.preventDefault()
-            this.props.handleDialog()
+            this.props.handleDialog(false)
             window.location.hash = "#/"
             return
         }, false)
@@ -86,7 +86,7 @@ class Settings extends React.Component<ISettingsProps, any> {
     public componentWillUnmount() {
         document.removeEventListener("backbutton", (event) => {
             event.preventDefault()
-            this.props.handleDialog()
+            this.props.handleDialog(false)
             window.location.hash = "#/"
             return
         }, false)
@@ -97,7 +97,7 @@ class Settings extends React.Component<ISettingsProps, any> {
             <Grid className={this.props.classes.root}>
                 <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0, margin: this.props.oneHanded ? "15vh 0" : 0 }} position="static">
                     <Toolbar className={this.props.classes.header}>
-                        <IconButton onClick={this.props.handleDialog}>
+                        <IconButton onClick={() => this.props.handleDialog(false)}>
                             <ArrowBackIcon />
                         </IconButton>
                         <Typography variant={this.props.oneHanded ? "h2" : "button"} align="center">

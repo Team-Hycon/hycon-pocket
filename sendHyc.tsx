@@ -74,7 +74,7 @@ interface IProps extends WithStyles<typeof styles> {
     language: IText
     wallet: any
     oneHanded: boolean
-    handleDialog: () => void
+    handleDialog: (open: boolean) => void
 }
 
 class SendHyc extends React.Component<IProps, any> {
@@ -142,7 +142,7 @@ class SendHyc extends React.Component<IProps, any> {
 
         document.addEventListener("backbutton", (event) => {
             event.preventDefault()
-            this.props.handleDialog()
+            this.props.handleDialog(false)
             window.location.hash = "#/"
             return
         }, false)
@@ -153,7 +153,7 @@ class SendHyc extends React.Component<IProps, any> {
     public componentWillUnmount() {
         document.removeEventListener("backbutton", (event) => {
             event.preventDefault()
-            this.props.handleDialog()
+            this.props.handleDialog(false)
             window.location.hash = "#/"
             return
         }, false)
@@ -168,7 +168,7 @@ class SendHyc extends React.Component<IProps, any> {
             <Grid className={this.props.classes.root}>
                 <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0, margin: this.props.oneHanded ? "15vh 0" : 0 }} position="static">
                     <Toolbar className={this.props.classes.header}>
-                        <IconButton onClick={this.props.handleDialog}>
+                        <IconButton onClick={() => this.props.handleDialog(false)}>
                             <ArrowBackIcon />
                         </IconButton>
                         <Typography variant={this.props.oneHanded ? "h2" : "button" } align="center">
@@ -346,7 +346,7 @@ class SendHyc extends React.Component<IProps, any> {
                                     {/* <Link to={"/wallet/" + this.props.wallet.name}> */}
                                         <Button
                                             style={{ backgroundColor: "#172349", color: "#fff", width: "100%", padding: "16px 24px" }}
-                                            onClick={this.props.handleDialog}>
+                                            onClick={() => this.props.handleDialog(false)}>
                                             {this.props.language["btn-finish"]}
                                         </Button>
                                     {/* </Link> */}
