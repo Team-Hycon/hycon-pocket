@@ -89,7 +89,7 @@ class SendHyc extends React.Component<IProps, any> {
         super(props)
         const wallets = JSON.parse(this.storage.getItem("/wallets"))
         const globalFee = wallets[""].miningFee
-        const fee = wallets[this.props.wallet.name].miningFee
+        const fee = Object.keys(wallets).length === 1 ? "" : wallets[this.props.wallet.name].miningFee
         let add = ""
         let am = 0
         if (this.storage.getItem("hpay") !== "" && this.storage.getItem("hpay") != null) {

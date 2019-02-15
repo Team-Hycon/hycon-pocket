@@ -110,7 +110,6 @@ export class Giftcard extends React.Component<IGiftcardProps, any> {
                             <div style={{ width: 48, height: 48 }} />
                         </Toolbar>
                     </AppBar>
-                    <Divider />
                 </Grid>
 
                 <Grid item alignContent="center">
