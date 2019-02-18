@@ -143,8 +143,8 @@ class Contacts extends React.Component<IProps, any> {
                     <Grid container style={{ flexDirection: "column", flexGrow: 1, justifyContent: "space-around" }}>
                         <div style={{ textAlign: "center" }}>
                             <img style={{ maxHeight: 160 }} src={addressBook} />
-                            <Typography variant="h6" align="center" style={{ marginTop: 10, fontWeight: 600 }}>No wallet addresses stored</Typography>
-                            <Typography variant="caption" align="center">Tap the '+' button to add an address</Typography>
+                            <Typography variant="h6" align="center" style={{ marginTop: 10, fontWeight: 600 }}>{this.props.language["contacts-empty"]}</Typography>
+                            <Typography variant="caption" align="center">{this.props.language["contacts-action"]}</Typography>
                         </div>
                     </Grid> :
                     this.state.contacts.map((value: any) => (

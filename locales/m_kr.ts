@@ -21,6 +21,7 @@ export default {
     "btn-finish": "마침",
     "btn-create-wallet": "새로운 지갑 생성",
     "btn-recover-wallet": "기존 지갑 복구",
+    "btn-delete-wallet": "Delete This Wallet",
     "btn-confirm": "확인",
     "btn-add": "추가",
     "btn-close": "닫기",
@@ -28,7 +29,7 @@ export default {
     "btn-send": "전송",
     "btn-request": "요청",
     "btn-more": "더보기",
-    "btn-create-qr": "QR 코드 생성",
+    "btn-qr": "QR 코드",
     "btn-login": "로그인",
     "btn-submit": "제출",
     "btn-cancel": "취소",
@@ -37,6 +38,8 @@ export default {
     "btn-create-now": "지금 지갑 생성하기",
     "btn-create-later": "나중에 하기",
     "btn-redeem": "등록",
+    "btn-dark-on": "Turn dark theme on",
+    "btn-dark-off": "Turn dark theme off",
 
     // PLACEHOLDER / LABEL
     "ph-contact-name": "연락처 이름",
@@ -93,10 +96,13 @@ export default {
     "wallet-list": "지갑 목록",
     "home-guide-add-wallet": "지갑 추가하기",
     "home-guide-tap-plus": "'+'를 탭하여 시작하세요",
+    "home-add-another-wallet": "Add another wallet",
 
     // CONTACTS
     "contacts-title": "연락처",
     "contacts-list": "연락처 목록",
+    "contacts-empty": "No wallet addresses stored",
+    "contacts-action": "Tap the \'+\' button to add an address",
 
     // CREATE / RECOVER WALLET
     "common-title": "지갑 추가하기",
@@ -140,6 +146,8 @@ export default {
     "balance-hidden": "비공개",
     "txs-hidden": "트랜잭션 비공개",
     "txs-hidden-help": "'잔액 숨기기'로 설정된 상태에서는 트랜잭션을 조회할 수 없습니다. '환경설정 > 일반'에서 변경 가능합니다.",
+    "no-wallet": "Add your first wallet",
+    "no-wallet-action": "Tap here to get started",
 
     // WALLET DETAIL - ACTIVITY
     "activity-title": "활동 내역 - ",
@@ -232,8 +240,16 @@ export default {
     // SETTINGS
     "settings-title": "환경설정",
     "settings-general": "일반",
+    "settings-security": "Security",
+    "fingerprint-on-launch": "Require fingerprint on app launch",
+    "disable": "Disable",
+    "enable": "Enable",
+    "disabled": "Disabled",
+    "enabled": "Enabled",
     "hide-balance": "잔액 숨기기",
     "show-balance": "잔액 보이기",
+    "one-handed-on": "Turn on one-handed mode",
+    "one-handed-off": "Turn off one-handed mode",
     "set-tx-speed-global-help": "모든 지갑에 적용할 트랜잭션 수수료를 설정합니다.",
     "settings-about": "앱 정보",
     "settings-support": "고객지원",
@@ -250,6 +266,10 @@ export default {
     "option-fee-general": "환경설정에서 설정한 값 사용",
     "set-fee-all-wallets": "모든 지갑의 기본 수수료 설정",
     "set-fee-for": "의 기본 수수료 설정",
+
+    // FINGERPRINT SETTINGS
+    "fingerprint-text1": "When you launch the app for the first time (not from background), you will need your fingerprint to use the app.",
+    "fingerprint-text2": "Keep in mind, sharing your device with anyone who has saved a fingerprint or knows your passcode gives that person access to this app. We don't recommend using fingerprint if you share your device.",
 
     // TERMS OF USE
     "terms-of-use": "이용 약관",

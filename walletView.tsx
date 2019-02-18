@@ -263,8 +263,8 @@ class WalletView extends React.PureComponent<IProps, any> {
                         <Link to="/addwallet" onClick={() => this.props.handleDialog(true)} style={{ textDecoration: "none" }}>
                             <div style={{ textAlign: "center" }}>
                                 <img style={{ maxHeight: 160 }} src={wallet} />
-                                <Typography variant="h6" align="center" style={{ marginTop: 10, fontWeight: 600 }}>Add your first wallet</Typography>
-                                <Typography variant="caption" align="center">Tap here to get started</Typography>
+                                <Typography variant="h6" align="center" style={{ marginTop: 10, fontWeight: 600 }}>{this.props.language["no-wallet"]}</Typography>
+                                <Typography variant="caption" align="center">{this.props.language["no-wallet-action"]}</Typography>
                             </div>
                         </Link>
                     </Grid>
@@ -733,7 +733,7 @@ class WalletView extends React.PureComponent<IProps, any> {
                         <Grid item xs={4} justify="center" className={this.props.classes.bottomToolbarBorder}>
                             <ButtonBase focusRipple aria-label="QR Code" disabled={this.props.name !== this.props.wallet.name} onClick={this.toggleQRDrawer(true)} className={this.props.classes.bottomToolbarBtn}>
                                 <BlurOn style={{ color: this.props.paletteType === "light" ? "black" : "white" }}/>
-                                <Typography variant="caption" align="center">QR Code</Typography>
+                                <Typography variant="caption" align="center">{this.props.language["btn-qr"]}</Typography>
                             </ButtonBase>
                         </Grid>
                         <Grid item xs={4} justify="center" className={this.props.classes.bottomToolbarBorder}>

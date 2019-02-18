@@ -254,7 +254,7 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                     {this.state.wallets.length === 0 ?
                         <ListItem button component={({ innerRef, ...props }) => <li><Link to="/addwallet" {...props} style={{ float: "none" }} onClick={() => this.handleDialog(true)} /></li>}>
                             <Avatar className={this.props.classes.avatar}><AddIcon /></Avatar>
-                            <ListItemText primary={"Add a wallet"} />
+                            <ListItemText primary={this.language["no-wallet"]} />
                         </ListItem> :
                         <div>
                             <ListItem onClick={this.toggleWalletList(!this.state.openWalletList)}>
@@ -308,7 +308,7 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                                 ))}
                                 <ListItem button component={({ innerRef, ...props }) => <Link to="/addwallet" {...props} onClick={() => this.handleDialog(true)} />} style={{ paddingTop: 20 }}>
                                     <AddIcon className={this.props.classes.avatarSmall} style={{ color: this.state.paletteType === "light" ? "#616161" : "white" }} />
-                                    <ListItemText primary="Add another wallet" />
+                                    <ListItemText primary={this.language["home-add-anther-wallet"]} />
                                 </ListItem>
                             </Collapse>
                         </div>
@@ -316,22 +316,22 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                     <Divider style={{ margin: "20px 0px" }} />
                     <ListItem button component={({ innerRef, ...props }) => <Link to="/contacts" {...props} onClick={() => this.handleDialog(true)} />}>
                         <ContactsIcon style={{ color: this.state.paletteType === "light" ? "#616161" : "white" }} />
-                        <ListItemText primary="Contacts" />
+                        <ListItemText primary={this.language["contacts-list"]} />
                     </ListItem>
                     <Divider style={{ margin: "20px 0px" }} />
                     {this.state.paletteType === "light" ?
                         <ListItem button onClick={this.setPaletteType.bind(this)}>
                             <DarkOnIcon style={{ color: "#616161" }} />
-                            <ListItemText primary="Turn dark theme on" />
+                            <ListItemText primary={this.language["btn-dark-on"]} />
                         </ListItem> :
                         <ListItem button onClick={this.setPaletteType.bind(this)}>
                             <DarkOffIcon style={{ color: "white" }}/>
-                            <ListItemText primary="Turn dark theme off" />
+                            <ListItemText primary={this.language["btn-dark-off"]} />
                         </ListItem>
                     }
                     <ListItem button component={({ innerRef, ...props }) => <Link to="/settings" {...props} onClick={() => this.handleDialog(true)} />}>
                         <SettingsIcon style={{ color: this.state.paletteType === "light" ? "#616161" : "white" }}/>
-                        <ListItemText primary="Settings" />
+                        <ListItemText primary={this.language["settings-title"]} />
                     </ListItem>
                     <ListItem>
                         <Hidden xsDown implementation="js">

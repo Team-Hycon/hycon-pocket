@@ -120,7 +120,7 @@ class Settings extends React.Component<ISettingsProps, any> {
                     </ListItem>
                     <Divider />
                     <ListItem button onClick={this.props.handleOneHanded} key="item-one-handed">
-                        <ListItemText primary={this.props.oneHanded ? "Turn off one-handed mode" : "Turn on one-handed mode"} />
+                        <ListItemText primary={this.props.oneHanded ? this.props.language["one-handed-off"] : this.props.language["one-handed-on"]} />
                     </ListItem>
                     <Divider />
                     <FeeSettings language={this.props.language} name={""} />
@@ -131,19 +131,19 @@ class Settings extends React.Component<ISettingsProps, any> {
                 <List
                     subheader={
                         <ListSubheader disableSticky color="primary" component="div" className={this.props.classes.header}>
-                            <span className={this.props.classes.listSubheader}>Security</span>
+                            <span className={this.props.classes.listSubheader}>{this.props.language["settings-security"]}</span>
                         </ListSubheader>
                     }
                 >
                     <ListItem button onClick={this.handleDialogFingerprint} key="item-fingerprint">
-                        <ListItemText primary="Require fingerprint on app launch" secondary={this.state.fingerprintEnabled ? "Enabled" : "Disabled" }/>
+                        <ListItemText primary={this.props.language["fingerprint-on-launch"]} secondary={this.state.fingerprintEnabled ? this.props.language.enabled : this.props.language.disabled }/>
                     </ListItem>
                     <Dialog fullScreen open={this.state.dialogFingerprint} onClose={this.handleDialogFingerprint} scroll={this.state.scroll}>
-                        <DialogTitle><Typography variant="h6">Fingerprint on app launch</Typography></DialogTitle>
+                        <DialogTitle><Typography variant="h6">{this.props.language["fingerprint-on-launch"]}</Typography></DialogTitle>
                         <FingerprintContent language={this.props.language} />
                         <DialogActions>
                             <Button className={this.props.classes.btn} onClick={this.handleDialogFingerprint}>{this.props.language["btn-close"]}</Button>
-                            <Button className={this.props.classes.btn} onClick={this.handleFingerprintSettings}>{this.state.fingerprintEnabled ? "Disable" : "Enable"}</Button>
+                            <Button className={this.props.classes.btn} onClick={this.handleFingerprintSettings}>{this.state.fingerprintEnabled ? this.props.language.disable : this.props.language.enable }</Button>
                         </DialogActions>
                     </Dialog>
                     <Divider />

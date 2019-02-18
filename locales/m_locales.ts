@@ -31,6 +31,7 @@ export interface IText {
     "btn-finish": string
     "btn-create-wallet": string
     "btn-recover-wallet": string
+    "btn-delete-wallet": string
     "btn-confirm": string
     "btn-add": string
     "btn-close": string
@@ -38,7 +39,7 @@ export interface IText {
     "btn-send": string
     "btn-request": string
     "btn-more": string
-    "btn-create-qr": string
+    "btn-qr": string
     "btn-login": string
     "btn-submit": string
     "btn-cancel": string
@@ -47,6 +48,8 @@ export interface IText {
     "btn-create-now": string
     "btn-create-later": string
     "btn-redeem": string
+    "btn-dark-on": string,
+    "btn-dark-off": string,
 
     // PLACEHOLDER / LABEL
     "ph-contact-name": string
@@ -103,10 +106,13 @@ export interface IText {
     "wallet-list": string
     "home-guide-add-wallet": string
     "home-guide-tap-plus": string
+    "home-add-another-wallet": string,
 
     // CONTACTS
     "contacts-title": string
     "contacts-list": string
+    "contacts-empty": string
+    "contacts-action": string
 
     // CREATE / RECOVER WALLET
     "common-title": string
@@ -150,6 +156,8 @@ export interface IText {
     "balance-hidden": string
     "txs-hidden": string
     "txs-hidden-help": string
+    "no-wallet": string,
+    "no-wallet-action": string,
 
     // WALLET DETAIL - ACTIVITY
     "activity-title": string
@@ -242,8 +250,16 @@ export interface IText {
     // SETTINGS
     "settings-title": string
     "settings-general": string
+    "settings-security": string,
+    "fingerprint-on-launch": string,
+    "disable": string,
+    "enable": string,
+    "disabled": string,
+    "enabled": string,
     "hide-balance": string
     "show-balance": string
+    "one-handed-on": string,
+    "one-handed-off": string,
     "set-tx-speed-global-help": string
     "settings-about": string
     "settings-support": string
@@ -260,6 +276,10 @@ export interface IText {
     "option-fee-general": string
     "set-fee-all-wallets": string
     "set-fee-for": string
+
+    // FINGERPRINT SETTINGS
+    "fingerprint-text1": string,
+    "fingerprint-text2": string,
 
     // TERMS OF USE
     "terms-of-use": string

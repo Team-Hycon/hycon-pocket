@@ -21,6 +21,7 @@ export default {
     "btn-finish": "FINISH",
     "btn-create-wallet": "Create New Wallet",
     "btn-recover-wallet": "Recover a Wallet",
+    "btn-delete-wallet": "Delete This Wallet",
     "btn-confirm": "CONFIRM",
     "btn-add": "ADD",
     "btn-close": "CLOSE",
@@ -28,7 +29,7 @@ export default {
     "btn-send": "SEND",
     "btn-request": "REQUEST",
     "btn-more": "MORE",
-    "btn-create-qr": "CREATE QR CODE",
+    "btn-qr": "QR CODE",
     "btn-login": "LOG IN",
     "btn-submit": "SUBMIT",
     "btn-cancel": "CANCEL",
@@ -37,6 +38,8 @@ export default {
     "btn-create-now": "Create a wallet now",
     "btn-create-later": "I will create a wallet later",
     "btn-redeem": "Redeem",
+    "btn-dark-on": "Turn dark theme on",
+    "btn-dark-off": "Turn dark theme off",
 
     // PLACEHOLDER / LABEL
     "ph-contact-name": "Contact Name",
@@ -93,10 +96,13 @@ export default {
     "wallet-list": "Wallet List",
     "home-guide-add-wallet": "Add a wallet",
     "home-guide-tap-plus": "Tap the '+' to get started",
+    "home-add-another-wallet": "Add another wallet",
 
     // CONTACTS
     "contacts-title": "Contacts",
     "contacts-list": "Contacts List",
+    "contacts-empty": "No wallet addresses stored",
+    "contacts-action": "Tap the \'+\' button to add an address",
 
     // CREATE / RECOVER WALLET
     "common-title": "Add Wallet",
@@ -140,6 +146,8 @@ export default {
     "balance-hidden": "Hidden",
     "txs-hidden": "Transactions Hidden",
     "txs-hidden-help": "Transactions are not viewable when balances are hidden",
+    "no-wallet": "Add your first wallet",
+    "no-wallet-action": "Tap here to get started",
 
     // WALLET DETAIL - ACTIVITY
     "activity-title": "Activity for ",
@@ -232,8 +240,16 @@ export default {
     // SETTINGS
     "settings-title": "Settings",
     "settings-general": "General",
+    "settings-security": "Security",
+    "fingerprint-on-launch": "Require fingerprint on app launch",
+    "disable": "Disable",
+    "enable": "Enable",
+    "disabled": "Disabled",
+    "enabled": "Enabled",
     "hide-balance": "Hide Balance",
     "show-balance": "Show Balance",
+    "one-handed-on": "Turn on one-handed mode",
+    "one-handed-off": "Turn off one-handed mode",
     "set-tx-speed-global-help": "Sets default fee for all wallets",
     "settings-about": "About",
     "settings-support": "Support",
@@ -250,6 +266,10 @@ export default {
     "option-fee-general": "USE GENERAL FEE SETTINGS",
     "set-fee-all-wallets": "Set default fee for all wallets",
     "set-fee-for": "Set default fee for ",
+
+    // FINGERPRINT SETTINGS
+    "fingerprint-text1": "When you launch the app for the first time (not from background), you will need your fingerprint to use the app.",
+    "fingerprint-text2": "Keep in mind, sharing your device with anyone who has saved a fingerprint or knows your passcode gives that person access to this app. We don't recommend using fingerprint if you share your device.",
 
     // TERMS OF USE
     "terms-of-use": "Terms of Use",
