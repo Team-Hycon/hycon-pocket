@@ -36,7 +36,7 @@ import { Link } from "react-router-dom"
 import { Route, Switch } from "react-router-dom"
 import { IHyconWallet, IResponseError, IRest } from "../rest"
 import { AddWallet } from "./addWallet"
-import { Contacts } from "./contacts"
+import Contacts from "./contacts"
 import Onboarding from "./content/onboarding"
 import { Giftcard } from "./giftcard"
 import { getMobileLocale, IText } from "./locales/m_locales"
@@ -131,6 +131,7 @@ interface IState {
     paletteType: string
     selectedWalletIndex: number
     selectedWalletName: string
+    showBalance: boolean
     redirect: boolean
     wallet: IHyconWallet
     wallets: IHyconWallet[]
@@ -171,6 +172,7 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
             rest: this.props.rest,
             selectedWalletIndex: storage.getItem("selectedWalletIndex") === null ? 0 : Number(storage.getItem("selectedWalletIndex")),
             selectedWalletName: "",
+            showBalance: storage.getItem("showBalance") === null ? true : (storage.getItem("showBalance") === "true"),
             wallet: { name: "", passphrase: "", password: "", hint: "", mnemonic: "", address: "", balance: "0", txs: [], pendings: [], language: "", pendingAmount: "0" },
             wallets: [],
         }
@@ -376,7 +378,9 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
             return <div>Loading</div>
         }
 
-        // console.log("render " + window.location.hash)
+        console.log(this.state.name)
+        console.log(this.state.wallet)
+        console.log(this.state.wallets)
         return (
             (this.state.fingerprintAuth || storage.getItem("fingerprint") === "false") || storage.getItem("fingerprint") === null ?
                 <MuiThemeProvider theme={theme}>
@@ -455,6 +459,7 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                                     paletteType={this.state.paletteType}
                                     handleDialog={this.handleDialog.bind(this)}
                                     setWallets={this.setWallets.bind(this)}
+                                    showBalance={this.state.showBalance}
                                     handleWalletSelect={this.handleWalletSelect.bind(this)}
                                     updateSelected={this.updateSelected.bind(this)}
                                 />
@@ -466,7 +471,7 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                                     <Route exact path="/sendcoins" component={() => <SendHyc rest={this.state.rest} language={this.language} wallet={this.state.wallet} oneHanded={this.state.oneHanded} handleDialog={this.handleDialog.bind(this)} />} />
                                     <Route exact path="/contacts" component={() => <Contacts rest={this.state.rest} language={this.language} oneHanded={this.state.oneHanded} handleDialog={this.handleDialog.bind(this)} />} />
                                     <Route exact path="/giftcard" component={() => <Giftcard rest={this.state.rest} language={this.language} wallet={this.state.wallet} oneHanded={this.state.oneHanded} handleDialog={this.handleDialog.bind(this)} />} />
-                                    <Route exact path="/settings" component={() => <Settings language={this.language} handleDialog={this.handleDialog.bind(this)} oneHanded={this.state.oneHanded} handleOneHanded={this.handleOneHanded.bind(this)}  />} />
+                                    <Route exact path="/settings" component={() => <Settings language={this.language} handleDialog={this.handleDialog.bind(this)} oneHanded={this.state.oneHanded} handleOneHanded={this.handleOneHanded.bind(this)} showBalance={this.state.showBalance} showBalanceToggler={this.showBalanceToggler.bind(this)} />} />
                                 </Switch>
                             </Dialog>
                         </main>
@@ -482,6 +487,11 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                     </Grid>
                 </Grid>
         )
+    }
+
+    private showBalanceToggler = () => {
+        this.setState({ showBalance: !this.state.showBalance })
+        storage.setItem("showBalance", (!this.state.showBalance).toString())
     }
 
     private handleOneHanded = () => {

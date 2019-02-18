@@ -2,7 +2,7 @@ import * as React from "react"
 import * as ReactDOM from "react-dom"
 import { HashRouter } from "react-router-dom"
 import { RestChrome } from "../restChrome"
-import { getMobileLocale, IText } from "./locales/m_locales"
+import { getMobileLocale } from "./locales/m_locales"
 import MobileApp from "./mobileClient"
 
 declare let window: any

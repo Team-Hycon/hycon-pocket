@@ -27,6 +27,7 @@ import VisibilityOff from "@material-ui/icons/VisibilityOff"
 import * as React from "react"
 import { encodingMnemonic } from "../desktop/stringUtil"
 import { IHyconWallet, IResponseError, IRest } from "../rest"
+import NavBar from "./component/NavBar"
 import { IText } from "./locales/m_locales"
 
 // tslint:disable:object-literal-sort-keys
@@ -329,22 +330,14 @@ export class AddWallet extends React.Component<IProps, any> {
             <Grid justify="space-between" style={styles.root}>
                 <Grid>
                     {!this.state.isCreating ? undefined : <LinearProgress />}
-                    <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0, margin: this.props.oneHanded ? "15vh 0" : 0 }} position="static">
-                        <Toolbar style={styles.header}>
-                            {
-                                this.state.step === 0 ?
-                                    <IconButton onClick={() => this.props.handleDialog(false)}>
-                                        <ArrowBackIcon />
-                                    </IconButton>
-                                    :
-                                    <IconButton onClick={this.decrementStep.bind(this)}><ArrowBackIcon /></IconButton>
-                            }
-                            <Typography variant={this.props.oneHanded ? "h2" : "button"} align="center">
-                                {this.props.language["common-title"]}
-                            </Typography>
-                            <div style={{ width: 48, height: 48 }} />
-                        </Toolbar>
-                    </AppBar>
+                    <NavBar
+                        handleDialog={this.props.handleDialog}
+                        leftElement={this.state.step === 0 ?
+                            <IconButton onClick={() => this.props.handleDialog(false)}><ArrowBackIcon /></IconButton> :
+                            <IconButton onClick={this.decrementStep.bind(this)}><ArrowBackIcon /></IconButton>}
+                        oneHanded={this.props.oneHanded}
+                        title={this.props.language["common-title"]}
+                    />
                 </Grid>
                 <Grid alignContent="center">
                     <Card elevation={0} square>

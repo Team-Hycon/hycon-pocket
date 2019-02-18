@@ -34,6 +34,7 @@ import * as React from "react"
 import { Redirect} from "react-router"
 import { Link } from "react-router-dom"
 import { IRest } from "../rest"
+import NavBar from "./component/NavBar"
 import { IText } from "./locales/m_locales"
 
 declare let window: any
@@ -166,17 +167,12 @@ class SendHyc extends React.Component<IProps, any> {
     public render() {
         return (
             <Grid className={this.props.classes.root}>
-                <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0, margin: this.props.oneHanded ? "15vh 0" : 0 }} position="static">
-                    <Toolbar className={this.props.classes.header}>
-                        <IconButton onClick={() => this.props.handleDialog(false)}>
-                            <ArrowBackIcon />
-                        </IconButton>
-                        <Typography variant={this.props.oneHanded ? "h2" : "button" } align="center">
-                            {this.props.language["send-hyc-title"]}
-                        </Typography>
-                        <IconButton aria-label="Qr" disabled={!this.state.qrScannerReady} onClick={this.openQrScanner.bind(this)}><QRScannerIcon /></IconButton>
-                    </Toolbar>
-                </AppBar>
+                <NavBar
+                    handleDialog={this.props.handleDialog}
+                    oneHanded={this.props.oneHanded}
+                    rightElement={<IconButton aria-label="Qr" disabled={!this.state.qrScannerReady} onClick={this.openQrScanner.bind(this)}><QRScannerIcon /></IconButton>}
+                    title={this.props.language["send-hyc-title"]}
+                />
                 <Grid justify="space-between" className={this.props.classes.root}>
                     <Grid style={{ flexGrow: 1 }}>
                         <Grid item xs={12}>

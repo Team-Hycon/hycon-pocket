@@ -19,6 +19,7 @@ import Typography from "@material-ui/core/Typography"
 import ArrowBackIcon from "@material-ui/icons/ArrowBack"
 import InfoIcon from "@material-ui/icons/Info"
 import * as React from "react"
+import NavBar from "./component/NavBar"
 import { ChangelogContent } from "./content/changelog"
 import { FeeSettings } from "./content/feeSettings"
 import { FingerprintContent } from "./content/fingerprint"
@@ -55,6 +56,8 @@ interface ISettingsProps extends WithStyles<typeof styles> {
     handleDialog: (open: boolean) => void
     handleOneHanded: () => void
     oneHanded: boolean
+    showBalance: boolean
+    showBalanceToggler: () => void
 }
 
 class Settings extends React.Component<ISettingsProps, any> {
@@ -95,17 +98,7 @@ class Settings extends React.Component<ISettingsProps, any> {
     public render() {
         return (
             <Grid className={this.props.classes.root}>
-                <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0, margin: this.props.oneHanded ? "15vh 0" : 0 }} position="static">
-                    <Toolbar className={this.props.classes.header}>
-                        <IconButton onClick={() => this.props.handleDialog(false)}>
-                            <ArrowBackIcon />
-                        </IconButton>
-                        <Typography variant={this.props.oneHanded ? "h2" : "button"} align="center">
-                            {this.props.language["settings-title"]}
-                        </Typography>
-                        <div style={{ width: 48, height: 48 }} />
-                    </Toolbar>
-                </AppBar>
+                <NavBar handleDialog={this.props.handleDialog} oneHanded={this.props.oneHanded} title={this.props.language["settings-title"]}/>
                 {this.renderListSettings()}
             </Grid>
         )
@@ -114,7 +107,6 @@ class Settings extends React.Component<ISettingsProps, any> {
     public renderListSettings() {
         return (
             <Grid>
-
                 {/* General Settings */}
                 <List
                     subheader={
@@ -123,8 +115,8 @@ class Settings extends React.Component<ISettingsProps, any> {
                         </ListSubheader>
                     }
                 >
-                    <ListItem button onClick={this.showBalance} key="item-show-balance">
-                        <ListItemText primary={this.state.showBalance ? this.props.language["hide-balance"] : this.props.language["show-balance"]} />
+                    <ListItem button onClick={this.props.showBalanceToggler} key="item-show-balance">
+                        <ListItemText primary={this.props.showBalance ? this.props.language["hide-balance"] : this.props.language["show-balance"]} />
                     </ListItem>
                     <Divider />
                     <ListItem button onClick={this.props.handleOneHanded} key="item-one-handed">
@@ -229,11 +221,6 @@ class Settings extends React.Component<ISettingsProps, any> {
                 </List><br />
             </Grid>
         )
-    }
-
-    private showBalance = () => {
-        this.setState({ showBalance: !this.state.showBalance })
-        storage.setItem("showBalance", (!this.state.showBalance).toString())
     }
 
     private handleFingerprintSettings = () => {

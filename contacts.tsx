@@ -15,6 +15,8 @@ import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction"
 import ListItemText from "@material-ui/core/ListItemText"
 import ListSubheader from "@material-ui/core/ListSubheader"
 import Snackbar from "@material-ui/core/Snackbar"
+import { Theme } from "@material-ui/core/styles/createMuiTheme"
+import withStyles, { WithStyles } from "@material-ui/core/styles/withStyles"
 import Toolbar from "@material-ui/core/Toolbar"
 import Typography from "@material-ui/core/Typography"
 import AddIcon from "@material-ui/icons/Add"
@@ -27,55 +29,59 @@ import * as React from "react"
 import * as CopyToClipboard from "react-copy-to-clipboard"
 import { Link } from "react-router-dom"
 import { IHyconWallet, IRest } from "../rest"
+import NavBar from "./component/NavBar"
 import { IText } from "./locales/m_locales"
 
 const patternAddress = /^H[A-Za-z0-9+]{20,}$/
 // tslint:disable-next-line:no-var-requires
 const addressBook = require("./img/address-book.png")
 
-// tslint:disable:object-literal-sort-keys
-const styles = createStyles({
-    root: {
-        flex: 1,
-        display: "flex",
-        flexDirection: "column",
-    },
+const styles = (theme: Theme) => createStyles({
     header: {
         display: "flex",
         justifyContent: "space-between",
-        padding: 0,
         minHeight: 48,
+        padding: 0,
+    },
+    icon: {
+        height: 48,
+        width: 48,
+    },
+    root: {
+        display: "flex",
+        flex: 1,
+        flexDirection: "column",
     },
 })
 
-interface IProps {
-    rest: IRest
+interface IProps extends WithStyles<typeof styles> {
+    handleDialog: (open: boolean) => void
     language: IText
     oneHanded: boolean
-    handleDialog: (open: boolean) => void
+    rest: IRest
 }
 
 interface IState {
     wallets: IHyconWallet[]
 }
 
-export class Contacts extends React.Component<IProps, any> {
+class Contacts extends React.Component<IProps, any> {
     public buttonPressTimer: any
 
     constructor(props: IProps) {
         super(props)
         this.state = {
-            rest: this.props.rest,
-            language: this.props.language,
+            checked: [1],
             contactAddress: "",
             contacts: [],
             delay: 500,
             dialogAddContact: false,
-            result: "No result",
-            checked: [1],
             isRemoving: false,
             isScanning: false,
+            language: this.props.language,
             qrScannerReady: false,
+            rest: this.props.rest,
+            result: "No result",
             wallets: [],
         }
         window.QRScanner.prepare((err, status) => {
@@ -126,7 +132,7 @@ export class Contacts extends React.Component<IProps, any> {
             <List
                 style={{ display: "flex", flexDirection: "column", flexGrow: this.state.contacts.length === 0 ? 1 : 0 }}
                 subheader={
-                    <ListSubheader disableSticky component="div" style={styles.header}>
+                    <ListSubheader disableSticky component="div" className={this.props.classes.header}>
                         <span style={{ margin: "auto 0 auto 12px" }}>{this.props.language["contacts-list"]} ({this.state.contacts !== null ? this.state.contacts.length : 0})</span>
                         <div>
                             <span><IconButton aria-label="Add" onClick={this.openAddContact.bind(this)}><AddIcon/></IconButton></span>
@@ -207,19 +213,16 @@ export class Contacts extends React.Component<IProps, any> {
 
     public render() {
         return (
-            <div style={styles.root}>
-                <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0, margin: this.props.oneHanded ? "15vh 0" : 0 }} position="static">
-                    <Toolbar style={styles.header}>
-                        <IconButton style={{ width: 48, height: 48 }} onClick={() => this.props.handleDialog(false)}><ArrowBackIcon /></IconButton>
-                        <Typography variant={this.props.oneHanded ? "h2" : "button"} align="center">
-                            {this.props.language["contacts-title"]}
-                        </Typography>
-                        {this.state.isRemoving
-                            ? <IconButton style={{ width: 48, height: 48 }} onClick={this.deleteContacts.bind(this)}>{this.state.checked.length === 1 ? <CloseIcon /> : <DeleteIcon />}</IconButton>
-                            : <div style={{ width: 48, height: 48 }} />
-                        }
-                    </Toolbar>
-                </AppBar>
+            <div className={this.props.classes.root}>
+                <NavBar
+                    handleDialog={this.props.handleDialog}
+                    oneHanded={this.props.oneHanded}
+                    rightElement={this.state.isRemoving
+                        ? <IconButton className={this.props.classes.icon} onClick={this.deleteContacts.bind(this)}>{this.state.checked.length === 1 ? <CloseIcon /> : <DeleteIcon />}</IconButton>
+                        : <div className={this.props.classes.icon} />
+                    }
+                    title={this.props.language["contacts-title"]}
+                />
                 {this.state.isScanning ?
                     <AppBar id="qrCloseButton" style={{ background: "transparent", boxShadow: "none", top: 12 }} position="absolute">
                         <Toolbar style={{ display: "flex", justifyContent: "flex-end" }}>
@@ -370,3 +373,5 @@ export class Contacts extends React.Component<IProps, any> {
         document.getElementById("blockexplorer").style.visibility = "visible"
     }
 }
+
+export default withStyles(styles)(Contacts)

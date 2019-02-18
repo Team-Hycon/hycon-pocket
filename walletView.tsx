@@ -135,6 +135,7 @@ interface IProps extends WithStyles<typeof styles> {
     paletteType: string
     oneHanded: boolean
     setWallets: (fromDelete?: boolean) => void
+    showBalance: boolean
     handleDialog: (open: boolean) => void
     handleWalletSelect: (name: string) => void
     updateSelected: (name: string) => void
@@ -183,7 +184,6 @@ class WalletView extends React.PureComponent<IProps, any> {
             isExpand: false,
             globalFee: wallets[""].miningFee === null ? false : wallets[""].miningFee !== "",
             miningFee: wallets[this.props.name].miningFee === "" ? wallets[""].miningFee : "",
-            showBalance: storage.getItem("showBalance") === null ? true : (storage.getItem("showBalance") === "true"),
             openMnemonic: false,
             password: "",
             showPassword: false,
@@ -256,7 +256,7 @@ class WalletView extends React.PureComponent<IProps, any> {
         if (this.state.notFound) {
             return <div>{this.props.language["detail-no-data"]}</div>
         }
-        if (this.state.wallet.address === "") {
+        if (this.props.name === "") {
             return (
                 <Grid container className={this.props.classes.root} style={{ justifyContent: "space-around"}}>
                     <Grid item xs={12}>
@@ -274,6 +274,7 @@ class WalletView extends React.PureComponent<IProps, any> {
 
         return (
             <Grid container className={this.props.classes.root}>
+                {(this.props.name !== "" && this.props.wallet.address === "") || (this.props.name !== this.props.wallet.name) ? <LinearProgress /> : null}
                 <PullToRefresh
                     pullDownContent={<span />}
                     releaseContent={<span />}
@@ -319,7 +320,7 @@ class WalletView extends React.PureComponent<IProps, any> {
                                                 max={42}
                                                 onClick={this.switchBalance.bind(this, -1)}
                                             >
-                                                {this.state.showBalance ? this.state.displayedBalance : this.props.language["balance-hidden"]}
+                                                {this.props.showBalance ? this.state.displayedBalance : this.props.language["balance-hidden"]}
                                             </Textfit>
                                         </Grid>
                                         <Grid item>
@@ -388,7 +389,7 @@ class WalletView extends React.PureComponent<IProps, any> {
                     </Card>
                     <Card elevation={0} style={{ backgroundColor: "transparent", paddingBottom: 30 }} square>
                         <CardContent>
-                            {((this.state.wallet.pendings.concat(this.state.wallet.txs).length !== 0) && this.state.showBalance) ?
+                            {((this.state.wallet.pendings.concat(this.state.wallet.txs).length !== 0) && this.props.showBalance) ?
                                 <Grid item xs={12}>
                                     <Typography variant="subtitle2" align="left" gutterBottom>
                                         {this.props.language["detail-last"]} {this.state.wallet.pendings.concat(this.state.wallet.txs).length} {this.props.language["detail-txs"]}
@@ -502,10 +503,10 @@ class WalletView extends React.PureComponent<IProps, any> {
                                 </Grid> :
                                 <Grid item xs={12} style={{ flexGrow: 1 }}>
                                     <Typography variant="h6" align="center">
-                                        {this.state.showBalance ? this.props.language["detail-guide-make-your-tx"] : this.props.language["txs-hidden"]}
+                                        {this.props.showBalance ? this.props.language["detail-guide-make-your-tx"] : this.props.language["txs-hidden"]}
                                     </Typography>
                                     <Typography variant="caption" align="center">
-                                        {this.state.showBalance ? this.props.language["detail-guide-tap-send-or-request"] : this.props.language["txs-hidden-help"]}
+                                        {this.props.showBalance ? this.props.language["detail-guide-tap-send-or-request"] : this.props.language["txs-hidden-help"]}
                                     </Typography>
                                 </Grid>
                             }
@@ -730,25 +731,25 @@ class WalletView extends React.PureComponent<IProps, any> {
                 <AppBar position="fixed" className={this.props.classes.swipeArea}>
                     <Toolbar className={this.props.classes.bottomToolbar}>
                         <Grid item xs={4} justify="center" className={this.props.classes.bottomToolbarBorder}>
-                            <ButtonBase focusRipple aria-label="QR Code" disabled={this.state.wallet.address === ""} onClick={this.toggleQRDrawer(true)} className={this.props.classes.bottomToolbarBtn}>
+                            <ButtonBase focusRipple aria-label="QR Code" disabled={this.props.name !== this.props.wallet.name} onClick={this.toggleQRDrawer(true)} className={this.props.classes.bottomToolbarBtn}>
                                 <BlurOn style={{ color: this.props.paletteType === "light" ? "black" : "white" }}/>
                                 <Typography variant="caption" align="center">QR Code</Typography>
                             </ButtonBase>
                         </Grid>
                         <Grid item xs={4} justify="center" className={this.props.classes.bottomToolbarBorder}>
-                            <ButtonBase focusRipple aria-label="Send HYC" disabled={this.state.wallet.address === ""} component={Link} {...{ to: "/sendcoins" } as any } onClick={this.props.handleDialog} className={this.props.classes.bottomToolbarBtn}>
+                            <ButtonBase focusRipple aria-label="Send HYC" disabled={this.props.name !== this.props.wallet.name} component={Link} {...{ to: "/sendcoins" } as any } onClick={this.props.handleDialog} className={this.props.classes.bottomToolbarBtn}>
                                 <SendIcon style={{ color: this.props.paletteType === "light" ? "black" : "white" }}/>
                                 <Typography variant="caption" align="center">{this.props.language["btn-send"]}</Typography>
                             </ButtonBase>
                         </Grid>
                         <Grid item xs={4} justify="center" className={this.props.classes.bottomToolbarBorder}>
-                            <ButtonBase focusRipple aria-label="Receive HYC" disabled={this.state.wallet.address === ""} onClick={this.toggleReqDrawer(true)} className={this.props.classes.bottomToolbarBtn}>
+                            <ButtonBase focusRipple aria-label="Receive HYC" disabled={this.props.name !== this.props.wallet.name} onClick={this.toggleReqDrawer(true)} className={this.props.classes.bottomToolbarBtn}>
                                 <RequestIcon style={{ color: this.props.paletteType === "light" ? "black" : "white" }}/>
                                 <Typography variant="caption" align="center">{this.props.language["btn-request"]}</Typography>
                             </ButtonBase>
                         </Grid>
                         <Grid item xs={4} justify="center">
-                            <ButtonBase focusRipple aria-label="More" disabled={this.state.wallet.address === ""} onClick={this.toggleMenu} className={this.props.classes.bottomToolbarBtn}>
+                            <ButtonBase focusRipple aria-label="More" disabled={this.props.name !== this.props.wallet.name} onClick={this.toggleMenu} className={this.props.classes.bottomToolbarBtn}>
                                 <MoreIcon style={{ color: this.props.paletteType === "light" ? "black" : "white" }}/>
                                 <Typography variant="caption" align="center">{this.props.language["btn-more"]}</Typography>
                             </ButtonBase>

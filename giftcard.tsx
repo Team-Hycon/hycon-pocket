@@ -16,6 +16,7 @@ import { Link, Redirect } from "react-router-dom"
 import { IRest } from "../rest"
 import { IHyconWallet } from "../rest"
 import { IGiftcard } from "../rest"
+import NavBar from "./component/NavBar"
 import { IText } from "./locales/m_locales"
 
 // tslint:disable:no-var-requires
@@ -98,72 +99,66 @@ export class Giftcard extends React.Component<IGiftcardProps, any> {
         }
 
         return (
-            <Grid container justify="space-between" style={styles.root}>
-                <Grid item>
-                    {this.state.pending ? <Grid item xs={12}><LinearProgress /></Grid> : null}
-                    <AppBar style={{ background: "transparent", boxShadow: "none", zIndex: 0, margin: this.props.oneHanded ? "15vh 0" : 0 }} position="static">
-                        <Toolbar style={styles.header}>
-                            <IconButton onClick={() => this.props.handleDialog(false)}><ArrowBackIcon /></IconButton>
-                            <Typography variant={this.props.oneHanded ? "h2" : "button"} align="center">
-                                {title}
-                            </Typography>
-                            <div style={{ width: 48, height: 48 }} />
-                        </Toolbar>
-                    </AppBar>
-                </Grid>
+            <Grid style={styles.root}>
+                <Grid justify="space-between" style={styles.root}>
+                    <Grid item>
+                        {this.state.pending ? <Grid item xs={12}><LinearProgress /></Grid> : null}
+                        <NavBar handleDialog={this.props.handleDialog} oneHanded={this.props.oneHanded} title={title} />
+                    </Grid>
 
-                <Grid item alignContent="center">
-                    <Card elevation={2} style={{ height, width, margin: "0 auto", borderRadius: 8, backgroundColor: "#eceff1" }}>
-                        <CardContent style={{ paddingBottom: 16, height: "100%" }}>
-                            <Grid container direction="column" justify="space-between" spacing={16} style={{ height: "100%" }}>
-                                <Grid item>
-                                    <Typography align="left" style={{ color: "black" }}>HYCON GIFT CARD</Typography>
+                    <Grid item alignContent="center">
+                        <Card elevation={2} style={{ height, width, margin: "0 auto", borderRadius: 8, backgroundColor: "#eceff1" }}>
+                            <CardContent style={{ paddingBottom: 16, height: "100%" }}>
+                                <Grid container direction="column" justify="space-between" spacing={16} style={{ height: "100%" }}>
+                                    <Grid item>
+                                        <Typography align="left" style={{ color: "black" }}>HYCON GIFT CARD</Typography>
+                                    </Grid>
+                                    <Grid item style={{ textAlign: "center" }}>
+                                        <img style={{ margin: "0 auto", maxHeight: 80 }} src={gcLogoDark} />
+                                    </Grid>
+                                    <Grid item>
+                                        <TextField
+                                            type="number"
+                                            id="cardNumber"
+                                            label={this.props.language["gc-number"]}
+                                            placeholder="0000 - 0000 - 0000 - 0000"
+                                            fullWidth
+                                            value={this.state.cardNumber}
+                                            onChange={this.handleInputChange("cardNumber")}
+                                            InputLabelProps={{ shrink: true, style: { color: "black" } }}
+                                            inputProps={{ style: { textAlign: "center", color: "black" } }}
+                                        />
+                                    </Grid>
                                 </Grid>
-                                <Grid item style={{ textAlign: "center" }}>
-                                    <img style={{ margin: "0 auto", maxHeight: 80 }} src={gcLogoDark} />
-                                </Grid>
-                                <Grid item>
-                                    <TextField
-                                        type="number"
-                                        id="cardNumber"
-                                        label={this.props.language["gc-number"]}
-                                        placeholder="0000 - 0000 - 0000 - 0000"
-                                        fullWidth
-                                        value={this.state.cardNumber}
-                                        onChange={this.handleInputChange("cardNumber")}
-                                        InputLabelProps={{ shrink: true, style: { color: "black" } }}
-                                        inputProps={{ style: { textAlign: "center", color: "black" } }}
-                                    />
-                                </Grid>
+                            </CardContent>
+                        </Card>
+
+                        <Grid item xs={12}>
+                            <Grid item style={{ margin: "5% 20%" }}>
+                                <TextField
+                                    id="cardPIN"
+                                    label={this.props.language["gc-pin"]}
+                                    placeholder={this.props.language["gc-pin-placeholder"]}
+                                    variant="outlined"
+                                    fullWidth
+                                    value={this.state.cardPIN}
+                                    onChange={this.handleInputChange("cardPIN")}
+                                    InputLabelProps={{ shrink: true }}
+                                    inputProps={{ maxLength: 8, style: { textAlign: "center" } }}
+                                />
                             </Grid>
-                        </CardContent>
-                    </Card>
-
-                    <Grid item xs={12}>
-                        <Grid item style={{ margin: "5% 20%" }}>
-                            <TextField
-                                id="cardPIN"
-                                label={this.props.language["gc-pin"]}
-                                placeholder={this.props.language["gc-pin-placeholder"]}
-                                variant="outlined"
-                                fullWidth
-                                value={this.state.cardPIN}
-                                onChange={this.handleInputChange("cardPIN")}
-                                InputLabelProps={{ shrink: true }}
-                                inputProps={{ maxLength: 8, style: { textAlign: "center" } }}
-                            />
                         </Grid>
                     </Grid>
-                </Grid>
 
-                <Grid item alignContent="center">
-                    <Button
-                        fullWidth
-                        disabled={this.state.pending}
-                        onClick={this.registerGiftcard.bind(this)}
-                        style={{ backgroundColor: "#172349", color: "#fff", padding: "16px 24px" }}>
-                        {this.props.language["btn-redeem"]}
-                    </Button>
+                    <Grid item alignContent="center">
+                        <Button
+                            fullWidth
+                            disabled={this.state.pending}
+                            onClick={this.registerGiftcard.bind(this)}
+                            style={{ backgroundColor: "#172349", color: "#fff", padding: "16px 24px" }}>
+                            {this.props.language["btn-redeem"]}
+                        </Button>
+                    </Grid>
                 </Grid>
             </Grid>
         )
