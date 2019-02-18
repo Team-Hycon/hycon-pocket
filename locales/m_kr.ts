@@ -59,6 +59,7 @@ export default {
     "ph-amount-to-request": "요청할 금액",
     "ph-email": "이메일",
     "ph-2fa": "2FA PIN",
+    "ph-press-back-again": "Press back again to exit",
 
     // ON BOARDING
     "onboarding-step1-text1": "환영합니다",

@@ -191,7 +191,7 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
             event.preventDefault()
             if (window.location.hash === "#/") {
                 { this.state.confirmAppExit ? navigator.app.exitApp() : this.setState({ confirmAppExit: true }) }
-                window.plugins.toast.showShortBottom("Press back again to exit")
+                window.plugins.toast.showShortBottom(this.language["ph-press-back-again"])
             }
             window.setTimeout(() => { this.setState({ confirmAppExit: false })}, 1000)
             return
@@ -378,9 +378,9 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
             return <div>Loading</div>
         }
 
-        console.log(this.state.name)
-        console.log(this.state.wallet)
-        console.log(this.state.wallets)
+        // console.log(this.state.name)
+        // console.log(this.state.wallet)
+        // console.log(this.state.wallets)
         return (
             (this.state.fingerprintAuth || storage.getItem("fingerprint") === "false") || storage.getItem("fingerprint") === null ?
                 <MuiThemeProvider theme={theme}>

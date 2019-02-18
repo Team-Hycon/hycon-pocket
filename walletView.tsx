@@ -193,10 +193,11 @@ class WalletView extends React.PureComponent<IProps, any> {
             update: false,
         }
         // console.log("constructor walletView")
+        console.log(this.props.price)
     }
 
     public componentDidMount() {
-        // console.log("componentDidMount walletView")
+        console.log("componentDidMount walletView")
         document.addEventListener("backbutton", (event) => {
             event.preventDefault()
             if (this.state.qrDrawer || this.state.reqDrawer || this.state.askDelete || this.state.openMnemonic || this.state.dialogMore || Boolean(this.state.anchorEl)) {
@@ -206,11 +207,6 @@ class WalletView extends React.PureComponent<IProps, any> {
             }
             return
         }, false)
-
-        const hycBalanceNum = Number(this.state.wallet.balance)
-        this.state.balance.fiat = (this.state.price.fiat * hycBalanceNum)
-        this.state.balance.btc = (this.state.price.btc * hycBalanceNum).toFixed(9)
-        this.state.balance.eth = (this.state.price.eth * hycBalanceNum).toFixed(9)
     }
 
     public componentWillUnmount() {
@@ -223,6 +219,13 @@ class WalletView extends React.PureComponent<IProps, any> {
             }
             return
         }, false)
+    }
+
+    public componentDidUpdate() {
+        const hycBalanceNum = Number(this.state.wallet.balance)
+        this.state.balance.fiat = (this.props.price.fiat * hycBalanceNum)
+        this.state.balance.btc = (this.props.price.btc * hycBalanceNum).toFixed(9)
+        this.state.balance.eth = (this.props.price.eth * hycBalanceNum).toFixed(9)
     }
     public componentWillReceiveProps(nextProps: any) {
         // console.log("componentWillReceiveProps walletView")
@@ -311,7 +314,7 @@ class WalletView extends React.PureComponent<IProps, any> {
                                 </Grid>
                                 <Grid item xs={12} style={{ padding: "20px 0" }}>
                                     <Grid container direction="row" alignItems="center" justify="space-between">
-                                        <Grid item style={{ width: "80%", fontFamily: "Roboto, Helventica, Arial, sans-serif" }}>
+                                        <Grid item style={{ width: "80%", fontFamily: "Source Code Pro, monospace" }}>
                                             <Textfit
                                                 mode="single"
                                                 style={{ color: this.props.paletteType === "light" ? "black" : "white" }}

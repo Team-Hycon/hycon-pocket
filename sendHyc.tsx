@@ -229,7 +229,7 @@ class SendHyc extends React.Component<IProps, any> {
                                                 <Typography variant="h6" align="left" gutterBottom>
                                                     {this.props.language["detail-your-balance"]}
                                                 </Typography>
-                                                <Typography variant="h4" align="left">
+                                                <Typography variant="h4" align="left" style={{ fontFamily: "Source Code Pro, monospace" }}>
                                                     {this.state.totalHYC} HYC
                                                 </Typography>
                                             </CardContent>

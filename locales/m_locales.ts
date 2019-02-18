@@ -69,6 +69,7 @@ export interface IText {
     "ph-amount-to-request": string
     "ph-email": string
     "ph-2fa": string
+    "ph-press-back-again": string,
 
     // ON BOARDING
     "onboarding-step1-text1": string

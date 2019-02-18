@@ -59,6 +59,7 @@ export default {
     "ph-amount-to-request": "Amount to Request",
     "ph-email": "Email",
     "ph-2fa": "2FA PIN",
+    "ph-press-back-again": "Press back again to exit",
 
     // ON BOARDING
     "onboarding-step1-text1": "Welcome to your new",
