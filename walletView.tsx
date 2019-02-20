@@ -82,6 +82,7 @@ const styles = (theme: Theme) => createStyles({
         bottom: 0,
         backgroundColor: theme.palette.type === "light" ? "white" : "#424242",
         borderTop: "1px solid #ededf3",
+        paddingBottom: "env(safe-area-inset-bottom)",
     },
     bottomToolbar: {
         alignItems: "center",

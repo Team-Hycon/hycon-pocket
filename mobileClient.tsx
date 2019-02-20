@@ -57,6 +57,7 @@ const storage = window.localStorage
 const styles = (theme: Theme) => createStyles({
     appBar: {
         backgroundColor: "transparent",
+        paddingTop: "env(safe-area-inset-top)",
         width: "100%",
         zIndex: theme.zIndex.drawer + 1,
     },
@@ -239,7 +240,7 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
     public renderWallets(theme: Theme) {
         // console.log("renderWallets")
         return (
-            <Grid container direction={this.state.oneHanded ? "column-reverse" : "column" } justify="flex-start" style={{ height: "100%", overflowY: "scroll" }}>
+            <Grid container direction={this.state.oneHanded ? "column-reverse" : "column" } justify="flex-start" style={{ height: "100%", overflowY: "scroll", paddingTop: "env(safe-area-inset-top)" }}>
                 <List>
                     <Hidden xsDown implementation="js">
                         <ListItem>
@@ -395,14 +396,6 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                     "&$notchedOutline": {
                         borderColor: "rgba(0, 0, 0, 0.23)",
                     },
-                    // "&:hover:not($disabled):not($focused):not($error) $notchedOutline": {
-                    //     // Reset on touch devices, it doesn't add specificity
-                    //     "@media (hover: none)": {
-                    //         borderColor: "rgba(0, 0, 0, 0.23)",
-                    //     },
-                    //     "borderColor": "#4A90E2",
-                    // },
-                    // "position": "relative",
                 },
             },
         }
@@ -424,13 +417,10 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
             this.toggleMenu(false)
         }
 
-        // console.log(this.state.name)
-        // console.log(this.state.wallet)
-        // console.log(this.state.wallets)
         return (
             (this.state.fingerprintAuth || storage.getItem("fingerprint") === "false") || storage.getItem("fingerprint") === null ?
                 <MuiThemeProvider theme={theme}>
-                    <div style={{ backgroundColor: this.state.paletteType === "light" ? "white" : "#303030", display: "flex", flexDirection: "column", flexGrow: 1 }}>
+                    <div style={{ backgroundColor: this.state.paletteType === "light" ? "white" : "#303030", display: "flex", flexDirection: "column", flexGrow: 1, paddingTop: "env(safe-area-inset-top)" }}>
                         <CssBaseline />
                         <AppBar position="absolute" elevation={0} className={this.props.classes.appBar}>
                             <Toolbar style={{ display: "flex", justifyContent: "space-between", paddingLeft: 8 }}>
@@ -511,7 +501,7 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                                 />
                             }
 
-                            <Dialog id="content-dialog" fullScreen style={{ marginLeft: window.matchMedia("(max-width: 600px)").matches ? 0 : permanentDrawerWidth }} open={this.state.openDialog} onClose={() => this.handleDialog(false)} scroll={"paper"}>
+                            <Dialog id="content-dialog" fullScreen style={{ paddingTop: "env(safe-area-inset-top)", paddingBottom: "env(safe-area-inset-bottom", marginLeft: window.matchMedia("(max-width: 600px)").matches ? 0 : permanentDrawerWidth }} open={this.state.openDialog} onClose={() => this.handleDialog(false)} scroll={"paper"}>
                                 <Switch>
                                     <Route exact path="/addwallet" component={() => <AddWallet rest={this.state.rest} language={this.language} oneHanded={this.state.oneHanded} handleDialog={this.handleDialog.bind(this)} setWallets={this.setWallets.bind(this)} handleWalletSelect={this.handleWalletSelect.bind(this)} />} />
                                     <Route exact path="/sendcoins" component={() => <SendHyc rest={this.state.rest} language={this.language} wallet={this.state.wallet} oneHanded={this.state.oneHanded} handleDialog={this.handleDialog.bind(this)} />} />
