@@ -12,7 +12,7 @@ import Toolbar from "@material-ui/core/Toolbar"
 import Typography from "@material-ui/core/Typography"
 import ArrowBackIcon from "@material-ui/icons/ArrowBack"
 import * as React from "react"
-import { Link, Redirect } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { IRest } from "../rest"
 import { IHyconWallet } from "../rest"
 import { IGiftcard } from "../rest"
@@ -51,7 +51,6 @@ export class Giftcard extends React.Component<IGiftcardProps, any> {
     constructor(props: IGiftcardProps) {
         super(props)
         this.state = {
-            redirect: false,
             address: props.wallet.address,
             cardNumber: "",
             cardPIN: "",
@@ -79,13 +78,11 @@ export class Giftcard extends React.Component<IGiftcardProps, any> {
     }
 
     public render() {
-        if (this.state.redirect) {
-            this.props.handleDialog(false)
-        }
-
-        let width = window.innerWidth * 0.9
-        if (width > 400) { width = 400 }
+        const width = window.innerWidth * 0.9 > 400 ? 400 : window.innerWidth * 0.9
         const height = width / 1.5858
+        const logoHeight = window.innerWidth * 0.9 > 400 ? height * 0.3 : height * 0.25
+
+        console.log(logoHeight)
 
         let title = ""
         if (this.props.oneHanded) {
@@ -116,7 +113,7 @@ export class Giftcard extends React.Component<IGiftcardProps, any> {
                                         <Typography align="left" style={{ color: "black" }}>HYCON GIFT CARD</Typography>
                                     </Grid>
                                     <Grid item style={{ textAlign: "center" }}>
-                                        <img style={{ margin: "0 auto", maxHeight: 70 }} src={gcLogoDark} />
+                                        <img style={{ margin: "0 auto", maxHeight: logoHeight }} src={gcLogoDark} />
                                     </Grid>
                                     <Grid item>
                                         <TextField
@@ -220,7 +217,7 @@ export class Giftcard extends React.Component<IGiftcardProps, any> {
             switch (status) {
                 case 200:
                     alert(this.props.language["alert-gc-redeemed"])
-                    this.setState({ redirect: true })
+                    this.props.handleDialog(false)
                     break
                 case 300:
                     alert(this.props.language["alert-gc-invalid-info"])

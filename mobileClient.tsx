@@ -252,7 +252,7 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                         </ListItem>
                     </Hidden>
                     {this.state.wallets.length === 0 ?
-                        <ListItem button component={({ innerRef, ...props }) => <li><Link to="/addwallet" {...props} style={{ float: "none" }} onClick={() => this.handleDialog(true)} /></li>}>
+                        <ListItem button disabled={this.state.openOnboarding} component={({ innerRef, ...props }) => <li><Link to="/addwallet" {...props} style={{ float: "none" }} onClick={() => this.handleDialog(true)} /></li>}>
                             <Avatar className={this.props.classes.avatar}><AddIcon /></Avatar>
                             <ListItemText primary={this.language["no-wallet"]} />
                         </ListItem> :
@@ -314,22 +314,22 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                         </div>
                     }
                     <Divider style={{ margin: "20px 0px" }} />
-                    <ListItem button component={({ innerRef, ...props }) => <Link to="/contacts" {...props} onClick={() => this.handleDialog(true)} />}>
+                    <ListItem button disabled={this.state.openOnboarding} component={({ innerRef, ...props }) => <Link to="/contacts" {...props} onClick={() => this.handleDialog(true)} />}>
                         <ContactsIcon style={{ color: this.state.paletteType === "light" ? "#616161" : "white" }} />
                         <ListItemText primary={this.language["contacts-list"]} />
                     </ListItem>
                     <Divider style={{ margin: "20px 0px" }} />
                     {this.state.paletteType === "light" ?
-                        <ListItem button onClick={this.setPaletteType.bind(this)}>
+                        <ListItem button disabled={this.state.openOnboarding} onClick={this.setPaletteType.bind(this)}>
                             <DarkOnIcon style={{ color: "#616161" }} />
                             <ListItemText primary={this.language["btn-dark-on"]} />
                         </ListItem> :
-                        <ListItem button onClick={this.setPaletteType.bind(this)}>
+                        <ListItem button disabled={this.state.openOnboarding} onClick={this.setPaletteType.bind(this)}>
                             <DarkOffIcon style={{ color: "white" }}/>
                             <ListItemText primary={this.language["btn-dark-off"]} />
                         </ListItem>
                     }
-                    <ListItem button component={({ innerRef, ...props }) => <Link to="/settings" {...props} onClick={() => this.handleDialog(true)} />}>
+                    <ListItem button disabled={this.state.openOnboarding} component={({ innerRef, ...props }) => <Link to="/settings" {...props} onClick={() => this.handleDialog(true)} />}>
                         <SettingsIcon style={{ color: this.state.paletteType === "light" ? "#616161" : "white" }}/>
                         <ListItemText primary={this.language["settings-title"]} />
                     </ListItem>

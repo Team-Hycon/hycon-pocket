@@ -70,11 +70,17 @@ class Settings extends React.Component<ISettingsProps, any> {
             dialogPrivacyPolicy: false,
             dialogTermsOfUse: false,
             dialogWhatsNew: false,
+            fingerprintAvailable: false,
             fingerprintEnabled: storage.getItem("fingerprint") === null ? false : (storage.getItem("fingerprint") === "true"),
             globalFee: JSON.parse(storage.getItem("globalFee")) ? (JSON.parse(storage.getItem("globalFee")).active === "true") : false,
             miningFee: JSON.parse(storage.getItem("globalFee")) ? JSON.parse(storage.getItem("globalFee")).value : "1",
             showBalance: storage.getItem("showBalance") === null ? true : (storage.getItem("showBalance") === "true"),
         }
+        window.Fingerprint.isAvailable((success) => {
+            if (success === "finger" || "face") {
+                this.setState({ fingerprintAvailable: true })
+            }
+        })
     }
 
     public componentDidMount() {
@@ -135,7 +141,7 @@ class Settings extends React.Component<ISettingsProps, any> {
                         </ListSubheader>
                     }
                 >
-                    <ListItem button onClick={this.handleDialogFingerprint} key="item-fingerprint">
+                    <ListItem button disabled={!this.state.fingerprintAvailable} onClick={this.handleDialogFingerprint} key="item-fingerprint">
                         <ListItemText primary={this.props.language["fingerprint-on-launch"]} secondary={this.state.fingerprintEnabled ? this.props.language.enabled : this.props.language.disabled }/>
                     </ListItem>
                     <Dialog fullScreen open={this.state.dialogFingerprint} onClose={this.handleDialogFingerprint} scroll={this.state.scroll}>
@@ -228,10 +234,12 @@ class Settings extends React.Component<ISettingsProps, any> {
             this.setState({ fingerprintEnabled: false, dialogFingerprint: false })
             storage.setItem("fingerprint", "false")
         } else {
-            window.Fingerprint.isAvailable((sucess) => {
+            window.Fingerprint.isAvailable((success) => {
                 window.Fingerprint.show({
                     clientId: "Hycon Pocket",
                     clientSecret: "2.0.0",
+                    localizedFallbackTitle: "Touch ID Authentication",
+                    localizedReason: "Confirm using Touch ID to continue",
                 }, () => {
                     storage.setItem("fingerprint", "true")
                     this.setState({ fingerprintEnabled : true, dialogFingerprint: false })
