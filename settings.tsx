@@ -52,6 +52,7 @@ const styles = (theme: Theme) => createStyles({
 })
 
 interface ISettingsProps extends WithStyles<typeof styles> {
+    disableFingerprintScreen: () => void
     language: IText
     handleDialog: (open: boolean) => void
     handleOneHanded: () => void
@@ -242,7 +243,8 @@ class Settings extends React.Component<ISettingsProps, any> {
                     localizedReason: "Confirm using Touch ID to continue",
                 }, () => {
                     storage.setItem("fingerprint", "true")
-                    this.setState({ fingerprintEnabled : true, dialogFingerprint: false })
+                    this.props.disableFingerprintScreen()
+                    this.setState({ fingerprintEnabled: true, dialogFingerprint: false })
                 }, (err) => {
                     storage.setItem("fingerprint", "false")
                     this.setState({ fingerprintEnabled: false, dialogFingerprint: false })

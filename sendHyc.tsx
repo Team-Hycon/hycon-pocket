@@ -596,6 +596,28 @@ class SendHyc extends React.Component<IProps, any> {
         return duplicated
     }
 
+    private sendTransaction() {
+        this.props.rest.sendTx({ name: this.props.wallet.name, password: this.state.password, address: this.state.toAddress, amount: this.state.amountSending, minerFee: this.state.miningFee, nonce: undefined })
+            .then((data) => {
+                console.log(data)
+                if (data.res === true) {
+                    this.setState({ askForPassword: false, wrongPassword: false, sendingStatus: data.res, dialogStatus: true })
+                } else {
+                    if (data.case === 1) {
+                        this.setState({ wrongPassword: true })
+
+                    } else if (data.case === 2) {
+                        this.setState({ sendingStatus: data.res, dialogStatus: true, error: this.props.language["alert-invalid-address"] })
+                    } else if (data.case === 3) {
+                        this.setState({ sendingStatus: data.res, dialogStatus: true, error: this.props.language["send-hyc-fail"] })
+                    }
+                }
+            }).catch((err: Error) => {
+                console.error(err)
+                this.setState({ sendingStatus: false, dialogStatus: true, error: err })
+            })
+    }
+
     private handleSubmit() {
         if (this.state.toAddress === "" || this.state.amountSending === "" || this.state.miningFee === "") {
             this.setState({ errorCode: 1 })
@@ -618,40 +640,20 @@ class SendHyc extends React.Component<IProps, any> {
         } else if (this.state.fromAddress === this.state.toAddress) {
             this.setState({ errorCode: 7 })
             return
-        } else if (this.state.address === "") {
-            this.setState({ errorCode: 8 })
-            return
         } else if (this.state.toAddress && !patternAddress.test(this.state.toAddress)) {
             this.setState({ errorCode: 9 })
             return
         }
 
-        this.props.rest.sendTx({ name: this.props.wallet.name, password: this.state.password, address: this.state.toAddress, amount: this.state.amountSending, minerFee: this.state.miningFee, nonce: undefined })
-            .then((data) => {
-                console.log(data)
-                if (data.res === true) {
-
-                    this.setState({ askForPassword: false, wrongPassword: false, sendingStatus: data.res, dialogStatus: true })
-                } else {
-                    if (data.case === 1) {
-                        // this.setState({ sendingStatus: data.res, dialogStatus: true, error: this.props.language["alert-invalid-password"] })
-                        // console.log("askforPassword : " + this.state.askForPassword)
-                        // if (this.state.askForPassword) {
-                            this.setState({ wrongPassword: true })
-                        // } else {
-                        //     this.setState({ askForPassword: true })
-                        // }
-
-                    } else if (data.case === 2) {
-                        this.setState({ sendingStatus: data.res, dialogStatus: true, error: this.props.language["alert-invalid-address"] })
-                    } else if (data.case === 3) {
-                        this.setState({ sendingStatus: data.res, dialogStatus: true, error: this.props.language["send-hyc-fail"] })
-                    }
-                }
-            }).catch((err: Error) => {
-                console.error(err)
-                this.setState({ sendingStatus: false, dialogStatus: true, error: err })
-            })
+        if (window.localStorage.getItem("fingerprint") === "true") {
+            window.Fingerprint.show({
+                clientId: "Hycon Pocket",
+                clientSecret: "2.0.0",
+            }, () => { this.sendTransaction()
+            }, () => { alert("Transaction cancelled, unable to authenticate fingerprint.") })
+        } else {
+            this.sendTransaction()
+        }
 
     }
 

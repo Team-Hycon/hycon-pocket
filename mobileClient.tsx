@@ -517,7 +517,7 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                                     <Route exact path="/sendcoins" component={() => <SendHyc rest={this.state.rest} language={this.language} wallet={this.state.wallet} oneHanded={this.state.oneHanded} handleDialog={this.handleDialog.bind(this)} />} />
                                     <Route exact path="/contacts" component={() => <Contacts rest={this.state.rest} language={this.language} oneHanded={this.state.oneHanded} handleDialog={this.handleDialog.bind(this)} />} />
                                     <Route exact path="/giftcard" component={() => <Giftcard rest={this.state.rest} language={this.language} wallet={this.state.wallet} oneHanded={this.state.oneHanded} handleDialog={this.handleDialog.bind(this)} />} />
-                                    <Route exact path="/settings" component={() => <Settings language={this.language} handleDialog={this.handleDialog.bind(this)} oneHanded={this.state.oneHanded} handleOneHanded={this.handleOneHanded.bind(this)} showBalance={this.state.showBalance} showBalanceToggler={this.showBalanceToggler.bind(this)} />} />
+                                    <Route exact path="/settings" component={() => <Settings language={this.language} handleDialog={this.handleDialog.bind(this)} oneHanded={this.state.oneHanded} handleOneHanded={this.handleOneHanded.bind(this)} showBalance={this.state.showBalance} showBalanceToggler={this.showBalanceToggler.bind(this)} disableFingerprintScreen={this.disableFingerprintScreen.bind(this)} />} />
                                 </Switch>
                             </Dialog>
                         </main>
@@ -533,6 +533,10 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                     </Grid>
                 </Grid>
         )
+    }
+
+    private disableFingerprintScreen = () => {
+        this.setState({ fingerprintAuth: true })
     }
 
     private showBalanceToggler = () => {
