@@ -3,6 +3,9 @@ import AppBar from "@material-ui/core/AppBar"
 import Button from "@material-ui/core/Button"
 import Checkbox from "@material-ui/core/Checkbox"
 import Dialog from "@material-ui/core/Dialog"
+import DialogActions from "@material-ui/core/DialogActions"
+import DialogContent from "@material-ui/core/DialogContent"
+import DialogTitle from "@material-ui/core/DialogTitle"
 import Divider from "@material-ui/core/Divider"
 import Fade from "@material-ui/core/Fade"
 import Grid from "@material-ui/core/Grid"
@@ -17,6 +20,7 @@ import ListSubheader from "@material-ui/core/ListSubheader"
 import Snackbar from "@material-ui/core/Snackbar"
 import { Theme } from "@material-ui/core/styles/createMuiTheme"
 import withStyles, { WithStyles } from "@material-ui/core/styles/withStyles"
+import TextField from "@material-ui/core/TextField"
 import Toolbar from "@material-ui/core/Toolbar"
 import Typography from "@material-ui/core/Typography"
 import AddIcon from "@material-ui/icons/Add"
@@ -29,6 +33,7 @@ import * as React from "react"
 import * as CopyToClipboard from "react-copy-to-clipboard"
 import { Link } from "react-router-dom"
 import { IHyconWallet, IRest } from "../rest"
+import ColorButton from "./component/ColorButton"
 import NavBar from "./component/NavBar"
 import { IText } from "./locales/m_locales"
 
@@ -177,6 +182,51 @@ class Contacts extends React.Component<IProps, any> {
                     open={this.state.dialogAddContact}
                     onClose={this.closeAddContact.bind(this)}
                 >
+                    <DialogTitle id="alert-dialog-title">{this.props.language["send-hyc-add-contact-hint"]}</DialogTitle>
+                    <DialogContent>
+                        <TextField
+                            fullWidth
+                            id="contact-name"
+                            value={this.state.contactName}
+                            onChange={this.handleChange("contactName")}
+                            placeholder={this.props.language["ph-contact-name"]}
+                            style={{ marginBottom: 10 }}
+                        />
+                        <TextField
+                            fullWidth
+                            id="contact-address"
+                            value={this.state.contactAddress}
+                            onChange={this.handleChange("contactAddress")}
+                            placeholder={this.props.language["ph-wallet-address"]}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton aria-label="Qr" disabled={!this.state.qrScannerReady} onClick={() => this.openQrScanner()}><CameraEnhanceIcon style={{ fontSize: 18 }} /></IconButton>
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={this.closeAddContact.bind(this)}>
+                            {this.props.language["btn-cancel"]}
+                        </Button>
+                        <Button
+                            autoFocus
+                            variant="contained"
+                            style={{ backgroundColor: "#172349", color: "white" }}
+                            onClick={this.addContact.bind(this)}
+                        >
+                            {this.props.language["btn-add"]}
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+{/*
+                <Dialog
+                    aria-labelledby="contact-add"
+                    open={this.state.dialogAddContact}
+                    onClose={this.closeAddContact.bind(this)}
+                >
                     <div style={{ margin: "7px", textAlign: "center" }}>
                         <Typography style={{ fontSize: 10, margin: "5px" }}>
                             {this.props.language["send-hyc-add-contact-hint"]}
@@ -206,7 +256,7 @@ class Contacts extends React.Component<IProps, any> {
                             {this.props.language["btn-add"]}
                         </Button>
                     </div>
-                </Dialog>
+                </Dialog> */}
             </List>
         )
     }

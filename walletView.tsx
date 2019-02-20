@@ -48,6 +48,7 @@ import { PullToRefresh } from "react-js-pull-to-refresh"
 import { Link } from "react-router-dom"
 import { Textfit } from "react-textfit"
 import { IHyconWallet, IResponseError, IRest } from "../rest"
+import ColorButton from "./component/ColorButton"
 import { FeeSettings } from "./content/feeSettings"
 import { IText } from "./locales/m_locales"
 import { IPrice } from "./mobileClient"
@@ -80,7 +81,7 @@ const styles = (theme: Theme) => createStyles({
         top: "auto",
         bottom: 0,
         backgroundColor: theme.palette.type === "light" ? "white" : "#424242",
-        boxShadow: "0px 1px 3px 0px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12)",
+        borderTop: "1px solid #ededf3",
     },
     bottomToolbar: {
         alignItems: "center",
@@ -95,7 +96,7 @@ const styles = (theme: Theme) => createStyles({
         flexDirection: "column",
     },
     bottomToolbarBorder: {
-        borderRight: theme.palette.type === "light" ? "0.5px solid black" : "0.5px solid white",
+        // borderRight: theme.palette.type === "light" ? "0.5px solid black" : "0.5px solid white",
     },
     balanceSelect: {
         height: 20,
@@ -533,14 +534,14 @@ class WalletView extends React.PureComponent<IProps, any> {
                                 <Grid container alignItems="center" alignContent="center">
                                     <Grid item xs={12}>
                                         <TextField
+                                            fullWidth
                                             value={this.state.amountSending}
                                             type="number"
                                             label={this.props.language["ph-amount-to-request"]}
                                             placeholder="0"
-                                            variant="outlined"
                                             onChange={this.handleChange.bind(this)}
-                                            style={{ width: "100%" }}
-                                            inputProps={{ style: { maxWidth: "100%", textAlign: "right" } }}
+                                            style={{ marginBottom: "15px" }}
+                                            inputProps={{ style: { textAlign: "right" } }}
                                             InputProps={{
                                                 endAdornment: (
                                                     <InputAdornment position="end">
@@ -551,15 +552,7 @@ class WalletView extends React.PureComponent<IProps, any> {
                                         />
                                     </Grid>
                                     <Grid item xs={12}>
-                                        <Button
-                                            onClick={this.handleSubmit.bind(this)}
-                                            fullWidth
-                                            size="medium"
-                                            variant="text"
-                                            style={{ backgroundColor: "#172349", color: "#fff" }}
-                                        >
-                                            {this.props.language["btn-create-qr"]}
-                                        </Button>
+                                        <ColorButton fullWidth onClick={this.handleSubmit.bind(this)}>{this.props.language["btn-create-qr"]}</ColorButton>
                                     </Grid>
                                     <Grid item xs={12}>
                                         {
@@ -589,7 +582,7 @@ class WalletView extends React.PureComponent<IProps, any> {
                         <Card elevation={0} square>
                             <CardContent>
                                 <Grid container alignItems="center" alignContent="center">
-                                    {this.state.wallet.address !== "" ? <QRCode size={192} style={{ margin: "0 auto" }} value={JSON.stringify({ address: this.state.address })} /> : <CircularProgress />}
+                                    {this.state.wallet.address !== "" ? <QRCode size={192} style={{ margin: "0 auto" }} value={JSON.stringify({ address: this.state.wallet.address })} /> : <CircularProgress />}
                                 </Grid>
                             </CardContent>
                         </Card>
@@ -616,25 +609,24 @@ class WalletView extends React.PureComponent<IProps, any> {
                     <Dialog
                         open={this.state.askDelete}
                         onClose={this.handleClose}
-                        aria-labelledby="alert-dialog-title"
-                        aria-describedby="alert-dialog-description"
                     >
-                        <DialogTitle id="alert-dialog-title">{this.props.language["help-notification"]}</DialogTitle>
+                        <DialogTitle>{this.props.language["alert-delete-wallet"]}</DialogTitle>
                         <DialogContent>
-                            <DialogContentText id="alert-dialog-description">
+                            <DialogContentText>
                                 {this.props.language["detail-delete-wallet"]}
                             </DialogContentText>
                         </DialogContent>
                         <DialogActions>
                             <Button
-                                style={{ backgroundColor: "#172349", color: "#fff" }}
+                                // style={{ backgroundColor: "#172349", color: "#fff" }}
                                 onClick={this.handleClose}
                             >
                                 {this.props.language["btn-cancel"]}
                             </Button>
                             <Button
                                 autoFocus
-                                style={{ backgroundColor: "#172349", color: "#fff" }}
+                                variant="contained"
+                                style={{ backgroundColor: "#172349", color: "white" }}
                                 onClick={this.handleDelete}
                             >
                                 {this.props.language["btn-yes"]}
@@ -704,6 +696,7 @@ class WalletView extends React.PureComponent<IProps, any> {
                                     </Button> : ""
                                 }
                                 <Button
+                                    variant="contained"
                                     style={{ backgroundColor: "#172349", color: "#fff" }}
                                     onClick={!this.state.passwordValidated ? this.validatePassword.bind(this) : this.closeMnemonic}
                                 >
@@ -834,7 +827,7 @@ class WalletView extends React.PureComponent<IProps, any> {
 
     private onRefresh() {
         this.setState({ refreshed: true })
-        this.componentDidMount()
+        this.props.updateSelected(this.props.name)
         this.forceUpdate()
         this.switchBalance(0)
         return new Promise((resolve) => {

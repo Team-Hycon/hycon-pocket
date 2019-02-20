@@ -16,6 +16,7 @@ import { Link, Redirect } from "react-router-dom"
 import { IRest } from "../rest"
 import { IHyconWallet } from "../rest"
 import { IGiftcard } from "../rest"
+import ColorButton from "./component/ColorButton"
 import NavBar from "./component/NavBar"
 import { IText } from "./locales/m_locales"
 
@@ -55,6 +56,7 @@ export class Giftcard extends React.Component<IGiftcardProps, any> {
             cardNumber: "",
             cardPIN: "",
             pending: false,
+            errorCode: 0,
         }
     }
 
@@ -114,10 +116,12 @@ export class Giftcard extends React.Component<IGiftcardProps, any> {
                                         <Typography align="left" style={{ color: "black" }}>HYCON GIFT CARD</Typography>
                                     </Grid>
                                     <Grid item style={{ textAlign: "center" }}>
-                                        <img style={{ margin: "0 auto", maxHeight: 80 }} src={gcLogoDark} />
+                                        <img style={{ margin: "0 auto", maxHeight: 70 }} src={gcLogoDark} />
                                     </Grid>
                                     <Grid item>
                                         <TextField
+                                            error={this.handleStatus("card") !== ""}
+                                            helperText={this.handleStatus("card")}
                                             type="number"
                                             id="cardNumber"
                                             label={this.props.language["gc-number"]}
@@ -136,6 +140,8 @@ export class Giftcard extends React.Component<IGiftcardProps, any> {
                         <Grid item xs={12}>
                             <Grid item style={{ margin: "5% 20%" }}>
                                 <TextField
+                                    error={this.handleStatus("pin") !== ""}
+                                    helperText={this.handleStatus("pin")}
                                     id="cardPIN"
                                     label={this.props.language["gc-pin"]}
                                     placeholder={this.props.language["gc-pin-placeholder"]}
@@ -150,20 +156,39 @@ export class Giftcard extends React.Component<IGiftcardProps, any> {
                         </Grid>
                     </Grid>
 
-                    <Grid item alignContent="center">
-                        <Button
+                    <Grid item alignContent="center" style={{ margin: "8px 16px" }}>
+                        <ColorButton
                             fullWidth
-                            disabled={this.state.pending}
-                            onClick={this.registerGiftcard.bind(this)}
-                            style={{ backgroundColor: "#172349", color: "#fff", padding: "16px 24px" }}>
+                            size="large"
+                            onClick={this.registerGiftcard.bind(this)}>
                             {this.props.language["btn-redeem"]}
-                        </Button>
+                        </ColorButton>
                     </Grid>
                 </Grid>
             </Grid>
         )
     }
 
+    private handleStatus(label: string): string {
+        if (label === "card") {
+            switch (this.state.errorCode) {
+                case 1:
+                    return this.state.cardNumber === "" ? this.props.language["alert-gc-enter-cardnumber"] : ""
+                case 2:
+                    return this.props.language["alert-gc-enter-16-digit"]
+                default:
+                    return ""
+            }
+        } else if (label === "pin") {
+            switch (this.state.errorCode) {
+                case 1:
+                    return this.state.cardPIN === "" ? this.props.language["alert-gc-enter-pin"] : ""
+                default:
+                    return ""
+            }
+        }
+
+    }
     private handleInputChange = (prop: any) => (event: any) => {
         this.setState({ [prop]: event.target.value })
     }
@@ -172,14 +197,11 @@ export class Giftcard extends React.Component<IGiftcardProps, any> {
         const trimedCardNumber = this.state.cardNumber.replace("-", "")
         let data: IGiftcard
 
-        if (!trimedCardNumber) {
-            alert(this.props.language["alert-gc-enter-cardnumber"])
+        if (!trimedCardNumber || !this.state.cardPIN) {
+            this.setState({ errorCode: 1 })
             return
         } else if (trimedCardNumber.length !== 16) {
-            alert(this.props.language["alert-gc-enter-16-digit"])
-            return
-        } else if (!this.state.cardPIN) {
-            alert(this.props.language["alert-gc-enter-pin"])
+            this.setState({ errorCode: 2 })
             return
         } else {
             data = {

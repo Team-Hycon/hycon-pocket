@@ -27,6 +27,7 @@ import VisibilityOff from "@material-ui/icons/VisibilityOff"
 import * as React from "react"
 import { encodingMnemonic } from "../desktop/stringUtil"
 import { IHyconWallet, IResponseError, IRest } from "../rest"
+import ColorButton from "./component/ColorButton"
 import NavBar from "./component/NavBar"
 import { IText } from "./locales/m_locales"
 
@@ -83,6 +84,7 @@ export class AddWallet extends React.Component<IProps, any> {
             showMnemonicDialog: false,
             isMnemonic: false,
             isCreating: false,
+            errorCode: 0,
         }
     }
 
@@ -120,6 +122,8 @@ export class AddWallet extends React.Component<IProps, any> {
             <Grid container spacing={16}>
                 <Grid item xs={12} sm={8}>
                     <TextField
+                        error={this.handleError("name") !== ""}
+                        helperText={this.handleError("name")}
                         fullWidth
                         id="wallet_name"
                         type="text"
@@ -150,6 +154,8 @@ export class AddWallet extends React.Component<IProps, any> {
                 </Grid>
                 <Grid item xs={12} sm={6}>
                     <TextField
+                        error={this.handleError("password") !== ""}
+                        helperText={this.handleError("password")}
                         fullWidth
                         id="adornment-password"
                         label={this.props.language["ph-password"]}
@@ -236,26 +242,22 @@ export class AddWallet extends React.Component<IProps, any> {
                     </Typography>
                 </Grid>
                 <Grid item xs={12}>
-                    <Button
+                    <ColorButton
                         fullWidth
                         disabled={this.state.redirectOnCreateSuccess}
-                        style={{ backgroundColor: "#172349", color: "#fff" }}
-                        variant="contained"
                         size="large"
                         onClick={this.newWallet.bind(this)}>
                         {this.props.language["btn-create-wallet"]}
-                    </Button>
+                    </ColorButton>
                 </Grid>
                 <Grid item xs={12}>
-                    <Button
+                    <ColorButton
                         fullWidth
                         disabled={this.state.redirectOnCreateSuccess}
-                        style={{ backgroundColor: "#172349", color: "#fff" }}
-                        variant="contained"
                         size="large"
                         onClick={this.recoverWallet.bind(this)}>
                         {this.props.language["btn-recover-wallet"]}
-                    </Button>
+                    </ColorButton>
                 </Grid>
 
                 <Snackbar
@@ -347,17 +349,22 @@ export class AddWallet extends React.Component<IProps, any> {
                     </Card>
                     { this.props.oneHanded ?
                         this.state.step === 1 ? <p></p> :
-                            this.state.step < 2 ?
-                                <Button
-                                    onClick={this.incrementStep.bind(this)}
-                                    style={{ backgroundColor: "#172349", color: "#fff", width: "100%", padding: "16px 24px" }}>
-                                    {this.props.language["btn-continue"]}
-                                </Button> :
-                                <Button
-                                    onClick={this.generateWallet.bind(this)}
-                                    style={{ backgroundColor: "#172349", color: "#fff", width: "100%", padding: "16px 24px" }}>
-                                    {this.props.language["btn-finish"]}
-                                </Button> :
+                            <Grid item alignContent="center" style={{ margin: "8px 20px" }}>
+                                { this.state.step < 2 ?
+                                    <ColorButton
+                                        fullWidth
+                                        size="large"
+                                        onClick={this.incrementStep.bind(this)}>
+                                        {this.props.language["btn-continue"]}
+                                    </ColorButton> :
+                                    <ColorButton
+                                        fullWidth
+                                        size="large"
+                                        onClick={this.generateWallet.bind(this)}>
+                                        {this.props.language["btn-finish"]}
+                                    </ColorButton>
+                                }
+                            </Grid> :
                         null
                     }
                 </Grid>
@@ -365,17 +372,22 @@ export class AddWallet extends React.Component<IProps, any> {
                     <Grid alignContent="center">
                         {this.state.step === 1 ?
                             <p></p> :
-                            this.state.step < 2 ?
-                                <Button
-                                    onClick={this.incrementStep.bind(this)}
-                                    style={{ backgroundColor: "#172349", color: "#fff", width: "100%", padding: "16px 24px" }}>
-                                    {this.props.language["btn-continue"]}
-                                </Button> :
-                                <Button
-                                    onClick={this.generateWallet.bind(this)}
-                                    style={{ backgroundColor: "#172349", color: "#fff", width: "100%", padding: "16px 24px" }}>
-                                    {this.props.language["btn-finish"]}
-                                </Button>
+                            <Grid item alignContent="center" style={{ margin: "8px 20px" }}>
+                                { this.state.step < 2 ?
+                                    <ColorButton
+                                        fullWidth
+                                        size="large"
+                                        onClick={this.incrementStep.bind(this)}>
+                                        {this.props.language["btn-continue"]}
+                                    </ColorButton> :
+                                    <ColorButton
+                                        fullWidth
+                                        size="large"
+                                        onClick={this.generateWallet.bind(this)}>
+                                        {this.props.language["btn-finish"]}
+                                    </ColorButton>
+                                }
+                            </Grid>
                         }
                     </Grid>
                 }
@@ -383,18 +395,40 @@ export class AddWallet extends React.Component<IProps, any> {
         )
     }
 
+    private handleError(label: string): string {
+        if (label === "name") {
+            switch (this.state.errorCode) {
+                case 1:
+                    return this.props.language["alert-wallet-name-duplicate"]
+                case 2:
+                    return this.props.language["alert-wallet-name-no-space"]
+                default:
+                    return ""
+            }
+        } else if (label === "password") {
+            switch (this.state.errorCode) {
+                case 3:
+                    return this.props.language["alert-password-not-match"]
+                default:
+                    return ""
+            }
+        }
+    }
     private incrementStep() {
         if  (this.state.step === 0) {
             this.props.rest.checkDupleName(this.state.walletName).then((rep) => {
                 if (rep) {
-                    alert(this.props.language["alert-wallet-name-duplicate"])
+                    this.setState({ errorCode: 1 })
+                    // alert(this.props.language["alert-wallet-name-duplicate"])
                     return
                 } else {
                     if (!this.state.walletName || this.state.walletName.includes(" ")) {
-                        alert(this.props.language["alert-wallet-name-no-space"])
+                        this.setState({ errorCode: 2 })
+                        // alert(this.props.language["alert-wallet-name-no-space"])
                         return
                     } else if (this.state.password !== this.state.confirmPassword) {
-                        alert(this.props.language["alert-password-not-match"])
+                        this.setState({ errorCode: 3 })
+                        // alert(this.props.language["alert-password-not-match"])
                         return
                     } else if (!this.state.password) {
                         if (confirm(this.props.language["confirm-password-null"])) {

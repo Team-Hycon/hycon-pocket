@@ -40,6 +40,7 @@ export interface IText {
     "btn-request": string
     "btn-more": string
     "btn-qr": string
+    "btn-create-qr": string
     "btn-login": string
     "btn-submit": string
     "btn-cancel": string
@@ -153,6 +154,7 @@ export interface IText {
     "detail-guide-tap-send-or-request": string
     "detail-share-qr": string
     "detail-request-share-qr": string
+    "alert-delete-wallet": string
     "detail-delete-wallet": string
     "balance-hidden": string
     "txs-hidden": string

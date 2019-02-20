@@ -239,7 +239,7 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
     public renderWallets(theme: Theme) {
         // console.log("renderWallets")
         return (
-            <Grid container direction={this.state.oneHanded ? "column-reverse" : "column" } justify="flex-start" style={{ height: "100%" }}>
+            <Grid container direction={this.state.oneHanded ? "column-reverse" : "column" } justify="flex-start" style={{ height: "100%", overflowY: "scroll" }}>
                 <List>
                     <Hidden xsDown implementation="js">
                         <ListItem>
@@ -308,7 +308,7 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                                 ))}
                                 <ListItem button component={({ innerRef, ...props }) => <Link to="/addwallet" {...props} onClick={() => this.handleDialog(true)} />} style={{ paddingTop: 20 }}>
                                     <AddIcon className={this.props.classes.avatarSmall} style={{ color: this.state.paletteType === "light" ? "#616161" : "white" }} />
-                                    <ListItemText primary={this.language["home-add-anther-wallet"]} />
+                                    <ListItemText primary={this.language["home-add-another-wallet"]} />
                                 </ListItem>
                             </Collapse>
                         </div>
@@ -367,15 +367,61 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
             useNextVariants: true,
         }
 
-        const theme = createMuiTheme({ palette: { type: this.state.paletteType === "light" ? "light" : "dark" }, typography })
+        const overrides = {
+            MuiFormLabel: {
+                root: {
+                    "&$focused": {
+                        color: "#1ADAD8",
+                    },
+                },
+            }, MuiInput: {
+                underline: {
+                    "&:after": {
+                        borderBottom: "1px solid #1ADAD8",
+                    },
+                    "&:focused:not($disabled):after": {
+                        borderBottom: "1px solid #1ADAD8",
+                    },
+                    "&:hover:not($disabled):after": {
+                        borderBottom: "1px solid #1ADAD8",
+                    },
+                },
+            }, MuiOutlinedInput: {
+                root: {
+                    "&$focused $notchedOutline": {
+                        borderColor: "#1ADAD8",
+                        borderWidth: 1,
+                    },
+                    "&$notchedOutline": {
+                        borderColor: "rgba(0, 0, 0, 0.23)",
+                    },
+                    // "&:hover:not($disabled):not($focused):not($error) $notchedOutline": {
+                    //     // Reset on touch devices, it doesn't add specificity
+                    //     "@media (hover: none)": {
+                    //         borderColor: "rgba(0, 0, 0, 0.23)",
+                    //     },
+                    //     "borderColor": "#4A90E2",
+                    // },
+                    // "position": "relative",
+                },
+            },
+        }
+
+        let theme: Theme
+
+        if (this.state.paletteType === "light") {
+            window.StatusBar.styleDefault()
+            window.StatusBar.backgroundColorByHexString("#ededf3")
+            theme = createMuiTheme({ overrides, palette: { type: "light" }, typography })
+        } else {
+            window.StatusBar.styleLightContent()
+            window.StatusBar.backgroundColorByHexString("#212121")
+            theme = createMuiTheme({ overrides, palette: { type: "dark" }, typography })
+        }
 
         window.onresize = () => {
             temporaryDrawerWidth = window.innerWidth * 0.8
             this.toggleMenu(false)
-        }
-
-        if (this.state.wallet === null) {
-            return <div>Loading</div>
         }
 
         // console.log(this.state.name)

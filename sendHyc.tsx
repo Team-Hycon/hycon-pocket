@@ -34,6 +34,7 @@ import * as React from "react"
 import { Redirect} from "react-router"
 import { Link } from "react-router-dom"
 import { IRest } from "../rest"
+import ColorButton from "./component/ColorButton"
 import NavBar from "./component/NavBar"
 import { IText } from "./locales/m_locales"
 
@@ -105,8 +106,6 @@ class SendHyc extends React.Component<IProps, any> {
             dialogAddContact: false,
             dialogContacts: false,
             dialogStatus: false,
-            alertDialogShown: false,
-            rangeValue: 0,
             totalHYC: this.props.wallet.balance,
             pendingHYC: this.props.wallet.pendingAmount,
             amountSending: am === 0 ? "" : 0,
@@ -126,6 +125,7 @@ class SendHyc extends React.Component<IProps, any> {
             tooltipOpen: false,
             feeTooltipOpen: false,
             error: this.props.language["send-hyc-fail"],
+            errorCode: 0,
         }
 
         window.QRScanner.prepare((err, status) => {
@@ -177,12 +177,14 @@ class SendHyc extends React.Component<IProps, any> {
                     <Grid style={{ flexGrow: 1 }}>
                         <Grid item xs={12}>
                             <TextField
+                                error={this.handleError("address") !== ""}
                                 fullWidth
+                                helperText={this.handleError("address")}
                                 id="search-address"
-                                value={this.state.toAddress}
+                                margin="normal"
                                 onChange={this.handleChange("toAddress")}
                                 placeholder={this.props.language["ph-wallet-address"]}
-                                margin="normal"
+                                value={this.state.toAddress}
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
@@ -237,6 +239,8 @@ class SendHyc extends React.Component<IProps, any> {
                                     </Grid>
                                     <Grid item xs={12} sm={6}>
                                         <TextField
+                                            error={this.handleError("amount") !== ""}
+                                            helperText={this.handleError("amount")}
                                             value={this.state.amountSending}
                                             type="number"
                                             label={this.props.language["ph-amount"]}
@@ -263,14 +267,14 @@ class SendHyc extends React.Component<IProps, any> {
                                     </Grid>
                                     <Grid item xs={12} sm={6} onClick={this.handleFeeTooltip}>
                                         <TextField
-                                            error={this.state.feeTooltipOpen}
                                             disabled={!this.state.canType}
+                                            error={this.handleError("fee") !== ""}
+                                            helperText={this.handleError("fee")}
                                             value={this.state.miningFee}
                                             onChange={this.handleChange("miningFee")}
                                             type="number"
                                             label={this.props.language["ph-fee"]}
                                             placeholder="0"
-                                            helperText={this.state.feeTooltipOpen ? this.props.language["fee-helper-text"] : ""}
                                             variant="outlined"
                                             style={{ width: "100%" }}
                                             inputProps={{ style: { maxWidth: "100%", textAlign: "right" } }}
@@ -288,25 +292,19 @@ class SendHyc extends React.Component<IProps, any> {
                         </Card>
                     </Grid>
                     <Grid item style={{ padding: 0 }}>
-                        <Grid item xs={12} style={{ paddingBottom: 2 }}>
+                        <Grid item xs={12} style={{ margin: "8px 20px" }}>
                             <TextField fullWidth
                                 id="password"
                                 value={this.state.password}
+                                error={this.state.wrongPassword}
+                                helperText={this.state.wrongPassword ? this.props.language["alert-invalid-password"] : null}
                                 onChange={this.handleChange("password")}
                                 placeholder={this.props.language["ph-wallet-password"]}
                                 inputProps={{ style: { textAlign: "center" } }}
                                 type="password"
                             />
+                            <ColorButton fullWidth size="large" onClick={this.handleSubmit.bind(this)}>{this.props.language["btn-send"]}</ColorButton>
                         </Grid>
-                        <Button
-                            onClick={this.handleSubmit.bind(this)}
-                            variant="text"
-                            fullWidth
-                            size="large"
-                            style={{ backgroundColor: "#2195a0", color: "#fff" }}
-                        >
-                            {this.props.language["btn-send"]}
-                        </Button>
                     </Grid>
                 </Grid>
                 {this.state.isScanning ?
@@ -469,6 +467,49 @@ class SendHyc extends React.Component<IProps, any> {
         )
     }
 
+    private handleError(label: string): string {
+        if (label === "address") {
+            switch (this.state.errorCode) {
+                case 1:
+                    return this.state.toAddress === "" ? this.props.language["alert-enter-address"] : ""
+                case 7:
+                    return this.props.language["alert-cannot-send-yourself"]
+                case 8:
+                    return this.props.language["alert-enter-address"]
+                case 9:
+                    return this.props.language["alert-invalid-address"]
+                default:
+                    return ""
+            }
+        } else if (label === "amount") {
+            switch (this.state.errorCode) {
+                case 1:
+                    return this.state.amountSending === "" ? this.props.language["alert-invalid-amount"] : ""
+                case 2:
+                    return this.props.language["alert-invalid-amount"]
+                case 3:
+                    return this.props.language["alert-9decimal-amount"]
+                case 5:
+                    return this.props.language["alert-insufficient-balance"]
+                default:
+                    return ""
+            }
+        } else if (label === "fee") {
+            switch (this.state.errorCode) {
+                case 1:
+                    return this.state.miningFee === "" ? this.props.language["alert-invalid-fee"] : ""
+                case 4:
+                    return this.props.language["alert-9decimal-fee"]
+                case 6:
+                    return this.props.language["alert-invalid-fee"]
+                case 10:
+                    return this.props.language["fee-helper-text"]
+                default:
+                    return ""
+            }
+        }
+        return ""
+    }
     private storeFirstTransaction() {
         this.storage.setItem("firstTransaction", "1")
         window.AppRate.promptForRating(true)
@@ -476,7 +517,7 @@ class SendHyc extends React.Component<IProps, any> {
 
     private handleFeeTooltip = () => {
         if (!this.state.canType) {
-            this.setState({ feeTooltipOpen: true })
+            this.setState({ errorCode: 10 })
         }
     }
 
@@ -556,39 +597,35 @@ class SendHyc extends React.Component<IProps, any> {
     }
 
     private handleSubmit() {
-        if (this.state.amountSending <= 0) {
-            alert(this.props.language["alert-invalid-amount"])
+        if (this.state.toAddress === "" || this.state.amountSending === "" || this.state.miningFee === "") {
+            this.setState({ errorCode: 1 })
             return
-        }
-        if (this.state.amountSending.match(patternHycon) == null) {
-            alert(this.props.language["alert-9decimal-amount"])
+        } else if (this.state.amountSending <= 0) {
+            this.setState({ errorCode: 2 })
             return
-        }
-        if (this.state.miningFee.match(patternHycon) == null) {
-            alert(this.props.language["alert-9decimal-fee"])
+        } else if (this.state.amountSending.match(patternHycon) === null) {
+            this.setState({ errorCode: 3 })
             return
-        }
-        if (this.hyconfromString(this.state.totalHYC).lessThan(this.hyconfromString(this.state.amountSending).add(this.hyconfromString(this.state.miningFee)))) {
-            alert(this.props.language["alert-insufficient-balance"])
+        } else if (this.state.miningFee.match(patternHycon) === null) {
+            this.setState({ errorCode: 4 })
             return
-        }
-        if (this.hyconfromString(this.state.miningFee).equals(0)) {
-            alert(this.props.language["alert-invalid-fee"])
+        } else if (this.hyconfromString(this.state.totalHYC).lessThan(this.hyconfromString(this.state.amountSending).add(this.hyconfromString(this.state.miningFee)))) {
+            this.setState({ errorCode: 5 })
             return
-        }
-        if (this.state.fromAddress === this.state.toAddress) {
-            alert(this.props.language["alert-cannot-send-yourself"])
+        } else if (this.hyconfromString(this.state.miningFee).equals(0)) {
+            this.setState({ errorCode: 6 })
             return
-        }
-        if (!this.state.toAddress) {
-            alert(this.props.language["alert-enter-to"])
+        } else if (this.state.fromAddress === this.state.toAddress) {
+            this.setState({ errorCode: 7 })
+            return
+        } else if (this.state.address === "") {
+            this.setState({ errorCode: 8 })
+            return
+        } else if (this.state.toAddress && !patternAddress.test(this.state.toAddress)) {
+            this.setState({ errorCode: 9 })
             return
         }
 
-        if (this.state.toAddress && !patternAddress.test(this.state.toAddress)) {
-            alert(this.props.language["alert-invalid-address"])
-            return
-        }
         this.props.rest.sendTx({ name: this.props.wallet.name, password: this.state.password, address: this.state.toAddress, amount: this.state.amountSending, minerFee: this.state.miningFee, nonce: undefined })
             .then((data) => {
                 console.log(data)
@@ -599,11 +636,11 @@ class SendHyc extends React.Component<IProps, any> {
                     if (data.case === 1) {
                         // this.setState({ sendingStatus: data.res, dialogStatus: true, error: this.props.language["alert-invalid-password"] })
                         // console.log("askforPassword : " + this.state.askForPassword)
-                        if (this.state.askForPassword) {
+                        // if (this.state.askForPassword) {
                             this.setState({ wrongPassword: true })
-                        } else {
-                            this.setState({ askForPassword: true })
-                        }
+                        // } else {
+                        //     this.setState({ askForPassword: true })
+                        // }
 
                     } else if (data.case === 2) {
                         this.setState({ sendingStatus: data.res, dialogStatus: true, error: this.props.language["alert-invalid-address"] })
@@ -628,7 +665,7 @@ class SendHyc extends React.Component<IProps, any> {
     }
 
     private handleChange = (prop: any) => (event: any) => {
-        this.setState({ [prop]: event.target.value })
+        this.setState({ [prop]: event.target.value, errorCode: 0 })
     }
 
     private hyconfromString(val: string): Long {
@@ -649,6 +686,7 @@ class SendHyc extends React.Component<IProps, any> {
         document.getElementById("body").style.visibility = "hidden"
         document.getElementById("blockexplorer").style.visibility = "hidden"
         window.QRScanner.scan((err, text) => {
+            console.log(text)
             if (err) {
                 console.error(err)
             }
@@ -674,6 +712,7 @@ class SendHyc extends React.Component<IProps, any> {
         document.getElementById("body").style.visibility = "hidden"
         document.getElementById("blockexplorer").style.visibility = "hidden"
         window.QRScanner.scan((err, text) => {
+            console.log(text)
             if (err) {
                 console.error(err)
             }
