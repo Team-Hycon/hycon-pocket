@@ -10,7 +10,6 @@ import Divider from "@material-ui/core/Divider"
 import Fade from "@material-ui/core/Fade"
 import Grid from "@material-ui/core/Grid"
 import IconButton from "@material-ui/core/IconButton"
-import Input from "@material-ui/core/Input"
 import InputAdornment from "@material-ui/core/InputAdornment"
 import List from "@material-ui/core/List"
 import ListItem from "@material-ui/core/ListItem"
@@ -24,7 +23,6 @@ import TextField from "@material-ui/core/TextField"
 import Toolbar from "@material-ui/core/Toolbar"
 import Typography from "@material-ui/core/Typography"
 import AddIcon from "@material-ui/icons/Add"
-import ArrowBackIcon from "@material-ui/icons/ArrowBack"
 import CameraEnhanceIcon from "@material-ui/icons/CameraEnhance"
 import CloseIcon from "@material-ui/icons/Close"
 import DeleteIcon from "@material-ui/icons/Delete"
@@ -79,14 +77,11 @@ class Contacts extends React.Component<IProps, any> {
             checked: [1],
             contactAddress: "",
             contacts: [],
-            delay: 500,
             dialogAddContact: false,
             isRemoving: false,
             isScanning: false,
-            language: this.props.language,
             qrScannerReady: false,
             rest: this.props.rest,
-            result: "No result",
             wallets: [],
         }
         window.QRScanner.prepare((err, status) => {
@@ -221,42 +216,6 @@ class Contacts extends React.Component<IProps, any> {
                         </Button>
                     </DialogActions>
                 </Dialog>
-{/*
-                <Dialog
-                    aria-labelledby="contact-add"
-                    open={this.state.dialogAddContact}
-                    onClose={this.closeAddContact.bind(this)}
-                >
-                    <div style={{ margin: "7px", textAlign: "center" }}>
-                        <Typography style={{ fontSize: 10, margin: "5px" }}>
-                            {this.props.language["send-hyc-add-contact-hint"]}
-                        </Typography>
-                        <Input
-                            fullWidth
-                            id="contact-name"
-                            placeholder={this.props.language["ph-contact-name"]}
-                            value={this.state.contactName}
-                            onChange={this.handleChange("contactName")}
-                        />
-                        <Input
-                            fullWidth
-                            id="contact-address"
-                            placeholder={this.props.language["ph-wallet-address"]}
-                            value={this.state.contactAddress}
-                            onChange={this.handleChange("contactAddress")}
-                            endAdornment={
-                                <InputAdornment position="end">
-                                    <IconButton aria-label="Qr" disabled={!this.state.qrScannerReady} onClick={() => this.openQrScanner()}><CameraEnhanceIcon style={{ fontSize: 18 }} /></IconButton>
-                                </InputAdornment>
-                            }
-                        />
-                        <Button
-                            onClick={this.addContact.bind(this)}
-                            style={{ backgroundColor: "#172349", color: "#fff", width: "100%", marginTop: "20px" }}>
-                            {this.props.language["btn-add"]}
-                        </Button>
-                    </div>
-                </Dialog> */}
             </List>
         )
     }

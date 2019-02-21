@@ -47,13 +47,12 @@ import * as CopyToClipboard from "react-copy-to-clipboard"
 import { PullToRefresh } from "react-js-pull-to-refresh"
 import { Link } from "react-router-dom"
 import { Textfit } from "react-textfit"
-import { IHyconWallet, IResponseError, IRest } from "../rest"
+import { IHyconWallet, IRest } from "../rest"
 import ColorButton from "./component/ColorButton"
 import { FeeSettings } from "./content/feeSettings"
 import { IText } from "./locales/m_locales"
 import { IPrice } from "./mobileClient"
 
-// tslint:disable:object-literal-sort-keys
 const styles = (theme: Theme) => createStyles({
     root: {
         flex: 1,
@@ -111,6 +110,15 @@ const styles = (theme: Theme) => createStyles({
         color: "white",
         backgroundColor: "#172349",
         marginRight: 5,
+        '&:hover': {
+            backgroundColor: "#172349",
+        },
+        '&:active': {
+            backgroundColor: "#172349",
+        },
+        '&:focus': {
+            backgroundColor: "#172349",
+        },
     },
     btn: {
         color: theme.palette.type === "dark" ? "white" : "#172349",
@@ -194,12 +202,9 @@ class WalletView extends React.PureComponent<IProps, any> {
             hasMnemonic: false,
             update: false,
         }
-        // console.log("constructor walletView")
-        console.log(this.props.price)
     }
 
     public componentDidMount() {
-        console.log("componentDidMount walletView")
         document.addEventListener("backbutton", (event) => {
             event.preventDefault()
             if (this.state.qrDrawer || this.state.reqDrawer || this.state.askDelete || this.state.openMnemonic || this.state.dialogMore || Boolean(this.state.anchorEl)) {
@@ -230,18 +235,14 @@ class WalletView extends React.PureComponent<IProps, any> {
         this.state.balance.eth = (this.props.price.eth * hycBalanceNum).toFixed(9)
     }
     public componentWillReceiveProps(nextProps: any) {
-        // console.log("componentWillReceiveProps walletView")
-        // console.log("nextProps " + nextProps.name)
-        // console.log("currStateName " + this.state.name)
         this.setState({ name: nextProps.name, wallet: nextProps.wallet })
         if (nextProps.wallet.name !== this.state.name) {
             this.props.updateSelected(this.state.name)
         }
-        this.setState({ displayedBalance: nextProps.wallet.balance + " HYC", hasMnemonic: nextProps.wallet.mnemonic !== "" ? true : false })
+        this.setState({ displayedBalance: this.displayBalance(), hasMnemonic: nextProps.wallet.mnemonic !== "" ? true : false })
     }
 
     public handleDelete = () => {
-        // console.log("handleDelete walletView")
         this.state.rest.deleteWallet(this.state.name).then((res) => {
             if (res) {
                 this.setState({
@@ -257,7 +258,6 @@ class WalletView extends React.PureComponent<IProps, any> {
     }
 
     public render() {
-        // console.log("render walletView")
         if (this.state.notFound) {
             return <div>{this.props.language["detail-no-data"]}</div>
         }
@@ -619,7 +619,6 @@ class WalletView extends React.PureComponent<IProps, any> {
                         </DialogContent>
                         <DialogActions>
                             <Button
-                                // style={{ backgroundColor: "#172349", color: "#fff" }}
                                 onClick={this.handleClose}
                             >
                                 {this.props.language["btn-cancel"]}
@@ -798,13 +797,7 @@ class WalletView extends React.PureComponent<IProps, any> {
         storage.setItem("walletViewCollapse", (!this.state.collapse).toString())
     }
 
-    private switchBalance(selectIndex: number) {
-        if (selectIndex !== -1) {
-            this.balanceIndex = selectIndex
-        } else if (this.balanceIndex === 3) {
-            this.balanceIndex = 0
-        } else { this.balanceIndex = this.balanceIndex + 1 }
-
+    private displayBalance(): string {
         let ret: string = ""
         switch (this.balanceIndex) {
             case 0:
@@ -823,7 +816,16 @@ class WalletView extends React.PureComponent<IProps, any> {
             default:
                 ret = this.state.hycBalance + " HYC"; break
         }
-        this.setState({ displayedBalance: ret })
+        return ret
+    }
+    private switchBalance(selectIndex: number) {
+        if (selectIndex !== -1) {
+            this.balanceIndex = selectIndex
+        } else if (this.balanceIndex === 3) {
+            this.balanceIndex = 0
+        } else { this.balanceIndex = this.balanceIndex + 1 }
+
+        this.setState({ displayedBalance: this.displayBalance() })
     }
 
     private onRefresh() {

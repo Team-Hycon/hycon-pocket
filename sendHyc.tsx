@@ -24,15 +24,12 @@ import TextField from "@material-ui/core/TextField"
 import Toolbar from "@material-ui/core/Toolbar"
 import Tooltip from "@material-ui/core/Tooltip"
 import Typography from "@material-ui/core/Typography"
-import ArrowBackIcon from "@material-ui/icons/ArrowBack"
 import CameraEnhanceIcon from "@material-ui/icons/CameraEnhance"
 import QRScannerIcon from "@material-ui/icons/CenterFocusWeak"
 import CloseIcon from "@material-ui/icons/Close"
 import AddressBookIcon from "@material-ui/icons/Contacts"
 import TooltipIcon from "@material-ui/icons/Help"
 import * as React from "react"
-import { Redirect} from "react-router"
-import { Link } from "react-router-dom"
 import { IRest } from "../rest"
 import ColorButton from "./component/ColorButton"
 import NavBar from "./component/NavBar"
@@ -44,13 +41,11 @@ declare let window: any
 const Long = require("long")
 const patternAddress = /^H[A-Za-z0-9+]{20,}$/
 const patternHycon = /(^[0-9]*)([.]{0,1}[0-9]{0,9})$/
-const scale = 9 * Math.log(10) / 100
 
-// tslint:disable:object-literal-sort-keys
 const styles = (theme: Theme) => createStyles({
     root: {
-        flex: 1,
         display: "flex",
+        flex: 1,
         flexDirection: "column",
     },
     header: {
@@ -61,10 +56,6 @@ const styles = (theme: Theme) => createStyles({
     container: {
         display: "flex",
         justifyContent: "center",
-    },
-    menuButton: {
-        marginLeft: -12,
-        marginRight: 20,
     },
     dialogPaper: {
         minHeight: 150,
@@ -107,7 +98,6 @@ class SendHyc extends React.Component<IProps, any> {
             dialogContacts: false,
             dialogStatus: false,
             totalHYC: this.props.wallet.balance,
-            pendingHYC: this.props.wallet.pendingAmount,
             amountSending: am === 0 ? "" : 0,
             globalFee: globalFee === "",
             miningFee: fee === "" ? wallets[""].miningFee : fee,
@@ -123,7 +113,6 @@ class SendHyc extends React.Component<IProps, any> {
             isScanning: false,
             isScannedForContact: false,
             tooltipOpen: false,
-            feeTooltipOpen: false,
             error: this.props.language["send-hyc-fail"],
             errorCode: 0,
         }
@@ -599,7 +588,6 @@ class SendHyc extends React.Component<IProps, any> {
     private sendTransaction() {
         this.props.rest.sendTx({ name: this.props.wallet.name, password: this.state.password, address: this.state.toAddress, amount: this.state.amountSending, minerFee: this.state.miningFee, nonce: undefined })
             .then((data) => {
-                console.log(data)
                 if (data.res === true) {
                     this.setState({ askForPassword: false, wrongPassword: false, sendingStatus: data.res, dialogStatus: true })
                 } else {
@@ -688,11 +676,6 @@ class SendHyc extends React.Component<IProps, any> {
         document.getElementById("body").style.visibility = "hidden"
         document.getElementById("blockexplorer").style.visibility = "hidden"
         window.QRScanner.scan((err, text) => {
-            console.log(text)
-            if (err) {
-                console.error(err)
-            }
-
             document.getElementById("body").style.visibility = "visible"
             document.getElementById("blockexplorer").style.visibility = "visible"
 
@@ -714,10 +697,6 @@ class SendHyc extends React.Component<IProps, any> {
         document.getElementById("body").style.visibility = "hidden"
         document.getElementById("blockexplorer").style.visibility = "hidden"
         window.QRScanner.scan((err, text) => {
-            console.log(text)
-            if (err) {
-                console.error(err)
-            }
             document.getElementById("body").style.visibility = "visible"
             document.getElementById("blockexplorer").style.visibility = "visible"
 

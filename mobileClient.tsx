@@ -8,7 +8,6 @@ import Drawer from "@material-ui/core/Drawer"
 import Grid from "@material-ui/core/Grid"
 import Hidden from "@material-ui/core/Hidden"
 import IconButton from "@material-ui/core/IconButton"
-import LinearProgress from "@material-ui/core/LinearProgress"
 import List from "@material-ui/core/List"
 import ListItem from "@material-ui/core/ListItem"
 import ListItemText from "@material-ui/core/ListItemText"
@@ -131,9 +130,7 @@ interface IState {
     openOnboarding: boolean
     paletteType: string
     selectedWalletIndex: number
-    selectedWalletName: string
     showBalance: boolean
-    redirect: boolean
     wallet: IHyconWallet
     wallets: IHyconWallet[]
     openDialog: boolean
@@ -147,8 +144,6 @@ export interface IPrice {
 }
 
 class MobileApp extends React.Component<IProps, IState & IProps> {
-
-    public mounted = false
     private language: IText
     private languageSelect: string
     private price: IPrice
@@ -169,10 +164,8 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
             openOnboarding: storage.getItem("onboarding") === null ? true : false,
             openWalletList: false,
             paletteType: storage.getItem("paletteType") === null ? "light" : storage.getItem("paletteType"),
-            redirect: false,
             rest: this.props.rest,
             selectedWalletIndex: storage.getItem("selectedWalletIndex") === null ? 0 : Number(storage.getItem("selectedWalletIndex")),
-            selectedWalletName: "",
             showBalance: storage.getItem("showBalance") === null ? true : (storage.getItem("showBalance") === "true"),
             wallet: { name: "", passphrase: "", password: "", hint: "", mnemonic: "", address: "", balance: "0", txs: [], pendings: [], language: "", pendingAmount: "0" },
             wallets: [],
@@ -183,11 +176,9 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                 clientSecret: "2.0.0",
             }, () => { this.setState({ fingerprintAuth: true }) }, () => { setTimeout(() => { navigator.app.exitApp() }, 1500) })
         }
-        // console.log("constructor")
     }
 
     public componentDidMount() {
-        // console.log("componentDidMount")
         document.addEventListener("backbutton", (event) => {
             event.preventDefault()
             if (window.location.hash === "#/") {
@@ -234,11 +225,7 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
         }, false)
     }
 
-    // public componentDidUpdate() {
-    // }
-
     public renderWallets(theme: Theme) {
-        // console.log("renderWallets")
         return (
             <Grid container direction={this.state.oneHanded ? "column-reverse" : "column" } justify="flex-start" style={{ height: "100%", overflowY: "scroll", paddingTop: "env(safe-area-inset-top)" }}>
                 <List>
@@ -585,11 +572,8 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
     private updateSelected(name: string) {
         this.props.rest.getWalletDetail(this.state.name).then((data: IHyconWallet & IResponseError) => {
             if (data.address) {
-                // console.log("wallet state set")
                 this.setState({ wallet: data })
             } else {
-                // if wallet not found, select a new wallet
-                // console.log("wallet not found, selecting again")
                 this.handleWalletSelect(this.state.name)
             }
         })

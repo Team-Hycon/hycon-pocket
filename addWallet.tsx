@@ -6,7 +6,6 @@ import CardContent from "@material-ui/core/CardContent"
 import Checkbox from "@material-ui/core/Checkbox"
 import ClickAwayListener from "@material-ui/core/ClickAwayListener"
 import Collapse from "@material-ui/core/Collapse"
-import Divider from "@material-ui/core/Divider"
 import Fade from "@material-ui/core/Fade"
 import FormControlLabel from "@material-ui/core/FormControlLabel"
 import Grid from "@material-ui/core/Grid"
@@ -17,7 +16,6 @@ import LinearProgress from "@material-ui/core/LinearProgress"
 import MenuItem from "@material-ui/core/MenuItem"
 import Snackbar from "@material-ui/core/Snackbar"
 import TextField from "@material-ui/core/TextField"
-import Toolbar from "@material-ui/core/Toolbar"
 import Tooltip from "@material-ui/core/Tooltip"
 import Typography from "@material-ui/core/Typography"
 import ArrowBackIcon from "@material-ui/icons/ArrowBack"
@@ -31,7 +29,6 @@ import ColorButton from "./component/ColorButton"
 import NavBar from "./component/NavBar"
 import { IText } from "./locales/m_locales"
 
-// tslint:disable:object-literal-sort-keys
 const styles = createStyles({
     root: {
         flex: 1,
@@ -67,8 +64,6 @@ export class AddWallet extends React.Component<IProps, any> {
         super(props)
         this.state = {
             alertDialogShown: false,
-            tooltipOpen: false,
-            language: this.props.language,
             walletName: "",
             password: "",
             confirmPassword: "",
@@ -81,7 +76,6 @@ export class AddWallet extends React.Component<IProps, any> {
             redirectOnRecoverSuccess: false,
             redirectOnCreateSuccess: false,
             mnemonicLanguage: "english",
-            showMnemonicDialog: false,
             isMnemonic: false,
             isCreating: false,
             errorCode: 0,
@@ -419,16 +413,13 @@ export class AddWallet extends React.Component<IProps, any> {
             this.props.rest.checkDupleName(this.state.walletName).then((rep) => {
                 if (rep) {
                     this.setState({ errorCode: 1 })
-                    // alert(this.props.language["alert-wallet-name-duplicate"])
                     return
                 } else {
                     if (!this.state.walletName || this.state.walletName.includes(" ")) {
                         this.setState({ errorCode: 2 })
-                        // alert(this.props.language["alert-wallet-name-no-space"])
                         return
                     } else if (this.state.password !== this.state.confirmPassword) {
                         this.setState({ errorCode: 3 })
-                        // alert(this.props.language["alert-password-not-match"])
                         return
                     } else if (!this.state.password) {
                         if (confirm(this.props.language["confirm-password-null"])) {
