@@ -21,7 +21,7 @@ export default {
     "btn-finish": "마침",
     "btn-create-wallet": "새로운 지갑 생성",
     "btn-recover-wallet": "기존 지갑 복구",
-    "btn-delete-wallet": "Delete This Wallet",
+    "btn-delete-wallet": "이 지갑 삭제하기",
     "btn-confirm": "확인",
     "btn-add": "추가",
     "btn-close": "닫기",
@@ -39,8 +39,8 @@ export default {
     "btn-create-now": "지금 지갑 생성하기",
     "btn-create-later": "나중에 하기",
     "btn-redeem": "등록",
-    "btn-dark-on": "Turn dark theme on",
-    "btn-dark-off": "Turn dark theme off",
+    "btn-dark-on": "다크 테마 켜기",
+    "btn-dark-off": "다크 테마 끄기",
 
     // PLACEHOLDER / LABEL
     "ph-contact-name": "연락처 이름",
@@ -60,7 +60,7 @@ export default {
     "ph-amount-to-request": "요청할 금액",
     "ph-email": "이메일",
     "ph-2fa": "2FA PIN",
-    "ph-press-back-again": "Press back again to exit",
+    "ph-press-back-again": "뒤로가기 버튼을 한번 더 누르면 앱이 종료됩니다",
 
     // ON BOARDING
     "onboarding-step1-text1": "환영합니다",
@@ -98,13 +98,13 @@ export default {
     "wallet-list": "지갑 목록",
     "home-guide-add-wallet": "지갑 추가하기",
     "home-guide-tap-plus": "'+'를 탭하여 시작하세요",
-    "home-add-another-wallet": "Add another wallet",
+    "home-add-another-wallet": "지갑 추가하기",
 
     // CONTACTS
     "contacts-title": "연락처",
     "contacts-list": "연락처 목록",
-    "contacts-empty": "No wallet addresses stored",
-    "contacts-action": "Tap the \'+\' button to add an address",
+    "contacts-empty": "저장된 지갑 주소 없음",
+    "contacts-action": "\'+\' 버튼 탭하여 지갑 주소 추가하기",
 
     // CREATE / RECOVER WALLET
     "common-title": "지갑 추가하기",
@@ -144,13 +144,13 @@ export default {
     "detail-guide-tap-send-or-request": "HYCON 거래를 시작하려면 '전송' 또는 '요청'을 탭하십시오.",
     "detail-share-qr": "탭하여 지갑 주소 공유",
     "detail-request-share-qr": "탭하여 HYCON 요청 공유",
-    "alert-delete-wallet": "Delete this wallet?",
-    "detail-delete-wallet": "Your wallet and its funds will still exist on the network. You may recover this wallet again by using it's mnemonic phrase.",
+    "alert-delete-wallet": "이 지갑을 삭제하시겠습니까?",
+    "detail-delete-wallet": "지갑 삭제 후에도 지갑 및 하이콘 자산은 네트워크에 저장되며 지갑의 니모닉 문구로 복구 가능합니다. ",
     "balance-hidden": "비공개",
     "txs-hidden": "트랜잭션 비공개",
     "txs-hidden-help": "'잔액 숨기기'로 설정된 상태에서는 트랜잭션을 조회할 수 없습니다. '환경설정 > 일반'에서 변경 가능합니다.",
-    "no-wallet": "Add your first wallet",
-    "no-wallet-action": "Tap here to get started",
+    "no-wallet": "지갑 등록하기",
+    "no-wallet-action": "지갑 등록 시작하기",
 
     // WALLET DETAIL - ACTIVITY
     "activity-title": "활동 내역 - ",
@@ -243,16 +243,16 @@ export default {
     // SETTINGS
     "settings-title": "환경설정",
     "settings-general": "일반",
-    "settings-security": "Security",
-    "fingerprint-on-launch": "Require fingerprint on app launch",
-    "disable": "Disable",
-    "enable": "Enable",
-    "disabled": "Disabled",
-    "enabled": "Enabled",
+    "settings-security": "보안",
+    "fingerprint-on-launch": "지문인식으로 앱 실행",
+    "disable": "끄기",
+    "enable": "켜기",
+    "disabled": "끔",
+    "enabled": "켬",
     "hide-balance": "잔액 숨기기",
     "show-balance": "잔액 보이기",
-    "one-handed-on": "Turn on one-handed mode",
-    "one-handed-off": "Turn off one-handed mode",
+    "one-handed-on": "한손 모드 켜기",
+    "one-handed-off": "한손 모드 끄기",
     "set-tx-speed-global-help": "모든 지갑에 적용할 트랜잭션 수수료를 설정합니다.",
     "settings-about": "앱 정보",
     "settings-support": "고객지원",
@@ -271,8 +271,9 @@ export default {
     "set-fee-for": "의 기본 수수료 설정",
 
     // FINGERPRINT SETTINGS
-    "fingerprint-text1": "When you launch the app for the first time (not from background), you will need your fingerprint to use the app.",
-    "fingerprint-text2": "Keep in mind, sharing your device with anyone who has saved a fingerprint or knows your passcode gives that person access to this app. We don't recommend using fingerprint if you share your device.",
+    "fingerprint-text1": "앱 종료 후 재실행 시 지문인식이 필요합니다.",
+    "fingerprint-text2": "본인 이외의 사용자가 본인 기기에 지문을 등록했거나 기기 비밀번호를 알 경우 이 앱에 엑세스 할 수 있다는 점을 유의해 주시기 바랍니다. 기기를 공유할 경우 지문인식 기능 사용을 권장하지 않습니다.",
+    "fingerprint-text3": "모든 지갑에서 하이콘 전송 시 트랜잭션 확정에 지문인식이 필요합니다.",
 
     // TERMS OF USE
     "terms-of-use": "이용 약관",
@@ -342,8 +343,15 @@ export default {
     "changelog-112-content11": "- '잔액 숨기기' 기능 추가",
     "changelog-112-content12": "- 라이트/다크 테마 추가",
     "changelog-112-content13": "- 온보딩 업데이트",
+    "changelog-120": "버전 1.2.0",
     "changelog-120-content1": "- 앱 추천하기 기능 추가",
     "changelog-120-content2": "- 하이콘 전송 패스워드 입력 UI/UX 수정",
     "changelog-120-content3": "- 하이콘 기프트카드 등록 기능 추가",
     "changelog-120-content4": "- UI/UX 개선",
+    "changelog-200": "버전 2.0.0",
+    "changelog-200-content1": "- 새로운 UI/UX",
+    "changelog-200-content2": "- 반응형 모바일 퍼스트 디자인",
+    "changelog-200-content3": "- 지문인식 및 얼굴인식 보안 옵션 추가",
+    "changelog-200-content4": "- 텍스트 필드에 구체적인 에러 메시지 추가",
+    "changelog-200-content5": "- 마이너 버그 수정",
 }

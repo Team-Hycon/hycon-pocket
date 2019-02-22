@@ -121,7 +121,7 @@ export default {
 
     // WALLET DETIAL
     "detail-no-data": "No data found for the current wallet",
-    "title-wallet": "'s Wallet",
+    "title-wallet": "\'s wallet",
     "detail-your-balance": "Your Balance:",
     "datail-balance-tooltip": "You can also tap your balance to cycle currencies. Conversions between HYC are only approximations. You can show or hide your balance in the app's general settings.",
     "show-mnemonic": "Show Mnemonic",
@@ -273,6 +273,7 @@ export default {
     // FINGERPRINT SETTINGS
     "fingerprint-text1": "When you launch the app for the first time (not from background), you will need your fingerprint to use the app.",
     "fingerprint-text2": "Keep in mind, sharing your device with anyone who has saved a fingerprint or knows your passcode gives that person access to this app. We don't recommend using fingerprint if you share your device.",
+    "fingerprint-text3": "Sending transactions from any of your wallets will also require a fingerprint to confirm the transaction.",
 
     // TERMS OF USE
     "terms-of-use": "Terms of Use",
@@ -342,8 +343,15 @@ export default {
     "changelog-112-content11": "- Added 'Hide Balance' to 'Settings'",
     "changelog-112-content12": "- Added Light/Dark Theme options",
     "changelog-112-content13": "- Updated Onboarding Slides",
+    "changelog-120": "Version 1.2.0",
     "changelog-120-content1": "- Add 'Rate Us' Feature",
     "changelog-120-content2": "- 'Input password' as pop-up (UI/UX)",
     "changelog-120-content3": "- Add gift card functionality",
     "changelog-120-content4": "- Minor UI/UX Improvements",
+    "changelog-200": "Version 2.0.0",
+    "changelog-200-content1": "- Brand New UI/UX",
+    "changelog-200-content2": "- Responsive Mobile-First Design",
+    "changelog-200-content3": "- Fingerprint and FaceID Security Options",
+    "changelog-200-content4": "- Added Specific Error Messages to Text Fields",
+    "changelog-200-content5": "- Minor Bug Fixes",
 }

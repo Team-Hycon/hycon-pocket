@@ -17,11 +17,15 @@ export class FingerprintContent extends React.Component<IProps, any> {
         return (
             <DialogContent><DialogContentText>
                 <Typography style={{ textAlign: "justify" }} variant="body2" gutterBottom>
-                    When you launch the app for the first time (not from background), you will need your fingerprint to use the app.
+                    {this.props.language["fingerprint-text1"]}
                 </Typography>
                 <br />
                 <Typography style={{ textAlign: "justify" }} variant="body2" gutterBottom>
-                    Keep in mind, sharing your device with anyone who has saved a fingerprint or knows your passcode gives that person access to this app. We don't recommend using fingerprint if you share your device.
+                    {this.props.language["fingerprint-text3"]}
+                </Typography>
+                <br />
+                <Typography style={{ textAlign: "justify" }} variant="body2" gutterBottom>
+                    {this.props.language["fingerprint-text2"]}                
                 </Typography>
             </DialogContentText></DialogContent>
         )

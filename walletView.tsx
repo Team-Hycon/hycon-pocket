@@ -46,7 +46,7 @@ import * as React from "react"
 import * as CopyToClipboard from "react-copy-to-clipboard"
 import { PullToRefresh } from "react-js-pull-to-refresh"
 import { Link } from "react-router-dom"
-import { Textfit } from "react-textfit"
+import { Textfit } from "@wootencl/react-textfit"
 import { IHyconWallet, IRest } from "../rest"
 import ColorButton from "./component/ColorButton"
 import { FeeSettings } from "./content/feeSettings"
@@ -297,15 +297,17 @@ class WalletView extends React.PureComponent<IProps, any> {
                                 <div className={this.props.classes.toolbar} />
                             </Hidden>
                             <Grid container spacing={0}>
-                                <Grid item xs={12}>
-                                    <Typography
-                                        variant="h3"
-                                        style={{
-                                            fontWeight: 400,
-                                            backgroundSize: "20%",
-                                        }}>
-                                        <span style={{ fontWeight: 600 }}>{this.state.name}</span>{this.props.language["title-wallet"]}
-                                    </Typography>
+                                <Grid item style={{ width: "90%" }}>
+                                    <Textfit 
+                                        mode="single"
+                                        style={{ color: this.props.paletteType === "light" ? "black" : "white" }} 
+                                        throttle={0} 
+                                        min={20} 
+                                        max={50}
+                                    >
+                                        <span style={{ fontWeight: 600 }}>{this.state.name}</span>
+                                        <span>{this.props.language["title-wallet"]}</span>
+                                    </Textfit>
                                 </Grid>
                                 <Grid item xs={12}>
                                     <CopyToClipboard text={this.state.wallet.address} onCopy={this.handleClick}>
@@ -522,7 +524,7 @@ class WalletView extends React.PureComponent<IProps, any> {
                         <MenuItem onClick={this.showMnemonic.bind(this)}>{this.props.language["show-mnemonic"]}</MenuItem>
                         <Link to="/giftcard" style={{ textDecoration: "none" }}><MenuItem onClick={this.redirectGiftcard}>{this.props.language["redeem-giftcard"]}</MenuItem></Link>
                         <MenuItem onClick={this.handleDialogMore}>{this.props.language["wallet-settings"]}</MenuItem>
-                        <MenuItem onClick={this.deleteWallet.bind(this)} style={{ color: "red", fontWeight: 400 }}>Delete This Wallet</MenuItem>
+                        <MenuItem onClick={this.deleteWallet.bind(this)} style={{ color: "red", fontWeight: 400 }}>{this.props.language["btn-delete-wallet"]}</MenuItem>
                     </Menu>
 
                     <Drawer

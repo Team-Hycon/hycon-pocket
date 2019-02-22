@@ -17,10 +17,19 @@ export class ChangelogContent extends React.Component<IProps, any> {
         return (
             <DialogContent><DialogContentText>
                 <Typography style={{ textAlign: "justify", paddingBottom: 20 }} variant="caption" gutterBottom>
+                    {this.props.language["changelog-200-content1"]}<br />
+                    {this.props.language["changelog-200-content2"]}<br />
+                    {this.props.language["changelog-200-content3"]}<br />
+                    {this.props.language["changelog-200-content4"]}<br />
+                    {this.props.language["changelog-200-content5"]}
+                </Typography>
+                <br />
+                <Typography variant="overline" style={{ fontWeight: 600 }} gutterBottom>{this.props.language["changelog-120"]}</Typography>
+                <Typography style={{ textAlign: "justify" }} variant="caption" gutterBottom>
                     {this.props.language["changelog-120-content1"]}<br />
                     {this.props.language["changelog-120-content2"]}<br />
                     {this.props.language["changelog-120-content3"]}<br />
-                    {this.props.language["changelog-120-content4"]}<br />
+                    {this.props.language["changelog-120-content4"]}
                 </Typography>
                 <br />
                 <Typography variant="overline" style={{ fontWeight: 600 }} gutterBottom>{this.props.language["changelog-112"]}</Typography>

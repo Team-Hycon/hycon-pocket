@@ -283,6 +283,7 @@ export interface IText {
     // FINGERPRINT SETTINGS
     "fingerprint-text1": string,
     "fingerprint-text2": string,
+    "fingerprint-text3": string,
 
     // TERMS OF USE
     "terms-of-use": string
@@ -352,8 +353,15 @@ export interface IText {
     "changelog-112-content11": string
     "changelog-112-content12": string
     "changelog-112-content13": string
+    "changelog-120": string
     "changelog-120-content1": string
     "changelog-120-content2": string
     "changelog-120-content3": string
     "changelog-120-content4": string
+    "changelog-200": string
+    "changelog-200-content1": string
+    "changelog-200-content2": string
+    "changelog-200-content3": string
+    "changelog-200-content4": string
+    "changelog-200-content5": string
 }

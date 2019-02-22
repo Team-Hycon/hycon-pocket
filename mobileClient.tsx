@@ -158,7 +158,7 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
             confirmAppExit: false,
             fingerprintAuth: false,
             name: "",
-            oneHanded: storage.getItem("oneHanded") === null ? false : storage.getItem("oneHanded"),
+            oneHanded: storage.getItem("oneHanded") === null ? false : (storage.getItem("oneHanded") === "true"),
             openDialog: false,
             openMenu: false,
             openOnboarding: storage.getItem("onboarding") === null ? true : false,
@@ -235,7 +235,6 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                                 <span style={{ paddingRight: theme.spacing.unit }}>
                                     <img style={{ maxHeight: 38 }} src={this.state.paletteType === "light" ? logoColor : logoWhite} />
                                 </span>
-                                <span><Typography variant="h5" style={{ fontWeight: 400, paddingBottom: "3%", fontFamily: "Source Sans Pro" }}>Pocket</Typography></span>
                             </div>
                         </ListItem>
                     </Hidden>
@@ -422,7 +421,6 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                                         <span style={{ paddingRight: theme.spacing.unit }}>
                                             <img style={{ maxHeight: 28 }} src={this.state.paletteType === "light" ? logoColor : logoWhite} />
                                         </span>
-                                        <span><Typography variant="h5" style={{ fontWeight: 400, paddingBottom: "3%", fontFamily: "Source Sans Pro" }}>Pocket</Typography></span>
                                     </div>
                                     <TextField
                                         select
@@ -522,8 +520,9 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
     }
 
     private handleOneHanded = () => {
-        this.setState({ oneHanded: !this.state.oneHanded })
-        storage.setItem("oneHanded", (!this.state.oneHanded).toString())
+        const tmp = !this.state.oneHanded
+        this.setState({ oneHanded: tmp })
+        storage.setItem("oneHanded", tmp.toString())
     }
 
     private closeOnboarding() {
