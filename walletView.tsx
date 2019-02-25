@@ -279,149 +279,135 @@ class WalletView extends React.PureComponent<IProps, any> {
 
         return (
             <Grid container className={this.props.classes.root}>
-                {(this.props.name !== "" && this.props.wallet.address === "") || (this.props.name !== this.props.wallet.name) ? <LinearProgress /> : null}
-                <PullToRefresh
-                    pullDownContent={<span />}
-                    releaseContent={<span />}
-                    refreshContent={<LinearProgress />}
-                    pullDownThreshold={5}
-                    onRefresh={this.onRefresh.bind(this)}
-                    triggerHeight={250}
-                >
-                    <Card elevation={0} square style={{
-                        padding: "40px 0",
-                        background: this.props.paletteType === "light" ? "linear-gradient(to bottom, #ededf3 90%,#fff 100%)" : "linear-gradient(to bottom, #212121 90%,#303030 100%)" }}
+                <div style={{ width: "100%" }}>
+                    {(this.props.name !== "" && this.props.wallet.address === "") || (this.props.name !== this.props.wallet.name) ? <LinearProgress /> : null}
+                    <PullToRefresh
+                        pullDownContent={<span />}
+                        releaseContent={<span />}
+                        refreshContent={<LinearProgress />}
+                        pullDownThreshold={5}
+                        onRefresh={this.onRefresh.bind(this)}
+                        triggerHeight={250}
                     >
-                        <CardContent>
-                            <Hidden smUp implementation="js">
-                                <div className={this.props.classes.toolbar} />
-                            </Hidden>
-                            <Grid container spacing={0}>
-                                <Grid item style={{ width: "90%" }}>
-                                    <Textfit 
-                                        mode="single"
-                                        style={{ color: this.props.paletteType === "light" ? "black" : "white" }} 
-                                        throttle={0} 
-                                        min={20} 
-                                        max={50}
-                                    >
-                                        <span style={{ fontWeight: 600 }}>{this.state.name}</span>
-                                        <span>{this.props.language["title-wallet"]}</span>
-                                    </Textfit>
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <CopyToClipboard text={this.state.wallet.address} onCopy={this.handleClick}>
-                                        <Typography variant="caption" style={{ fontWeight: 400, fontStyle: "monospace" }}>
-                                            {this.state.wallet.address}
-                                        </Typography>
-                                    </CopyToClipboard>
-                                </Grid>
-                                <Grid item xs={12} style={{ padding: "20px 0" }}>
-                                    <Grid container direction="row" alignItems="center" justify="space-between">
-                                        <Grid item style={{ width: "80%", fontFamily: "Source Code Pro, monospace" }}>
-                                            <Textfit
-                                                mode="single"
-                                                style={{ color: this.props.paletteType === "light" ? "black" : "white" }}
-                                                throttle={100}
-                                                min={18}
-                                                max={42}
-                                                onClick={this.switchBalance.bind(this, -1)}
-                                            >
-                                                {this.props.showBalance ? this.state.displayedBalance : this.props.language["balance-hidden"]}
-                                            </Textfit>
-                                        </Grid>
-                                        <Grid item>
-                                            <IconButton onClick={this.handleCollapse}>
-                                                {this.state.collapse ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                                            </IconButton>
-                                        </Grid>
+                        <Card elevation={0} square style={{
+                            padding: "40px 0",
+                            background: this.props.paletteType === "light" ? "linear-gradient(to bottom, #ededf3 90%,#fff 100%)" : "linear-gradient(to bottom, #212121 90%,#303030 100%)" }}
+                        >
+                            <CardContent>
+                                <Hidden smUp implementation="js">
+                                    <div className={this.props.classes.toolbar} />
+                                </Hidden>
+                                <Grid container spacing={0}>
+                                    <Grid item style={{ width: "90%" }}>
+                                        <Textfit 
+                                            mode="single"
+                                            style={{ color: this.props.paletteType === "light" ? "black" : "white" }} 
+                                            throttle={0} 
+                                            min={20} 
+                                            max={50}
+                                        >
+                                            <span style={{ fontWeight: 600 }}>{this.state.name}</span>
+                                            <span>{this.props.language["title-wallet"]}</span>
+                                        </Textfit>
                                     </Grid>
                                     <Grid item xs={12}>
-                                        <Collapse in={this.state.collapse}>
-                                            <Grid container direction="row" alignItems="center" justify="space-between">
-                                                <Grid item>
-                                                    <Chip
-                                                        label="HYC"
-                                                        onClick={this.switchBalance.bind(this, 0)}
-                                                        className={this.balanceIndex === 0 ? this.props.classes.balanceSelectFocus : this.props.classes.balanceSelect}
-                                                    />
-                                                    <Chip
-                                                        label={this.props.language.currency.toUpperCase()}
-                                                        onClick={this.switchBalance.bind(this, 1)}
-                                                        className={this.balanceIndex === 1 ? this.props.classes.balanceSelectFocus : this.props.classes.balanceSelect}
-                                                    />
-                                                    <Chip
-                                                        label="Ethereum"
-                                                        onClick={this.switchBalance.bind(this, 2)}
-                                                        className={this.balanceIndex === 2 ? this.props.classes.balanceSelectFocus : this.props.classes.balanceSelect}
-                                                    />
-                                                    <Chip
-                                                        label="Bitcoin"
-                                                        onClick={this.switchBalance.bind(this, 3)}
-                                                        className={this.balanceIndex === 3 ? this.props.classes.balanceSelectFocus : this.props.classes.balanceSelect}
-                                                    />
-                                                </Grid>
-                                                <Grid item>
-                                                    <ClickAwayListener onClickAway={this.handleTooltipClose}>
-                                                        <Tooltip
-                                                            disableTouchListener
-                                                            interactive
-                                                            open={this.state.tooltipOpen}
-                                                            onClose={this.handleTooltipClose}
-                                                            title={this.props.language["datail-balance-tooltip"]}
-                                                            style={{ fontSize: "0.5em" }}
-                                                        >
-                                                            <IconButton>
-                                                                <TooltipIcon onClick={this.handleTooltipOpen} />
-                                                            </IconButton>
-                                                        </Tooltip>
-                                                    </ClickAwayListener>
-                                                </Grid>
+                                        <CopyToClipboard text={this.state.wallet.address} onCopy={this.handleClick}>
+                                            <Typography variant="caption" style={{ fontWeight: 400, fontStyle: "monospace" }}>
+                                                {this.state.wallet.address}
+                                            </Typography>
+                                        </CopyToClipboard>
+                                    </Grid>
+                                    <Grid item xs={12} style={{ padding: "20px 0" }}>
+                                        <Grid container direction="row" alignItems="center" justify="space-between">
+                                            <Grid item style={{ width: "80%", fontFamily: "Source Code Pro, monospace" }}>
+                                                <Textfit
+                                                    mode="single"
+                                                    style={{ color: this.props.paletteType === "light" ? "black" : "white" }}
+                                                    throttle={100}
+                                                    min={18}
+                                                    max={42}
+                                                    onClick={this.switchBalance.bind(this, -1)}
+                                                >
+                                                    {this.props.showBalance ? this.state.displayedBalance : this.props.language["balance-hidden"]}
+                                                </Textfit>
                                             </Grid>
-                                        </Collapse>
+                                            <Grid item>
+                                                <IconButton onClick={this.handleCollapse}>
+                                                    {this.state.collapse ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                                                </IconButton>
+                                            </Grid>
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <Collapse in={this.state.collapse}>
+                                                <Grid container direction="row" alignItems="center" justify="space-between">
+                                                    <Grid item>
+                                                        <Chip
+                                                            label="HYC"
+                                                            onClick={this.switchBalance.bind(this, 0)}
+                                                            className={this.balanceIndex === 0 ? this.props.classes.balanceSelectFocus : this.props.classes.balanceSelect}
+                                                        />
+                                                        <Chip
+                                                            label={this.props.language.currency.toUpperCase()}
+                                                            onClick={this.switchBalance.bind(this, 1)}
+                                                            className={this.balanceIndex === 1 ? this.props.classes.balanceSelectFocus : this.props.classes.balanceSelect}
+                                                        />
+                                                        <Chip
+                                                            label="Ethereum"
+                                                            onClick={this.switchBalance.bind(this, 2)}
+                                                            className={this.balanceIndex === 2 ? this.props.classes.balanceSelectFocus : this.props.classes.balanceSelect}
+                                                        />
+                                                        <Chip
+                                                            label="Bitcoin"
+                                                            onClick={this.switchBalance.bind(this, 3)}
+                                                            className={this.balanceIndex === 3 ? this.props.classes.balanceSelectFocus : this.props.classes.balanceSelect}
+                                                        />
+                                                    </Grid>
+                                                    <Grid item>
+                                                        <ClickAwayListener onClickAway={this.handleTooltipClose}>
+                                                            <Tooltip
+                                                                disableTouchListener
+                                                                interactive
+                                                                open={this.state.tooltipOpen}
+                                                                onClose={this.handleTooltipClose}
+                                                                title={this.props.language["datail-balance-tooltip"]}
+                                                                style={{ fontSize: "0.5em" }}
+                                                            >
+                                                                <IconButton>
+                                                                    <TooltipIcon onClick={this.handleTooltipOpen} />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                        </ClickAwayListener>
+                                                    </Grid>
+                                                </Grid>
+                                            </Collapse>
+                                        </Grid>
                                     </Grid>
+                                    {this.state.wallet.pendingAmount !== "0" ?
+                                        <Grid item xs={12}>
+                                            <Typography variant="h6" align="left" gutterBottom>
+                                                {this.props.language["activity-pending"]}:
+                                            </Typography>
+                                            <Typography variant="h4" align="left">
+                                                {this.state.wallet.pendingAmount} HYC
+                                            </Typography>
+                                        </Grid> : ""
+                                    }
                                 </Grid>
-                                {this.state.wallet.pendingAmount !== "0" ?
+                            </CardContent>
+                        </Card>
+                        <Card elevation={0} style={{ backgroundColor: "transparent", paddingBottom: 30 }} square>
+                            <CardContent>
+                                {((this.state.wallet.pendings.concat(this.state.wallet.txs).length !== 0) && this.props.showBalance) ?
                                     <Grid item xs={12}>
-                                        <Typography variant="h6" align="left" gutterBottom>
-                                            {this.props.language["activity-pending"]}:
+                                        <Typography variant="subtitle2" align="left" gutterBottom>
+                                            {this.props.language["detail-last"]} {this.state.wallet.pendings.concat(this.state.wallet.txs).length} {this.props.language["detail-txs"]}
                                         </Typography>
-                                        <Typography variant="h4" align="left">
-                                            {this.state.wallet.pendingAmount} HYC
-                                        </Typography>
-                                    </Grid> : ""
-                                }
-                            </Grid>
-                        </CardContent>
-                    </Card>
-                    <Card elevation={0} style={{ backgroundColor: "transparent", paddingBottom: 30 }} square>
-                        <CardContent>
-                            {((this.state.wallet.pendings.concat(this.state.wallet.txs).length !== 0) && this.props.showBalance) ?
-                                <Grid item xs={12}>
-                                    <Typography variant="subtitle2" align="left" gutterBottom>
-                                        {this.props.language["detail-last"]} {this.state.wallet.pendings.concat(this.state.wallet.txs).length} {this.props.language["detail-txs"]}
-                                    </Typography>
-                                    <List>
-                                        {this.state.wallet.pendings.concat(this.state.wallet.txs) != null ?
-                                            this.state.wallet.pendings.concat(this.state.wallet.txs).map((n: any, index: number) => (
-                                                <ListItem key={"transaction" + n} style={{ padding: "5px 0 0 0" }}>
-                                                    <Card elevation={1} style={{ width: "100%" }}>
-                                                        {this.getTransactionStyle(n.from) === "SEND" ?
-                                                            <CardHeader
-                                                                disableTypography
-                                                                title={
-                                                                    <Typography variant="body1" style={{ color: "white" }}>
-                                                                        {this.getTransactionStyle(n.from) + (this.testCompleted(index) ? ` HYC - ${this.props.language["tx-completed"]}` : ` HYC - ${this.props.language["tx-pending"]}`)}
-                                                                    </Typography>
-                                                                }
-                                                                subheader={
-                                                                    <Typography variant="body2" style={{ color: "white" }}>
-                                                                        {this.testCompleted(index) ? this.getDate(Number(n.receiveTime)) : ""}
-                                                                    </Typography>
-                                                                }
-                                                                style={{ padding: "4px 16px", background: "linear-gradient(to right, #2195a0, #172349)" }}
-                                                            /> :
-                                                            this.getTransactionStyle(n.from) === "RECEIVE" ?
+                                        <List>
+                                            {this.state.wallet.pendings.concat(this.state.wallet.txs) != null ?
+                                                this.state.wallet.pendings.concat(this.state.wallet.txs).map((n: any, index: number) => (
+                                                    <ListItem key={"transaction" + n} style={{ padding: "5px 0 0 0" }}>
+                                                        <Card elevation={1} style={{ width: "100%" }}>
+                                                            {this.getTransactionStyle(n.from) === "SEND" ?
                                                                 <CardHeader
                                                                     disableTypography
                                                                     title={
@@ -434,299 +420,314 @@ class WalletView extends React.PureComponent<IProps, any> {
                                                                             {this.testCompleted(index) ? this.getDate(Number(n.receiveTime)) : ""}
                                                                         </Typography>
                                                                     }
-                                                                    style={{ padding: "4px 16px", background: "linear-gradient(to right, #172349, #2195a0)" }}
+                                                                    style={{ padding: "4px 16px", background: "linear-gradient(to right, #2195a0, #172349)" }}
                                                                 /> :
-                                                                <CardHeader
-                                                                    disableTypography
-                                                                    title={
-                                                                        <Typography variant="body1" style={{ color: "white" }}>
-                                                                            {this.getTransactionStyle(n.from)}
-                                                                        </Typography>
-                                                                    }
-                                                                    subheader={
-                                                                        <Typography variant="body2" style={{ color: "white" }}>
-                                                                            {this.testCompleted(index) ? this.getDate(Number(n.receiveTime)) : ""}
-                                                                        </Typography>
-                                                                    }
-                                                                    style={{ padding: "4px 16px", background: "#22759c" }}
-                                                                />
+                                                                this.getTransactionStyle(n.from) === "RECEIVE" ?
+                                                                    <CardHeader
+                                                                        disableTypography
+                                                                        title={
+                                                                            <Typography variant="body1" style={{ color: "white" }}>
+                                                                                {this.getTransactionStyle(n.from) + (this.testCompleted(index) ? ` HYC - ${this.props.language["tx-completed"]}` : ` HYC - ${this.props.language["tx-pending"]}`)}
+                                                                            </Typography>
+                                                                        }
+                                                                        subheader={
+                                                                            <Typography variant="body2" style={{ color: "white" }}>
+                                                                                {this.testCompleted(index) ? this.getDate(Number(n.receiveTime)) : ""}
+                                                                            </Typography>
+                                                                        }
+                                                                        style={{ padding: "4px 16px", background: "linear-gradient(to right, #172349, #2195a0)" }}
+                                                                    /> :
+                                                                    <CardHeader
+                                                                        disableTypography
+                                                                        title={
+                                                                            <Typography variant="body1" style={{ color: "white" }}>
+                                                                                {this.getTransactionStyle(n.from)}
+                                                                            </Typography>
+                                                                        }
+                                                                        subheader={
+                                                                            <Typography variant="body2" style={{ color: "white" }}>
+                                                                                {this.testCompleted(index) ? this.getDate(Number(n.receiveTime)) : ""}
+                                                                            </Typography>
+                                                                        }
+                                                                        style={{ padding: "4px 16px", background: "#22759c" }}
+                                                                    />
 
-                                                        }
-                                                        <CardContent>
-                                                            {this.getTransactionStyle(n.from) === "GIFTCARD" ?
-                                                                <Grid container>
-                                                                    <Grid item xs={12} sm={6} zeroMinWidth>
-                                                                        <Typography noWrap>
-                                                                            <span className={this.props.classes.txInfo}>{this.props.language["detail-amount"]}</span>
-                                                                            <b>{"  " + n.amount + " HYC"}</b>
-                                                                        </Typography>
-                                                                    </Grid>
-                                                                    <Grid item xs={12} zeroMinWidth>
-                                                                        <Typography noWrap>
-                                                                            <span className={this.props.classes.txInfo}>{this.props.language["detail-hash"]}</span>
-                                                                            {"  " + n.hash}
-                                                                        </Typography>
-                                                                    </Grid>
-                                                                </Grid> :
-                                                                <Grid container>
-                                                                    <Grid item xs={12} sm={6} zeroMinWidth>
-                                                                        <Typography noWrap>
-                                                                            <span className={this.props.classes.txInfo}>{this.props.language["detail-amount"]}</span>
-                                                                            <b>{"  " + n.amount + " HYC"}</b>
-                                                                        </Typography>
-                                                                    </Grid>
-                                                                    <Grid item xs={12} sm={6} zeroMinWidth>
-                                                                        <Typography noWrap>
-                                                                            <span className={this.props.classes.txInfo}>{this.props.language["detail-fee"]}</span>
-                                                                            {"  " + n.fee + " HYC"}
-                                                                        </Typography>
-                                                                    </Grid>
-                                                                    <Grid item xs={12} zeroMinWidth>
-                                                                        <Typography noWrap>
-                                                                            <span className={this.props.classes.txInfo}>{this.props.language["detail-from"]}</span>
-                                                                            {"  " + n.from}
-                                                                        </Typography>
-                                                                    </Grid>
-                                                                    <Grid item xs={12} zeroMinWidth>
-                                                                        <Typography noWrap>
-                                                                            <span className={this.props.classes.txInfo}>{this.props.language["detail-to"]}</span>
-                                                                            {"  " + n.to}
-                                                                        </Typography>
-                                                                    </Grid>
-                                                                    <Grid item xs={12} zeroMinWidth>
-                                                                        <Typography noWrap>
-                                                                            <span className={this.props.classes.txInfo}>{this.props.language["detail-hash"]}</span>
-                                                                            {"  " + n.hash}
-                                                                        </Typography>
-                                                                    </Grid>
-                                                                </Grid>
                                                             }
-                                                        </CardContent>
-                                                    </Card>
-                                                </ListItem>
-                                            )) : <div>waiting data</div>
-                                        }
-                                    </List>
-                                </Grid> :
-                                <Grid item xs={12} style={{ flexGrow: 1 }}>
-                                    <Typography variant="h6" align="center">
-                                        {this.props.showBalance ? this.props.language["detail-guide-make-your-tx"] : this.props.language["txs-hidden"]}
-                                    </Typography>
-                                    <Typography variant="caption" align="center">
-                                        {this.props.showBalance ? this.props.language["detail-guide-tap-send-or-request"] : this.props.language["txs-hidden-help"]}
-                                    </Typography>
-                                </Grid>
-                            }
-                        </CardContent>
-                    </Card>
+                                                            <CardContent>
+                                                                {this.getTransactionStyle(n.from) === "GIFTCARD" ?
+                                                                    <Grid container>
+                                                                        <Grid item xs={12} sm={6} zeroMinWidth>
+                                                                            <Typography noWrap>
+                                                                                <span className={this.props.classes.txInfo}>{this.props.language["detail-amount"]}</span>
+                                                                                <b>{"  " + n.amount + " HYC"}</b>
+                                                                            </Typography>
+                                                                        </Grid>
+                                                                        <Grid item xs={12} zeroMinWidth>
+                                                                            <Typography noWrap>
+                                                                                <span className={this.props.classes.txInfo}>{this.props.language["detail-hash"]}</span>
+                                                                                {"  " + n.hash}
+                                                                            </Typography>
+                                                                        </Grid>
+                                                                    </Grid> :
+                                                                    <Grid container>
+                                                                        <Grid item xs={12} sm={6} zeroMinWidth>
+                                                                            <Typography noWrap>
+                                                                                <span className={this.props.classes.txInfo}>{this.props.language["detail-amount"]}</span>
+                                                                                <b>{"  " + n.amount + " HYC"}</b>
+                                                                            </Typography>
+                                                                        </Grid>
+                                                                        <Grid item xs={12} sm={6} zeroMinWidth>
+                                                                            <Typography noWrap>
+                                                                                <span className={this.props.classes.txInfo}>{this.props.language["detail-fee"]}</span>
+                                                                                {"  " + n.fee + " HYC"}
+                                                                            </Typography>
+                                                                        </Grid>
+                                                                        <Grid item xs={12} zeroMinWidth>
+                                                                            <Typography noWrap>
+                                                                                <span className={this.props.classes.txInfo}>{this.props.language["detail-from"]}</span>
+                                                                                {"  " + n.from}
+                                                                            </Typography>
+                                                                        </Grid>
+                                                                        <Grid item xs={12} zeroMinWidth>
+                                                                            <Typography noWrap>
+                                                                                <span className={this.props.classes.txInfo}>{this.props.language["detail-to"]}</span>
+                                                                                {"  " + n.to}
+                                                                            </Typography>
+                                                                        </Grid>
+                                                                        <Grid item xs={12} zeroMinWidth>
+                                                                            <Typography noWrap>
+                                                                                <span className={this.props.classes.txInfo}>{this.props.language["detail-hash"]}</span>
+                                                                                {"  " + n.hash}
+                                                                            </Typography>
+                                                                        </Grid>
+                                                                    </Grid>
+                                                                }
+                                                            </CardContent>
+                                                        </Card>
+                                                    </ListItem>
+                                                )) : <div>waiting data</div>
+                                            }
+                                        </List>
+                                    </Grid> :
+                                    <Grid item xs={12} style={{ flexGrow: 1 }}>
+                                        <Typography variant="h6" align="center">
+                                            {this.props.showBalance ? this.props.language["detail-guide-make-your-tx"] : this.props.language["txs-hidden"]}
+                                        </Typography>
+                                        <Typography variant="caption" align="center">
+                                            {this.props.showBalance ? this.props.language["detail-guide-tap-send-or-request"] : this.props.language["txs-hidden-help"]}
+                                        </Typography>
+                                    </Grid>
+                                }
+                            </CardContent>
+                        </Card>
 
-                    <Menu id="more-menu" anchorEl={this.state.anchorEl} open={Boolean(this.state.anchorEl)} onClose={this.handleClose}>
-                        <MenuItem onClick={this.showMnemonic.bind(this)}>{this.props.language["show-mnemonic"]}</MenuItem>
-                        <Link to="/giftcard" style={{ textDecoration: "none" }}><MenuItem onClick={this.redirectGiftcard}>{this.props.language["redeem-giftcard"]}</MenuItem></Link>
-                        <MenuItem onClick={this.handleDialogMore}>{this.props.language["wallet-settings"]}</MenuItem>
-                        <MenuItem onClick={this.deleteWallet.bind(this)} style={{ color: "red", fontWeight: 400 }}>{this.props.language["btn-delete-wallet"]}</MenuItem>
-                    </Menu>
+                        <Menu id="more-menu" anchorEl={this.state.anchorEl} open={Boolean(this.state.anchorEl)} onClose={this.handleClose}>
+                            <MenuItem onClick={this.showMnemonic.bind(this)}>{this.props.language["show-mnemonic"]}</MenuItem>
+                            <Link to="/giftcard" style={{ textDecoration: "none" }}><MenuItem onClick={this.redirectGiftcard}>{this.props.language["redeem-giftcard"]}</MenuItem></Link>
+                            <MenuItem onClick={this.handleDialogMore}>{this.props.language["wallet-settings"]}</MenuItem>
+                            <MenuItem onClick={this.deleteWallet.bind(this)} style={{ color: "red", fontWeight: 400 }}>{this.props.language["btn-delete-wallet"]}</MenuItem>
+                        </Menu>
 
-                    <Drawer
-                        anchor="bottom"
-                        open={this.state.reqDrawer}
-                        onClose={this.toggleReqDrawer(false)}
-                    >
-                        <Card elevation={0} square>
-                            <CardContent>
-                                <Grid container alignItems="center" alignContent="center">
-                                    <Grid item xs={12}>
+                        <Drawer
+                            anchor="bottom"
+                            open={this.state.reqDrawer}
+                            onClose={this.toggleReqDrawer(false)}
+                        >
+                            <Card elevation={0} square>
+                                <CardContent>
+                                    <Grid container alignItems="center" alignContent="center">
+                                        <Grid item xs={12}>
+                                            <TextField
+                                                fullWidth
+                                                value={this.state.amountSending}
+                                                type="number"
+                                                label={this.props.language["ph-amount-to-request"]}
+                                                placeholder="0"
+                                                onChange={this.handleChange.bind(this)}
+                                                style={{ marginBottom: "15px" }}
+                                                inputProps={{ style: { textAlign: "right" } }}
+                                                InputProps={{
+                                                    endAdornment: (
+                                                        <InputAdornment position="end">
+                                                            HYC
+                                                        </InputAdornment>
+                                                    ),
+                                                }}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            <ColorButton fullWidth onClick={this.handleSubmit.bind(this)}>{this.props.language["btn-create-qr"]}</ColorButton>
+                                        </Grid>
+                                        <Grid item xs={12}>
+                                            {
+                                                this.state.createQr ?
+                                                    <div id="sendingCanvas"
+                                                        style={{ textAlign: "center" }}
+                                                        onClick={this.sendQr.bind(this)}>
+                                                        <Grid item xs={12} style={{ justifyContent: "center", paddingTop: "2%" }}>
+                                                            <QRCode value={JSON.stringify({ address: this.state.wallet.address, amount: this.state.amountSending })} />
+                                                        </Grid>
+                                                        <Grid item xs={12} style={{ justifyContent: "center" }}>
+                                                            <Typography variant="caption">{this.props.language["detail-request-share-qr"]}</Typography>
+                                                        </Grid>
+                                                    </div>
+                                                    : ""
+                                            }
+                                        </Grid>
+                                    </Grid>
+                                </CardContent>
+                            </Card>
+                        </Drawer>
+                        <Drawer
+                            anchor="bottom"
+                            open={this.state.qrDrawer}
+                            onClose={this.toggleQRDrawer(false)}
+                        >
+                            <Card elevation={0} square>
+                                <CardContent>
+                                    <Grid container alignItems="center" alignContent="center">
+                                        {this.state.wallet.address !== "" ? <QRCode size={192} style={{ margin: "0 auto" }} value={JSON.stringify({ address: this.state.wallet.address })} /> : <CircularProgress />}
+                                    </Grid>
+                                </CardContent>
+                            </Card>
+                        </Drawer>
+
+                        <Snackbar
+                            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                            open={this.state.copied}
+                            onClose={this.handleClose}
+                            TransitionComponent={Fade}
+                            ContentProps={{ "aria-describedby": "message-id" }}
+                            message={<span id="message-id">{this.props.language["help-copied"]}</span>}
+                        />
+
+                        <Snackbar
+                            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                            open={this.state.refreshed}
+                            onClose={this.handleClose}
+                            TransitionComponent={Fade}
+                            ContentProps={{ "aria-describedby": "message-id" }}
+                            message={<span id="message-id">{this.props.language["help-refreshed"]}</span>}
+                        />
+
+                        <Dialog
+                            open={this.state.askDelete}
+                            onClose={this.handleClose}
+                        >
+                            <DialogTitle>{this.props.language["alert-delete-wallet"]}</DialogTitle>
+                            <DialogContent>
+                                <DialogContentText>
+                                    {this.props.language["detail-delete-wallet"]}
+                                </DialogContentText>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button
+                                    onClick={this.handleClose}
+                                >
+                                    {this.props.language["btn-cancel"]}
+                                </Button>
+                                <Button
+                                    autoFocus
+                                    variant="contained"
+                                    style={{ backgroundColor: "#172349", color: "white" }}
+                                    onClick={this.handleDelete}
+                                >
+                                    {this.props.language["btn-yes"]}
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
+
+                        <Dialog
+                            open={this.state.openMnemonic}
+                            onClose={this.closeMnemonic}
+                            aria-labelledby="alert-dialog-title"
+                            aria-describedby="alert-dialog-description"
+                            classes={{ paper: this.props.classes.dialogPaper }}
+                        >
+                            <DialogTitle id="alert-dialog-title">{this.props.language["display-mnemonic"]}</DialogTitle>
+
+                            {this.state.hasMnemonic ?
+                                <DialogContent>
+                                    {!this.state.passwordValidated ?
+                                        <DialogContentText id="alert-dialog-description">
+                                            {this.props.language["enter-password"]}
+                                        </DialogContentText> :
+                                        <DialogContentText id="alert-dialog-description">
+                                            {this.props.language["your-mnemonic-is"]}
+                                        </DialogContentText>
+                                    }
+                                    {!this.state.passwordValidated ?
                                         <TextField
                                             fullWidth
-                                            value={this.state.amountSending}
-                                            type="number"
-                                            label={this.props.language["ph-amount-to-request"]}
-                                            placeholder="0"
-                                            onChange={this.handleChange.bind(this)}
-                                            style={{ marginBottom: "15px" }}
-                                            inputProps={{ style: { textAlign: "right" } }}
+                                            id="adornment-password"
+                                            error={this.state.passwordInvalid}
+                                            label={this.props.language["ph-password"]}
+                                            type={this.state.showPassword ? "text" : "password"}
+                                            value={this.state.password}
+                                            helperText={this.state.passwordInvalid ? this.props.language["alert-invalid-password"] : ""}
+                                            style={{ fontSize: "1em" }}
+                                            onChange={this.handleChangePassword()}
                                             InputProps={{
                                                 endAdornment: (
                                                     <InputAdornment position="end">
-                                                        HYC
+                                                        <IconButton
+                                                            aria-label="Toggle password visibility"
+                                                            onClick={this.handleClickShowPassword}
+                                                            onMouseDown={this.handleMouseDownPassword}>
+                                                            {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
+                                                        </IconButton>
                                                     </InputAdornment>
                                                 ),
-                                            }}
-                                        />
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        <ColorButton fullWidth onClick={this.handleSubmit.bind(this)}>{this.props.language["btn-create-qr"]}</ColorButton>
-                                    </Grid>
-                                    <Grid item xs={12}>
-                                        {
-                                            this.state.createQr ?
-                                                <div id="sendingCanvas"
-                                                    style={{ textAlign: "center" }}
-                                                    onClick={this.sendQr.bind(this)}>
-                                                    <Grid item xs={12} style={{ justifyContent: "center", paddingTop: "2%" }}>
-                                                        <QRCode value={JSON.stringify({ address: this.state.wallet.address, amount: this.state.amountSending })} />
-                                                    </Grid>
-                                                    <Grid item xs={12} style={{ justifyContent: "center" }}>
-                                                        <Typography variant="caption">{this.props.language["detail-request-share-qr"]}</Typography>
-                                                    </Grid>
-                                                </div>
-                                                : ""
-                                        }
-                                    </Grid>
-                                </Grid>
-                            </CardContent>
-                        </Card>
-                    </Drawer>
-                    <Drawer
-                        anchor="bottom"
-                        open={this.state.qrDrawer}
-                        onClose={this.toggleQRDrawer(false)}
-                    >
-                        <Card elevation={0} square>
-                            <CardContent>
-                                <Grid container alignItems="center" alignContent="center">
-                                    {this.state.wallet.address !== "" ? <QRCode size={192} style={{ margin: "0 auto" }} value={JSON.stringify({ address: this.state.wallet.address })} /> : <CircularProgress />}
-                                </Grid>
-                            </CardContent>
-                        </Card>
-                    </Drawer>
-
-                    <Snackbar
-                        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-                        open={this.state.copied}
-                        onClose={this.handleClose}
-                        TransitionComponent={Fade}
-                        ContentProps={{ "aria-describedby": "message-id" }}
-                        message={<span id="message-id">{this.props.language["help-copied"]}</span>}
-                    />
-
-                    <Snackbar
-                        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-                        open={this.state.refreshed}
-                        onClose={this.handleClose}
-                        TransitionComponent={Fade}
-                        ContentProps={{ "aria-describedby": "message-id" }}
-                        message={<span id="message-id">{this.props.language["help-refreshed"]}</span>}
-                    />
-
-                    <Dialog
-                        open={this.state.askDelete}
-                        onClose={this.handleClose}
-                    >
-                        <DialogTitle>{this.props.language["alert-delete-wallet"]}</DialogTitle>
-                        <DialogContent>
-                            <DialogContentText>
-                                {this.props.language["detail-delete-wallet"]}
-                            </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button
-                                onClick={this.handleClose}
-                            >
-                                {this.props.language["btn-cancel"]}
-                            </Button>
-                            <Button
-                                autoFocus
-                                variant="contained"
-                                style={{ backgroundColor: "#172349", color: "white" }}
-                                onClick={this.handleDelete}
-                            >
-                                {this.props.language["btn-yes"]}
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
-
-                    <Dialog
-                        open={this.state.openMnemonic}
-                        onClose={this.closeMnemonic}
-                        aria-labelledby="alert-dialog-title"
-                        aria-describedby="alert-dialog-description"
-                        classes={{ paper: this.props.classes.dialogPaper }}
-                    >
-                        <DialogTitle id="alert-dialog-title">{this.props.language["display-mnemonic"]}</DialogTitle>
-
-                        {this.state.hasMnemonic ?
-                            <DialogContent>
-                                {!this.state.passwordValidated ?
-                                    <DialogContentText id="alert-dialog-description">
-                                        {this.props.language["enter-password"]}
-                                    </DialogContentText> :
-                                    <DialogContentText id="alert-dialog-description">
-                                        {this.props.language["your-mnemonic-is"]}
+                                            }} /> :
+                                        <DialogContentText id="alert-dialog-description" style={{ fontFamily: "monospace" }}>
+                                            {this.state.mnemonic}
+                                        </DialogContentText>
+                                    }
+                                </DialogContent>
+                                :
+                                <DialogContent>
+                                    <DialogContentText id="alert-dialog-description" >
+                                        {this.props.language["erase-recover-wallet"]}
                                     </DialogContentText>
-                                }
-                                {!this.state.passwordValidated ?
-                                    <TextField
-                                        fullWidth
-                                        id="adornment-password"
-                                        error={this.state.passwordInvalid}
-                                        label={this.props.language["ph-password"]}
-                                        type={this.state.showPassword ? "text" : "password"}
-                                        value={this.state.password}
-                                        helperText={this.state.passwordInvalid ? this.props.language["alert-invalid-password"] : ""}
-                                        style={{ fontSize: "1em" }}
-                                        onChange={this.handleChangePassword()}
-                                        InputProps={{
-                                            endAdornment: (
-                                                <InputAdornment position="end">
-                                                    <IconButton
-                                                        aria-label="Toggle password visibility"
-                                                        onClick={this.handleClickShowPassword}
-                                                        onMouseDown={this.handleMouseDownPassword}>
-                                                        {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
-                                                    </IconButton>
-                                                </InputAdornment>
-                                            ),
-                                        }} /> :
-                                    <DialogContentText id="alert-dialog-description" style={{ fontFamily: "monospace" }}>
-                                        {this.state.mnemonic}
-                                    </DialogContentText>
-                                }
-                            </DialogContent>
-                            :
-                            <DialogContent>
-                                <DialogContentText id="alert-dialog-description" >
-                                    {this.props.language["erase-recover-wallet"]}
-                                </DialogContentText>
-                            </DialogContent>
-                        }
-                        {this.state.hasMnemonic ?
-                            <DialogActions>
-                                {!this.state.passwordValidated ?
-                                    <Button className={this.props.classes.btn} onClick={this.closeMnemonic}>
+                                </DialogContent>
+                            }
+                            {this.state.hasMnemonic ?
+                                <DialogActions>
+                                    {!this.state.passwordValidated ?
+                                        <Button className={this.props.classes.btn} onClick={this.closeMnemonic}>
+                                            {this.props.language["btn-close"]}
+                                        </Button> : ""
+                                    }
+                                    <Button
+                                        variant="contained"
+                                        style={{ backgroundColor: "#172349", color: "#fff" }}
+                                        onClick={!this.state.passwordValidated ? this.validatePassword.bind(this) : this.closeMnemonic}
+                                    >
+                                        {this.state.passwordValidated ? this.props.language["btn-close"] : this.props.language["btn-submit"]}
+                                    </Button>
+                                </DialogActions> :
+                                <DialogActions>
+                                    <Button style={{ backgroundColor: "#172349", color: "#fff" }} onClick={this.closeMnemonic}>
                                         {this.props.language["btn-close"]}
-                                    </Button> : ""
-                                }
-                                <Button
-                                    variant="contained"
-                                    style={{ backgroundColor: "#172349", color: "#fff" }}
-                                    onClick={!this.state.passwordValidated ? this.validatePassword.bind(this) : this.closeMnemonic}
-                                >
-                                    {this.state.passwordValidated ? this.props.language["btn-close"] : this.props.language["btn-submit"]}
-                                </Button>
-                            </DialogActions> :
-                            <DialogActions>
-                                <Button style={{ backgroundColor: "#172349", color: "#fff" }} onClick={this.closeMnemonic}>
-                                    {this.props.language["btn-close"]}
-                                </Button>
-                            </DialogActions>
-                        }
-                    </Dialog>
+                                    </Button>
+                                </DialogActions>
+                            }
+                        </Dialog>
 
-                    <Dialog fullScreen open={this.state.dialogMore} onClose={this.handleDialogMore} classes={{ paper: this.props.classes.dialogPaper }}>
-                        <DialogTitle><Typography variant="h6">{this.state.name + this.props.language["title-wallet"] + " " + this.props.language["settings-title"]}</Typography></DialogTitle>
-                        <DialogContent style={{ padding: 0, display: "flex", flexDirection: this.props.oneHanded ? "column-reverse" : "column" }}>
-                            <List>
-                                <FeeSettings language={this.props.language} name={this.props.name}/>
-                                { this.props.oneHanded ? null : <Divider/> }
-                            </List>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button className={this.props.classes.btn} onClick={this.handleDialogMore}>{this.props.language["btn-close"]}</Button>
-                        </DialogActions>
-                    </Dialog>
-                </PullToRefresh>
-                <AppBar position="fixed" className={this.props.classes.swipeArea}>
+                        <Dialog fullScreen open={this.state.dialogMore} onClose={this.handleDialogMore} classes={{ paper: this.props.classes.dialogPaper }}>
+                            <DialogTitle><Typography variant="h6">{this.state.name + this.props.language["title-wallet"] + " " + this.props.language["settings-title"]}</Typography></DialogTitle>
+                            <DialogContent style={{ padding: 0, display: "flex", flexDirection: this.props.oneHanded ? "column-reverse" : "column" }}>
+                                <List>
+                                    <FeeSettings language={this.props.language} name={this.props.name}/>
+                                    { this.props.oneHanded ? null : <Divider/> }
+                                </List>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button className={this.props.classes.btn} onClick={this.handleDialogMore}>{this.props.language["btn-close"]}</Button>
+                            </DialogActions>
+                        </Dialog>
+                    </PullToRefresh>
+                    <AppBar position="fixed" className={this.props.classes.swipeArea}>
                     <Toolbar className={this.props.classes.bottomToolbar}>
                         <Grid item xs={4} justify="center" className={this.props.classes.bottomToolbarBorder}>
                             <ButtonBase focusRipple aria-label="QR Code" disabled={this.props.name !== this.props.wallet.name} onClick={this.toggleQRDrawer(true)} className={this.props.classes.bottomToolbarBtn}>
@@ -754,6 +755,7 @@ class WalletView extends React.PureComponent<IProps, any> {
                         </Grid>
                     </Toolbar>
                 </AppBar>
+                </div>
             </Grid >
         )
     }

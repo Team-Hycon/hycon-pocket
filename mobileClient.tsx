@@ -228,7 +228,7 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
     public renderWallets(theme: Theme) {
         return (
             <Grid container direction={this.state.oneHanded ? "column-reverse" : "column" } justify="flex-start" style={{ height: "100%", overflowY: "scroll", paddingTop: "env(safe-area-inset-top)" }}>
-                <List>
+                <List style={{ width: "100%" }}>
                     <Hidden xsDown implementation="js">
                         <ListItem>
                             <div style={{ display: "flex", alignItems: "center" }}>
