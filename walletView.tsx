@@ -42,11 +42,11 @@ import TooltipIcon from "@material-ui/icons/Help"
 import MoreIcon from "@material-ui/icons/MoreVert"
 import Visibility from "@material-ui/icons/Visibility"
 import VisibilityOff from "@material-ui/icons/VisibilityOff"
+import { Textfit } from "@wootencl/react-textfit"
 import * as React from "react"
 import * as CopyToClipboard from "react-copy-to-clipboard"
 import { PullToRefresh } from "react-js-pull-to-refresh"
 import { Link } from "react-router-dom"
-import { Textfit } from "@wootencl/react-textfit"
 import { IHyconWallet, IRest } from "../rest"
 import ColorButton from "./component/ColorButton"
 import { FeeSettings } from "./content/feeSettings"
@@ -54,34 +54,27 @@ import { IText } from "./locales/m_locales"
 import { IPrice } from "./mobileClient"
 
 const styles = (theme: Theme) => createStyles({
-    root: {
-        flex: 1,
-        display: "flex",
-        flexDirection: "column",
-        overflowY: "scroll",
+    balanceSelect: {
+        color: "black",
+        fontSize: 12,
+        height: 20,
+        marginRight: 5,
     },
-    header: {
-        display: "flex",
-        justifyContent: "space-between",
-        padding: 0,
-    },
-    txInfo: {
-        backgroundColor: "gray",
-        borderWidth: 1,
-        borderColor: "gray",
-        color: "white",
-        borderRadius: "10px",
-        fontSize: "10px",
-        minWidth: "52px",
-        display: "inline-block",
-        textAlign: "center",
-    },
-    swipeArea: {
-        top: "auto",
-        bottom: 0,
-        backgroundColor: theme.palette.type === "light" ? "white" : "#424242",
-        borderTop: "1px solid #ededf3",
-        paddingBottom: "env(safe-area-inset-bottom)",
+    balanceSelectFocus: {
+        "&:active": {
+            backgroundColor: "#172349",
+        },
+        "&:focus": {
+            backgroundColor: "#172349",
+        },
+        "&:hover": {
+            backgroundColor: "#172349",
+        },
+        "backgroundColor": "#172349",
+        "color": "white",
+        "fontSize": 12,
+        "height": 20,
+        "marginRight": 5,
     },
     bottomToolbar: {
         alignItems: "center",
@@ -91,34 +84,9 @@ const styles = (theme: Theme) => createStyles({
         },
     },
     bottomToolbarBtn: {
-        width: "100%",
         display: "flex",
         flexDirection: "column",
-    },
-    bottomToolbarBorder: {
-        // borderRight: theme.palette.type === "light" ? "0.5px solid black" : "0.5px solid white",
-    },
-    balanceSelect: {
-        height: 20,
-        fontSize: 12,
-        color: "black",
-        marginRight: 5,
-    },
-    balanceSelectFocus: {
-        height: 20,
-        fontSize: 12,
-        color: "white",
-        backgroundColor: "#172349",
-        marginRight: 5,
-        '&:hover': {
-            backgroundColor: "#172349",
-        },
-        '&:active': {
-            backgroundColor: "#172349",
-        },
-        '&:focus': {
-            backgroundColor: "#172349",
-        },
+        width: "100%",
     },
     btn: {
         color: theme.palette.type === "dark" ? "white" : "#172349",
@@ -126,7 +94,36 @@ const styles = (theme: Theme) => createStyles({
     dialogPaper: {
         minHeight: 200,
     },
+    header: {
+        display: "flex",
+        justifyContent: "space-between",
+        padding: 0,
+    },
+    root: {
+        display: "flex",
+        flex: 1,
+        flexDirection: "column",
+        overflowY: "scroll",
+    },
+    swipeArea: {
+        backgroundColor: theme.palette.type === "light" ? "white" : "#424242",
+        borderTop: "1px solid #ededf3",
+        bottom: 0,
+        paddingBottom: "env(safe-area-inset-bottom)",
+        top: "auto",
+    },
     toolbar: theme.mixins.toolbar,
+    txInfo: {
+        backgroundColor: "gray",
+        borderColor: "gray",
+        borderRadius: "10px",
+        borderWidth: 1,
+        color: "white",
+        display: "inline-block",
+        fontSize: "10px",
+        minWidth: "52px",
+        textAlign: "center",
+    },
 })
 
 // tslint:disable:no-var-requires
@@ -171,36 +168,36 @@ class WalletView extends React.PureComponent<IProps, any> {
         }
 
         this.state = {
-            rest: this.props.rest,
-            language: this.props.language,
-            price: this.props.price,
-            balance: { fiat: "", eth: "", btc: "" },
-            wallet: this.props.wallet,
-            copied: false,
-            notFound: false,
-            name: this.props.name,
-            askDelete: false,
-            isDeleted: false,
-            qrDrawer: false,
-            reqDrawer: false,
-            anchorEl: null,
             amountSending: "",
-            createQr: false,
-            refreshed: false,
-            displayedBalance: this.props.wallet.balance + " HYC",
+            anchorEl: null,
+            askDelete: false,
+            balance: { fiat: "", eth: "", btc: "" },
             collapse: storage.getItem("walletViewCollapse") !== null ? (storage.getItem("walletViewCollapse") === "true") : true,
-            tooltipOpen: false,
+            copied: false,
+            createQr: false,
             dialogMore: false,
-            isExpand: false,
+            displayedBalance: this.props.wallet.balance + " HYC",
             globalFee: wallets[""].miningFee === null ? false : wallets[""].miningFee !== "",
+            hasMnemonic: false,
+            isDeleted: false,
+            isExpand: false,
+            language: this.props.language,
             miningFee: wallets[this.props.name].miningFee === "" ? wallets[""].miningFee : "",
+            name: this.props.name,
+            notFound: false,
             openMnemonic: false,
             password: "",
-            showPassword: false,
-            passwordValidated: false,
             passwordInvalid: false,
-            hasMnemonic: false,
+            passwordValidated: false,
+            price: this.props.price,
+            qrDrawer: false,
+            refreshed: false,
+            reqDrawer: false,
+            rest: this.props.rest,
+            showPassword: false,
+            tooltipOpen: false,
             update: false,
+            wallet: this.props.wallet,
         }
     }
 
@@ -234,27 +231,14 @@ class WalletView extends React.PureComponent<IProps, any> {
         this.state.balance.btc = (this.props.price.btc * hycBalanceNum).toFixed(9)
         this.state.balance.eth = (this.props.price.eth * hycBalanceNum).toFixed(9)
     }
-    public componentWillReceiveProps(nextProps: any) {
-        this.setState({ name: nextProps.name, wallet: nextProps.wallet })
-        if (nextProps.wallet.name !== this.state.name) {
+    public async componentWillReceiveProps(nextProps: any) {
+        if (nextProps.wallet.name !== nextProps.name) {
             this.props.updateSelected(this.state.name)
+        } else {
+            this.setState({ name: nextProps.name, wallet: nextProps.wallet }, () => {
+                this.setState({ displayedBalance: this.displayBalance(), hasMnemonic: nextProps.wallet.mnemonic !== "" ? true : false })
+            })
         }
-        this.setState({ displayedBalance: this.displayBalance(), hasMnemonic: nextProps.wallet.mnemonic !== "" ? true : false })
-    }
-
-    public handleDelete = () => {
-        this.state.rest.deleteWallet(this.state.name).then((res) => {
-            if (res) {
-                this.setState({
-                    isDeleted: true,
-                })
-            } else {
-                alert(this.props.language["alert-delete-wallet-fail"])
-            }
-        })
-        this.setState({ copied: false, askDelete: false })
-        this.props.setWallets(true)
-        this.props.handleWalletSelect(this.state.name)
     }
 
     public render() {
@@ -290,8 +274,8 @@ class WalletView extends React.PureComponent<IProps, any> {
                         triggerHeight={250}
                     >
                         <Card elevation={0} square style={{
-                            padding: "40px 0",
-                            background: this.props.paletteType === "light" ? "linear-gradient(to bottom, #ededf3 90%,#fff 100%)" : "linear-gradient(to bottom, #212121 90%,#303030 100%)" }}
+                            background: this.props.paletteType === "light" ? "linear-gradient(to bottom, #ededf3 90%,#fff 100%)" : "linear-gradient(to bottom, #212121 90%,#303030 100%)",
+                            padding: "40px 0" }}
                         >
                             <CardContent>
                                 <Hidden smUp implementation="js">
@@ -299,11 +283,11 @@ class WalletView extends React.PureComponent<IProps, any> {
                                 </Hidden>
                                 <Grid container spacing={0}>
                                     <Grid item style={{ width: "90%" }}>
-                                        <Textfit 
+                                        <Textfit
                                             mode="single"
-                                            style={{ color: this.props.paletteType === "light" ? "black" : "white" }} 
-                                            throttle={0} 
-                                            min={20} 
+                                            style={{ color: this.props.paletteType === "light" ? "black" : "white" }}
+                                            throttle={0}
+                                            min={20}
                                             max={50}
                                         >
                                             <span style={{ fontWeight: 600 }}>{this.state.name}</span>
@@ -729,19 +713,19 @@ class WalletView extends React.PureComponent<IProps, any> {
                     </PullToRefresh>
                     <AppBar position="fixed" className={this.props.classes.swipeArea}>
                     <Toolbar className={this.props.classes.bottomToolbar}>
-                        <Grid item xs={4} justify="center" className={this.props.classes.bottomToolbarBorder}>
+                        <Grid item xs={4} justify="center">
                             <ButtonBase focusRipple aria-label="QR Code" disabled={this.props.name !== this.props.wallet.name} onClick={this.toggleQRDrawer(true)} className={this.props.classes.bottomToolbarBtn}>
                                 <BlurOn style={{ color: this.props.paletteType === "light" ? "black" : "white" }}/>
                                 <Typography variant="caption" align="center">{this.props.language["btn-qr"]}</Typography>
                             </ButtonBase>
                         </Grid>
-                        <Grid item xs={4} justify="center" className={this.props.classes.bottomToolbarBorder}>
+                        <Grid item xs={4} justify="center">
                             <ButtonBase focusRipple aria-label="Send HYC" disabled={this.props.name !== this.props.wallet.name} component={Link} {...{ to: "/sendcoins" } as any } onClick={this.props.handleDialog} className={this.props.classes.bottomToolbarBtn}>
                                 <SendIcon style={{ color: this.props.paletteType === "light" ? "black" : "white" }}/>
                                 <Typography variant="caption" align="center">{this.props.language["btn-send"]}</Typography>
                             </ButtonBase>
                         </Grid>
-                        <Grid item xs={4} justify="center" className={this.props.classes.bottomToolbarBorder}>
+                        <Grid item xs={4} justify="center">
                             <ButtonBase focusRipple aria-label="Receive HYC" disabled={this.props.name !== this.props.wallet.name} onClick={this.toggleReqDrawer(true)} className={this.props.classes.bottomToolbarBtn}>
                                 <RequestIcon style={{ color: this.props.paletteType === "light" ? "black" : "white" }}/>
                                 <Typography variant="caption" align="center">{this.props.language["btn-request"]}</Typography>
@@ -758,6 +742,21 @@ class WalletView extends React.PureComponent<IProps, any> {
                 </div>
             </Grid >
         )
+    }
+
+    private handleDelete = () => {
+        this.state.rest.deleteWallet(this.state.name).then((res) => {
+            if (res) {
+                this.setState({
+                    isDeleted: true,
+                })
+            } else {
+                alert(this.props.language["alert-delete-wallet-fail"])
+            }
+        })
+        this.setState({ copied: false, askDelete: false })
+        this.props.setWallets(true)
+        this.props.handleWalletSelect(this.state.name)
     }
 
     private toggleMenu = (event: any) => {
@@ -802,25 +801,23 @@ class WalletView extends React.PureComponent<IProps, any> {
     }
 
     private displayBalance(): string {
-        let ret: string = ""
+        console.log(this.state.wallet.balance)
         switch (this.balanceIndex) {
             case 0:
-                ret = this.state.wallet.balance + " HYC"; break
+                return this.state.wallet.balance + " HYC"
             case 1:
                 if (this.state.balance.fiat > 0.01 || Number(this.state.balance.fiat) === 0) {
-                    ret = this.state.language["currency-symbol"] + this.state.balance.fiat.toFixed(2)
+                    return this.state.language["currency-symbol"] + this.state.balance.fiat.toFixed(2)
                 } else {
-                    ret = ">" + this.state.language["currency-symbol"] + 0.01
+                    return ">" + this.state.language["currency-symbol"] + 0.01
                 }
-                break
             case 2:
-                ret = "\u039E" + this.state.balance.eth; break
+                return "\u039E" + this.state.balance.eth
             case 3:
-                ret = "\u0243" + this.state.balance.btc; break
+                return "\u0243" + this.state.balance.btc
             default:
-                ret = this.state.hycBalance + " HYC"; break
+                return this.state.hycBalance + " HYC"
         }
-        return ret
     }
     private switchBalance(selectIndex: number) {
         if (selectIndex !== -1) {

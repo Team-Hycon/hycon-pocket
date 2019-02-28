@@ -12,10 +12,8 @@ import List from "@material-ui/core/List"
 import ListItem from "@material-ui/core/ListItem"
 import ListItemText from "@material-ui/core/ListItemText"
 import MenuItem from "@material-ui/core/MenuItem"
-import createMuiTheme from "@material-ui/core/styles/createMuiTheme"
 import { Theme } from "@material-ui/core/styles/createMuiTheme"
 import createStyles from "@material-ui/core/styles/createStyles"
-import MuiThemeProvider from "@material-ui/core/styles/MuiThemeProvider"
 import withStyles, { WithStyles } from "@material-ui/core/styles/withStyles"
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer"
 import TextField from "@material-ui/core/TextField"
@@ -52,6 +50,7 @@ const lock = require("./img/onboarding-lock.png")
 const permanentDrawerWidth = 300
 let temporaryDrawerWidth = window.innerWidth * 0.8
 const storage = window.localStorage
+const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent || navigator.vendor)
 
 const styles = (theme: Theme) => createStyles({
     appBar: {
@@ -119,22 +118,11 @@ const styles = (theme: Theme) => createStyles({
 })
 
 interface IProps extends WithStyles<typeof styles> {
-    rest: IRest
-}
-interface IState {
-    fingerprintAuth: boolean
-    name?: string
-    oneHanded: boolean
-    openMenu: boolean
-    openWalletList: boolean
-    openOnboarding: boolean
     paletteType: string
-    selectedWalletIndex: number
-    showBalance: boolean
-    wallet: IHyconWallet
-    wallets: IHyconWallet[]
-    openDialog: boolean
-    confirmAppExit: boolean
+    rest: IRest
+    theme: Theme
+    changeLanguage: (language: string) => void
+    setPaletteType: () => void
 }
 
 export interface IPrice {
@@ -143,7 +131,7 @@ export interface IPrice {
     btc: any,
 }
 
-class MobileApp extends React.Component<IProps, IState & IProps> {
+class MobileApp extends React.Component<IProps, any> {
     private language: IText
     private languageSelect: string
     private price: IPrice
@@ -163,7 +151,6 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
             openMenu: false,
             openOnboarding: storage.getItem("onboarding") === null ? true : false,
             openWalletList: false,
-            paletteType: storage.getItem("paletteType") === null ? "light" : storage.getItem("paletteType"),
             rest: this.props.rest,
             selectedWalletIndex: storage.getItem("selectedWalletIndex") === null ? 0 : Number(storage.getItem("selectedWalletIndex")),
             showBalance: storage.getItem("showBalance") === null ? true : (storage.getItem("showBalance") === "true"),
@@ -225,15 +212,15 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
         }, false)
     }
 
-    public renderWallets(theme: Theme) {
+    public renderWallets() {
         return (
             <Grid container direction={this.state.oneHanded ? "column-reverse" : "column" } justify="flex-start" style={{ height: "100%", overflowY: "scroll", paddingTop: "env(safe-area-inset-top)" }}>
                 <List style={{ width: "100%" }}>
                     <Hidden xsDown implementation="js">
                         <ListItem>
                             <div style={{ display: "flex", alignItems: "center" }}>
-                                <span style={{ paddingRight: theme.spacing.unit }}>
-                                    <img style={{ maxHeight: 38 }} src={this.state.paletteType === "light" ? logoColor : logoWhite} />
+                                <span style={{ paddingRight: 8 }}>
+                                    <img style={{ maxHeight: 38 }} src={this.props.paletteType === "light" ? logoColor : logoWhite} />
                                 </span>
                             </div>
                         </ListItem>
@@ -294,7 +281,7 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                                     </ListItem>
                                 ))}
                                 <ListItem button component={({ innerRef, ...props }) => <Link to="/addwallet" {...props} onClick={() => this.handleDialog(true)} />} style={{ paddingTop: 20 }}>
-                                    <AddIcon className={this.props.classes.avatarSmall} style={{ color: this.state.paletteType === "light" ? "#616161" : "white" }} />
+                                    <AddIcon className={this.props.classes.avatarSmall} style={{ color: this.props.paletteType === "light" ? "#616161" : "white" }} />
                                     <ListItemText primary={this.language["home-add-another-wallet"]} />
                                 </ListItem>
                             </Collapse>
@@ -302,27 +289,27 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
                     }
                     <Divider style={{ margin: "20px 0px" }} />
                     <ListItem button disabled={this.state.openOnboarding} component={({ innerRef, ...props }) => <Link to="/contacts" {...props} onClick={() => this.handleDialog(true)} />}>
-                        <ContactsIcon style={{ color: this.state.paletteType === "light" ? "#616161" : "white" }} />
+                        <ContactsIcon style={{ color: this.props.paletteType === "light" ? "#616161" : "white" }} />
                         <ListItemText primary={this.language["contacts-list"]} />
                     </ListItem>
                     <Divider style={{ margin: "20px 0px" }} />
-                    {this.state.paletteType === "light" ?
-                        <ListItem button disabled={this.state.openOnboarding} onClick={this.setPaletteType.bind(this)}>
+                    {this.props.paletteType === "light" ?
+                        <ListItem button disabled={this.state.openOnboarding} onClick={this.props.setPaletteType}>
                             <DarkOnIcon style={{ color: "#616161" }} />
                             <ListItemText primary={this.language["btn-dark-on"]} />
                         </ListItem> :
-                        <ListItem button disabled={this.state.openOnboarding} onClick={this.setPaletteType.bind(this)}>
+                        <ListItem button disabled={this.state.openOnboarding} onClick={this.props.setPaletteType}>
                             <DarkOffIcon style={{ color: "white" }}/>
                             <ListItemText primary={this.language["btn-dark-off"]} />
                         </ListItem>
                     }
                     <ListItem button disabled={this.state.openOnboarding} component={({ innerRef, ...props }) => <Link to="/settings" {...props} onClick={() => this.handleDialog(true)} />}>
-                        <SettingsIcon style={{ color: this.state.paletteType === "light" ? "#616161" : "white" }}/>
+                        <SettingsIcon style={{ color: this.props.paletteType === "light" ? "#616161" : "white" }}/>
                         <ListItemText primary={this.language["settings-title"]} />
                     </ListItem>
                     <ListItem>
                         <Hidden xsDown implementation="js">
-                            <LanguageIcon style={{ color: this.state.paletteType === "light" ? "#616161" : "white" }}/>
+                            <LanguageIcon style={{ color: this.props.paletteType === "light" ? "#616161" : "white" }}/>
                             <ListItemText>
                                 <TextField
                                     select
@@ -344,60 +331,6 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
     }
 
     public render() {
-        const typography = {
-            fontFamily: this.languageSelect === "en" ?
-                ["Source Sans Pro", "Helvetica", "-apple-system", "sans-serif"].join(",") :
-                ["Nanum Gothic", "Source Sans Pro", "Helvetica", "-apple-system", "sans-serif"].join(","),
-            fontWeightLight: 400,
-            fontWeightMedium: 400,
-            fontWeightRegular: this.languageSelect === "en" ? 600 : 700,
-            useNextVariants: true,
-        }
-
-        const overrides = {
-            MuiFormLabel: {
-                root: {
-                    "&$focused": {
-                        color: "#1ADAD8",
-                    },
-                },
-            }, MuiInput: {
-                underline: {
-                    "&:after": {
-                        borderBottom: "1px solid #1ADAD8",
-                    },
-                    "&:focused:not($disabled):after": {
-                        borderBottom: "1px solid #1ADAD8",
-                    },
-                    "&:hover:not($disabled):after": {
-                        borderBottom: "1px solid #1ADAD8",
-                    },
-                },
-            }, MuiOutlinedInput: {
-                root: {
-                    "&$focused $notchedOutline": {
-                        borderColor: "#1ADAD8",
-                        borderWidth: 1,
-                    },
-                    "&$notchedOutline": {
-                        borderColor: "rgba(0, 0, 0, 0.23)",
-                    },
-                },
-            },
-        }
-
-        let theme: Theme
-
-        if (this.state.paletteType === "light") {
-            window.StatusBar.styleDefault()
-            window.StatusBar.backgroundColorByHexString("#ededf3")
-            theme = createMuiTheme({ overrides, palette: { type: "light" }, typography })
-        } else {
-            window.StatusBar.styleLightContent()
-            window.StatusBar.backgroundColorByHexString("#212121")
-            theme = createMuiTheme({ overrides, palette: { type: "dark" }, typography })
-        }
-
         window.onresize = () => {
             temporaryDrawerWidth = window.innerWidth * 0.8
             this.toggleMenu(false)
@@ -405,99 +338,99 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
 
         return (
             (this.state.fingerprintAuth || storage.getItem("fingerprint") === "false") || storage.getItem("fingerprint") === null ?
-                <MuiThemeProvider theme={theme}>
-                    <div style={{ backgroundColor: this.state.paletteType === "light" ? "white" : "#303030", display: "flex", flexDirection: "column", flexGrow: 1, paddingTop: "env(safe-area-inset-top)" }}>
-                        <CssBaseline />
-                        <AppBar position="absolute" elevation={0} className={this.props.classes.appBar}>
-                            <Toolbar style={{ display: "flex", justifyContent: "space-between", paddingLeft: 8 }}>
-                                <Hidden smUp implementation="js">
-                                    {this.state.openOnboarding ?
-                                        <div style={{ width: 48, height: 48 }} /> :
-                                        <IconButton aria-label="open menu" className={this.props.classes.menuButton} onClick={this.toggleMenu(true)}>
-                                            <MenuIcon />
-                                        </IconButton>
-                                    }
-                                    <div style={{ display: "flex", alignItems: "center" }}>
-                                        <span style={{ paddingRight: theme.spacing.unit }}>
-                                            <img style={{ maxHeight: 28 }} src={this.state.paletteType === "light" ? logoColor : logoWhite} />
-                                        </span>
-                                    </div>
-                                    <TextField
-                                        select
-                                        id="language_select"
-                                        type="text"
-                                        value={this.languageSelect}
-                                        onChange={this.setLanguage.bind(this)}
-                                    >
-                                        <MenuItem key="en" value="en">{this.language["lang-en"]}</MenuItem>
-                                        <MenuItem key="ko" value="ko">{this.language["lang-ko"]}</MenuItem>
-                                    </TextField>
-                                </Hidden>
-                            </Toolbar>
-                        </AppBar>
-                        <nav className={this.props.classes.drawer}>
+                <div style={{ backgroundColor: this.props.paletteType === "light" ? "white" : "#303030", display: "flex", flexDirection: "column", flexGrow: 1, paddingTop: "env(safe-area-inset-top)" }}>
+                    <CssBaseline />
+                    <AppBar position="absolute" elevation={0} className={this.props.classes.appBar}>
+                        <Toolbar style={{ display: "flex", justifyContent: "space-between", paddingLeft: 8 }}>
                             <Hidden smUp implementation="js">
-                                <SwipeableDrawer
-                                    variant="temporary"
-                                    open={this.state.openMenu}
-                                    onOpen={this.toggleMenu(true)}
-                                    onClose={this.toggleMenu(false)}
-                                    PaperProps={{ style: { width: temporaryDrawerWidth } }}
-                                    ModalProps={{
-                                        keepMounted: true,
-                                    }}
+                                {this.state.openOnboarding ?
+                                    <div style={{ width: 48, height: 48 }} /> :
+                                    <IconButton aria-label="open menu" className={this.props.classes.menuButton} onClick={this.toggleMenu(true)}>
+                                        <MenuIcon />
+                                    </IconButton>
+                                }
+                                <div style={{ display: "flex", alignItems: "center" }}>
+                                    <span style={{ paddingRight: this.props.theme.spacing.unit }}>
+                                        <img style={{ maxHeight: 28 }} src={this.props.paletteType === "light" ? logoColor : logoWhite} />
+                                    </span>
+                                </div>
+                                <TextField
+                                    select
+                                    id="language_select"
+                                    type="text"
+                                    value={this.languageSelect}
+                                    onChange={this.setLanguage}
                                 >
-                                    {this.renderWallets(theme)}
-                                </SwipeableDrawer>
+                                    <MenuItem key="en" value="en">{this.language["lang-en"]}</MenuItem>
+                                    <MenuItem key="ko" value="ko">{this.language["lang-ko"]}</MenuItem>
+                                </TextField>
                             </Hidden>
-                            <Hidden xsDown implementation="js">
-                                <Drawer
-                                    classes={{
-                                        paper: this.props.classes.permanentDrawerPaper,
-                                    }}
-                                    variant="permanent"
-                                    open
-                                >
-                                    {this.renderWallets(theme)}
-                                </Drawer>
-                            </Hidden>
-                        </nav>
-                        <main className={this.props.classes.content}>
-                            {this.state.openOnboarding ?
-                                <Onboarding
-                                    rest={this.props.rest}
-                                    language={this.language}
-                                    closeOnboarding={this.closeOnboarding.bind(this)}
-                                    setWallets={this.setWallets.bind(this)}
-                                    handleWalletSelect={this.handleWalletSelect.bind(this)} /> :
-                                <WalletView
-                                    rest={this.state.rest}
-                                    language={this.language}
-                                    wallet={this.state.wallet}
-                                    price={this.price}
-                                    name={this.state.name}
-                                    oneHanded={this.state.oneHanded}
-                                    paletteType={this.state.paletteType}
-                                    handleDialog={this.handleDialog.bind(this)}
-                                    setWallets={this.setWallets.bind(this)}
-                                    showBalance={this.state.showBalance}
-                                    handleWalletSelect={this.handleWalletSelect.bind(this)}
-                                    updateSelected={this.updateSelected.bind(this)}
-                                />
-                            }
+                        </Toolbar>
+                    </AppBar>
+                    <nav className={this.props.classes.drawer}>
+                        <Hidden smUp implementation="js">
+                            <SwipeableDrawer
+                                disableBackdropTransition={!iOS}
+                                disableDiscovery={iOS}
+                                onClose={this.toggleMenu(false)}
+                                onOpen={this.toggleMenu(true)}
+                                open={this.state.openMenu}
+                                variant="temporary"
+                                PaperProps={{ style: { width: temporaryDrawerWidth } }}
+                                ModalProps={{
+                                    keepMounted: true,
+                                }}
+                            >
+                                {this.renderWallets()}
+                            </SwipeableDrawer>
+                        </Hidden>
+                        <Hidden xsDown implementation="js">
+                            <Drawer
+                                classes={{
+                                    paper: this.props.classes.permanentDrawerPaper,
+                                }}
+                                variant="permanent"
+                                open
+                            >
+                                {this.renderWallets()}
+                            </Drawer>
+                        </Hidden>
+                    </nav>
+                    <main className={this.props.classes.content}>
+                        {this.state.openOnboarding ?
+                            <Onboarding
+                                rest={this.props.rest}
+                                language={this.language}
+                                closeOnboarding={this.closeOnboarding.bind(this)}
+                                setWallets={this.setWallets.bind(this)}
+                                handleWalletSelect={this.handleWalletSelect.bind(this)} /> :
+                            <WalletView
+                                rest={this.state.rest}
+                                language={this.language}
+                                wallet={this.state.wallet}
+                                price={this.price}
+                                name={this.state.name}
+                                oneHanded={this.state.oneHanded}
+                                paletteType={this.props.paletteType}
+                                handleDialog={this.handleDialog.bind(this)}
+                                setWallets={this.setWallets.bind(this)}
+                                showBalance={this.state.showBalance}
+                                handleWalletSelect={this.handleWalletSelect.bind(this)}
+                                updateSelected={this.updateSelected.bind(this)}
+                            />
+                        }
 
-                            <Dialog id="content-dialog" fullScreen style={{ paddingTop: "env(safe-area-inset-top)", paddingBottom: "env(safe-area-inset-bottom", marginLeft: window.matchMedia("(max-width: 600px)").matches ? 0 : permanentDrawerWidth }} open={this.state.openDialog} onClose={() => this.handleDialog(false)} scroll={"paper"}>
-                                <Switch>
-                                    <Route exact path="/addwallet" component={() => <AddWallet rest={this.state.rest} language={this.language} oneHanded={this.state.oneHanded} handleDialog={this.handleDialog.bind(this)} setWallets={this.setWallets.bind(this)} handleWalletSelect={this.handleWalletSelect.bind(this)} />} />
-                                    <Route exact path="/sendcoins" component={() => <SendHyc rest={this.state.rest} language={this.language} wallet={this.state.wallet} oneHanded={this.state.oneHanded} handleDialog={this.handleDialog.bind(this)} />} />
-                                    <Route exact path="/contacts" component={() => <Contacts rest={this.state.rest} language={this.language} oneHanded={this.state.oneHanded} handleDialog={this.handleDialog.bind(this)} />} />
-                                    <Route exact path="/giftcard" component={() => <Giftcard rest={this.state.rest} language={this.language} wallet={this.state.wallet} oneHanded={this.state.oneHanded} handleDialog={this.handleDialog.bind(this)} />} />
-                                    <Route exact path="/settings" component={() => <Settings language={this.language} handleDialog={this.handleDialog.bind(this)} oneHanded={this.state.oneHanded} handleOneHanded={this.handleOneHanded.bind(this)} showBalance={this.state.showBalance} showBalanceToggler={this.showBalanceToggler.bind(this)} disableFingerprintScreen={this.disableFingerprintScreen.bind(this)} />} />
-                                </Switch>
-                            </Dialog>
-                        </main>
-                    </div>
-                </MuiThemeProvider> :
+                        <Dialog id="content-dialog" fullScreen style={{ paddingTop: "env(safe-area-inset-top)", paddingBottom: "env(safe-area-inset-bottom", marginLeft: window.matchMedia("(max-width: 600px)").matches ? 0 : permanentDrawerWidth }} open={this.state.openDialog} onClose={() => this.handleDialog(false)} scroll={"paper"}>
+                            <Switch>
+                                <Route exact path="/addwallet" component={() => <AddWallet rest={this.state.rest} language={this.language} oneHanded={this.state.oneHanded} handleDialog={this.handleDialog.bind(this)} setWallets={this.setWallets.bind(this)} handleWalletSelect={this.handleWalletSelect.bind(this)} />} />
+                                <Route exact path="/sendcoins" component={() => <SendHyc rest={this.state.rest} language={this.language} wallet={this.state.wallet} oneHanded={this.state.oneHanded} handleDialog={this.handleDialog.bind(this)} />} />
+                                <Route exact path="/contacts" component={() => <Contacts rest={this.state.rest} language={this.language} oneHanded={this.state.oneHanded} handleDialog={this.handleDialog.bind(this)} />} />
+                                <Route exact path="/giftcard" component={() => <Giftcard rest={this.state.rest} language={this.language} wallet={this.state.wallet} oneHanded={this.state.oneHanded} handleDialog={this.handleDialog.bind(this)} />} />
+                                <Route exact path="/settings" component={() => <Settings language={this.language} handleDialog={this.handleDialog.bind(this)} oneHanded={this.state.oneHanded} handleOneHanded={this.handleOneHanded.bind(this)} showBalance={this.state.showBalance} showBalanceToggler={this.showBalanceToggler.bind(this)} disableFingerprintScreen={this.disableFingerprintScreen.bind(this)} />} />
+                            </Switch>
+                        </Dialog>
+                    </main>
+                </div> :
                 <Grid container className={this.props.classes.root} style={{ justifyContent: "space-around" }}>
                     <Grid item xs={12}>
                         <div style={{ textAlign: "center" }}>
@@ -525,7 +458,7 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
         storage.setItem("oneHanded", tmp.toString())
     }
 
-    private closeOnboarding() {
+    private closeOnboarding = () => {
         this.setState({ openOnboarding: false })
         this.forceUpdate()
     }
@@ -563,12 +496,7 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
         this.setState({ openMenu: open })
     }
 
-    private setPaletteType() {
-        const paletteType = this.state.paletteType === "light" ? "dark" : "light"
-        this.setState({ paletteType })
-        storage.setItem("paletteType", paletteType)
-    }
-    private updateSelected(name: string) {
+    private updateSelected = (name: string) => {
         this.props.rest.getWalletDetail(this.state.name).then((data: IHyconWallet & IResponseError) => {
             if (data.address) {
                 this.setState({ wallet: data })
@@ -578,16 +506,15 @@ class MobileApp extends React.Component<IProps, IState & IProps> {
         })
     }
 
-    private setLanguage(event: any) {
+    private setLanguage = (event: any) => {
         this.language = getMobileLocale(event.target.value)
-        this.languageSelect = event.target.value
+        this.props.changeLanguage(event.target.value)
         this.props.rest.getPrice(this.language.currency).then((price: number) => {
             this.price.fiat = price
         })
-        this.forceUpdate()
     }
 
-    private setWallets(fromDelete?: boolean) {
+    private setWallets = (fromDelete?: boolean) => {
         if (fromDelete) {
             this.setState({ selectedWalletIndex: this.state.selectedWalletIndex - 1 === -1 ? 0 : this.state.selectedWalletIndex - 1 })
         }
